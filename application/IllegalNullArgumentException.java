@@ -5,5 +5,4 @@ package application;
  */
 @SuppressWarnings("serial")
 public class IllegalNullArgumentException extends Exception {
-
 }
