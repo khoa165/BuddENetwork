@@ -244,8 +244,8 @@ public class Graph implements GraphADT {
     if (user == null) {
       throw new IllegalNullArgumentException();
     }
-    if (this.vertices.contains(user)
-        || this.userNames.contains(user.getName())) {
+    if (!this.vertices.contains(user)
+        || !this.userNames.contains(user.getName())) {
       throw new UserNotFoundException();
     }
     return user.getFriends();
