@@ -97,8 +97,11 @@ public interface GraphADT {
    * @param name name to find corresponding user.
    * 
    * @throws IllegalNullArgumentException if argument is null.
+   * @throws UserNotFoundException        if given name does not match any
+   *                                      existing vertex/user.
    */
-  public User getUser(String name) throws IllegalNullArgumentException;
+  public User getUser(String name)
+      throws IllegalNullArgumentException, UserNotFoundException;
 
   /**
    * Get all the vertices/users that connect to the give vertex/user.
@@ -127,17 +130,17 @@ public interface GraphADT {
   public Set<User> getAllVertices();
 
   /**
-   * Returns the number of edges in this graph.
+   * Returns the number of edges/friendships in this graph.
    * 
-   * @return number of edges in the graph.
+   * @return number of edges/friendships in the graph.
    */
   public int size();
 
 
   /**
-   * Returns the number of vertices in this graph.
+   * Returns the number of vertices/users in this graph.
    * 
-   * @return number of vertices in graph.
+   * @return number of vertices/users in graph.
    */
   public int order();
 }
