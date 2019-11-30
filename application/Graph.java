@@ -202,18 +202,40 @@ public class Graph implements GraphADT {
       throw new IllegalNullArgumentException();
     }
     for (User user : this.vertices) { // Loop through all users, compare name.
-      if (user.getName().equals(name) ) {
+      if (user.getName().equals(name)) {
         return user;
       }
     }
     return null;
   }
 
+  /**
+   * Get all the vertices/users that connect to the give vertex/user.
+   *
+   * If vertex/user is null, throw IllegalNullArgumentException. If vertex/user
+   * does not exist in the graph, throw UserNotFoundException.
+   * 
+   * Valid argument conditions: 1. vertex/user is not null 2. vertex/user exist
+   * in the graph.
+   * 
+   * @param user vertex/user to get all the neighbors.
+   * @return a set of all vertices/users that connect to the given user.
+   * 
+   * @throws IllegalNullArgumentException if argument is null.
+   * @throws UserNotFoundException        if vertex/user does not exist in the
+   *                                      graph.
+   */
   @Override
   public Set<User> getNeighbors(User user)
       throws IllegalNullArgumentException, UserNotFoundException {
-    // TODO Auto-generated method stub
-    return null;
+    if (user == null) {
+      throw new IllegalNullArgumentException();
+    }
+    if (this.vertices.contains(user)
+        || this.userNames.contains(user.getName())) {
+      throw new UserNotFoundException();
+    }
+    return user.getFriends();
   }
 
   @Override
