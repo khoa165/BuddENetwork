@@ -176,4 +176,95 @@ class GraphTest {
 			assertEquals(graph.order(), 1);
 		}
 	}
+	
+	/**
+	 * This test checks to see if the edge has been added to the graph by
+	 * checking that the size of the graph has increased by one.
+	 */
+	@Test
+	void test007_AddValidEdge() {
+		try {
+		graph.addVertex(harry);
+		graph.addVertex(kenny);
+		assertEquals(graph.size(), 0);
+		graph.addEdge(harry, kenny);
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentExceptoin thrown.");
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown, but this should not be a duplicate friendship.");
+		} finally {
+			assertEquals(graph.size(), 1);
+		}
+	}
+	
+	/**
+	 * This test checks to see that a duplicate edge throws a DuplicateFriendshipException
+	 * and does not add an edge to the graph, i.e. increment the size of the graph.
+	 */
+	@Test
+	void test008_AddDuplicateEdge() {
+		try {
+		graph.addVertex(harry);
+		graph.addVertex(kenny);
+		assertEquals(graph.size(), 0);
+		graph.addEdge(harry, kenny);
+		assertEquals(graph.size(), 1);
+		graph.addEdge(harry, kenny);
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} catch (DuplicateFriendshipException e) {
+			// DuplicateFriendshipException should be caught here, since harry and kenny friends
+		} finally {
+			assertEquals(graph.size(), 1);
+		}
+	}
+	
+	/**
+	 * This test checks to see that an edge is not added to the graph when one of the arguments
+	 * is null by checking that an IllegalNullArgumentException is thrown and that the size of the
+	 * graph is not incremented by one.
+	 */
+	@Test
+	void test009_AddNullEdge() {
+		try {
+		graph.addVertex(harry);
+		graph.addVertex(kenny);
+		assertEquals(graph.size(), 0);
+		graph.addEdge(harry, null);
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			// IllegalNullArgumentException should be caught here, since one vertex is null
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown.");
+		} finally {
+			assertEquals(graph.size(), 0);
+		}
+	}
+	
+	/**
+	 * This test checks to see if the edge has been added to the graph by
+	 * checking that the size of the graph has increased by one.
+	 */
+	@Test
+	void test010_AddEdgeWithVertexNotInGraph() {
+		try {
+		graph.addVertex(harry);
+		graph.addVertex(kenny);
+		assertEquals(graph.size(), 0);
+		graph.addEdge(harry, saniya);  // TODO which exception would catch this?
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown, but this should not be a duplicate friendship.");
+		} finally {
+			assertEquals(graph.size(), 0);
+		}
+	}
 }
