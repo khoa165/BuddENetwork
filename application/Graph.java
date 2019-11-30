@@ -184,9 +184,28 @@ public class Graph implements GraphADT {
     }
   }
 
+  /**
+   * Return the User object that corresponds to the given name.
+   *
+   * If the given name is null, throw IllegalNullArgumentException. If the given
+   * name does not match with any existing User, simply return null.
+   * 
+   * Valid argument conditions: 1. given name is not null.
+   * 
+   * @param name name to find corresponding user.
+   * 
+   * @throws IllegalNullArgumentException if argument is null.
+   */
   @Override
   public User getUser(String name) throws IllegalNullArgumentException {
-    // TODO Auto-generated method stub
+    if (name == null) {
+      throw new IllegalNullArgumentException();
+    }
+    for (User user : this.vertices) { // Loop through all users, compare name.
+      if (user.getName().equals(name) ) {
+        return user;
+      }
+    }
     return null;
   }
 
