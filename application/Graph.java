@@ -90,19 +90,98 @@ public class Graph implements GraphADT {
     }
   }
 
+  /**
+   * Add edge/friendship between two vertices/users to the graph.
+   *
+   * If either vertex/user is null, throw IllegalNullArgumentException. If
+   * edge/friendship already exists, throw DuplicateFriendshipException.
+   * 
+   * Special case: if neither of vertex/user exists, then add vertices/users and
+   * then add edge/friendship between them.
+   * 
+   * Valid argument conditions: 1. neither vertex/user is null 2.
+   * edge/friendship is not already in the graph.
+   * 
+   * @param user1 first vertex/user of this edge/friendship.
+   * @param user2 second vertex/user of this edge/friendship.
+   * 
+   * @throws IllegalNullArgumentException if either argument is null.
+   * @throws DuplicateFriendshipException if edge/friendship already exists in
+   *                                      graph.
+   */
   @Override
   public void addEdge(User user1, User user2)
       throws IllegalNullArgumentException, DuplicateFriendshipException {
-    // TODO Auto-generated method stub
-
+    if (user1 == null || user2 == null) {
+      throw new IllegalNullArgumentException();
+    }
+    if (user1.getFriends().contains(user2)
+        || user2.getFriends().contains(user1)) {
+      throw new DuplicateFriendshipException();
+    }
+    // Add user1 to the graph if user1 does not exist yet.
+    if (!this.vertices.contains(user1)
+        && !this.userNames.contains(user1.getName())) {
+      this.vertices.add(user1);
+      this.userNames.add(user1.getName());
+      this.order++; // Increment number of vertices.
+    }
+    // Add user2 to the graph if user2 does not exist yet.
+    if (!this.vertices.contains(user2)
+        && !this.userNames.contains(user2.getName())) {
+      this.vertices.add(user2);
+      this.userNames.add(user2.getName());
+      this.order++; // Increment number of vertices.
+    }
+    // Add user1 and user2 to each other's friend list, then increment size.
+    user1.addFriend(user2);
+    user2.addFriend(user1);
+    this.size++;
   }
 
+  /**
+   * Remove edge/friendship between two users to the graph.
+   *
+   * If either vertex/user is null, throw IllegalNullArgumentException. If
+   * either vertex/user does not exist in the graph, throw
+   * UserNotFoundException. If edge/friendship does not exist, throw
+   * FriendshipNotFoundException.
+   * 
+   * Valid argument conditions: 1. neither vertex/user is null 2. both
+   * vertices/users exist in the graph 3. edge/friendship exists in the graph.
+   * 
+   * @param user1 first vertex/user of this edge/friendship.
+   * @param user2 second vertex/user of this edge/friendship.
+   * 
+   * @throws IllegalNullArgumentException if either argument is null.
+   * @throws UserNotFoundException        if vertex/user does not exist in the
+   *                                      graph.
+   * @throws FriendshipNotFoundException  if edge/friendship does not exist in
+   *                                      the graph.
+   */
   @Override
   public void removeEdge(User user1, User user2)
       throws IllegalNullArgumentException, UserNotFoundException,
       FriendshipNotFoundException {
-    // TODO Auto-generated method stub
-
+    if (user1 == null || user2 == null) {
+      throw new IllegalNullArgumentException();
+    }
+    if (!this.vertices.contains(user1)
+        || !this.userNames.contains(user1.getName())
+        || !this.vertices.contains(user2)
+        || !this.userNames.contains(user2.getName())) {
+      throw new UserNotFoundException();
+    }
+    // If both users exist in each other friend list, then remove them from each
+    // other's friend list, then decrement size.
+    if (user1.getFriends().contains(user2)
+        && user2.getFriends().contains(user1)) {
+      user1.getFriends().remove(user2);
+      user2.getFriends().remove(user1);
+      this.size--;
+    } else { // Otherwise, friendship is not found between given users.
+      throw new FriendshipNotFoundException();
+    }
   }
 
   @Override
