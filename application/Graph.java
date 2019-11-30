@@ -1,13 +1,13 @@
 package application;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
-public class Graph {
-  // Keep track of friends of a User.
-  private HashMap<User, HashSet<User>> adjacencyList;
-  // Keep track of mapping from name to user.
-  private HashMap<String, User> mapNameToUser;
+public class Graph implements GraphADT {
+  // Set of vertices/users in the graph.
+  private Set<User> vertices;
+  // Set of users' names to avoid duplicate name.
+  private Set<String> userNames;
   // Number of edges/connections in the graph.
   private int size;
   // Number of vertices/users in the graph.
@@ -18,41 +18,99 @@ public class Graph {
    * map, set to empty.
    */
   public Graph() {
-    this.adjacencyList = new HashMap<User, HashSet<User>>();
-    this.mapNameToUser = new HashMap<String, User>();
+    this.vertices = new HashSet<User>();
+    this.userNames = new HashSet<String>();
     this.size = 0;
     this.order = 0;
   }
 
   /**
-   * Add new vertex to the graph.
+   * Add new vertex/user to the graph.
    *
-   * If user is null, throw NullPointerException. If vertex already exists,
-   * throw DuplicateUserException.
+   * If vertex/user is null, throw IllegalNullArgumentException. If vertex/user
+   * already exists, throw DuplicateUserException.
    * 
-   * Valid argument conditions: 1. vertex/user is non-null 2. vertex/user is not
+   * Valid argument conditions: 1. vertex/user is not null 2. vertex/user is not
    * already in the graph.
    * 
-   * @param user new user to be added to the graph.
+   * @param user new vertex/user to be added to the graph.
+   * 
+   * @throws IllegalNullArgumentException if argument is null.
+   * @throws DuplicateUserException       if vertex/user already exists in
+   *                                      graph.
    */
+  @Override
   public void addVertex(User user)
       throws IllegalNullArgumentException, DuplicateUserException {
+    if (user == null) {
+      throw new IllegalNullArgumentException();
+    }
+    boolean success = this.userNames.add(user.getName());
+    if (success) { // Add name successfully means name is not duplicate.
+      this.vertices.add(user); // Then add user.
+      this.order++; // Increment number of vertices.
+    } else { // Fail to add name, that means name is duplicate.
+      throw new DuplicateUserException();
+    }
+  }
+
+  @Override
+  public void removeVertex(User user)
+      throws IllegalNullArgumentException, UserNotFoundException {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void addEdge(User user1, User user2)
+      throws IllegalNullArgumentException, DuplicateFriendshipException {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void removeEdge(User user1, User user2)
+      throws IllegalNullArgumentException, UserNotFoundException,
+      FriendshipNotFoundException {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public User getUser(String name) throws IllegalNullArgumentException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Set<User> getNeighbors(User user)
+      throws IllegalNullArgumentException, UserNotFoundException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Set<User> getAllVertices() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   /**
-   * Returns the number of edges in this graph.
+   * Returns the number of edges/friendships in this graph.
    * 
-   * @return number of edges.
+   * @return number of edges/friendships in the graph.
    */
+  @Override
   public int size() {
     return this.size;
   }
 
   /**
-   * Returns the number of vertices in this graph.
+   * Returns the number of vertices/users in this graph.
    * 
-   * @return number of vertices.
+   * @return number of vertices/users in graph.
    */
+  @Override
   public int order() {
     return this.order;
   }

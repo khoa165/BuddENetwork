@@ -127,17 +127,17 @@ public interface GraphADT {
   public Set<User> getAllVertices();
 
   /**
-   * Returns the number of edges in this graph.
+   * Returns the number of edges/friendships in this graph.
    * 
-   * @return number of edges in the graph.
+   * @return number of edges/friendships in the graph.
    */
   public int size();
 
 
   /**
-   * Returns the number of vertices in this graph.
+   * Returns the number of vertices/users in this graph.
    * 
-   * @return number of vertices in graph.
+   * @return number of vertices/users in graph.
    */
   public int order();
 }
