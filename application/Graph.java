@@ -2,8 +2,9 @@ package application;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
-public class Graph {
+public class Graph implements GraphADT {
   // Keep track of friends of a User.
   private HashMap<User, HashSet<User>> adjacencyList;
   // Keep track of mapping from name to user.
@@ -56,4 +57,45 @@ public class Graph {
   public int order() {
     return this.order;
   }
+
+@Override
+public void removeVertex(User user)
+		throws IllegalNullArgumentException, UserNotFoundException {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void addEdge(User user1, User user2)
+		throws IllegalNullArgumentException, DuplicateFriendshipException {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void removeEdge(User user1, User user2)
+		throws IllegalNullArgumentException, UserNotFoundException,
+		FriendshipNotFoundException {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public User getUser(String name) throws IllegalNullArgumentException {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public Set<User> getNeighbors(User user)
+		throws IllegalNullArgumentException, UserNotFoundException {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public Set<User> getAllVertices() {
+	// TODO Auto-generated method stub
+	return null;
+}
 }
