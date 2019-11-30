@@ -235,10 +235,11 @@ class GraphTest {
 		graph.addVertex(kenny);
 		assertEquals(graph.size(), 0);
 		graph.addEdge(harry, null);
+		fail("IllegalArgumentException should have been thrown.");
 		} catch (DuplicateUserException e) {
 			fail("DuplicateUserException thrown.");
 		} catch (IllegalNullArgumentException e) {
-			// IllegalNullArgumentException should be caught here, since one vertex is null
+			// IllegalNullArgumentException should be caught here, since one vertex of edge is null
 		} catch (DuplicateFriendshipException e) {
 			fail("DuplicateFriendshipException thrown.");
 		} finally {
@@ -247,24 +248,148 @@ class GraphTest {
 	}
 	
 	/**
-	 * This test checks to see if the edge has been added to the graph by
-	 * checking that the size of the graph has increased by one.
+	 * This test checks to see if the edge between a vertex in the graph and one not in graph
+	 *  has been added to the graph by checking that the new vertex has incremented the order of 
+	 *  the graph by one and the new edge has incremented the size of the graph by one.
 	 */
 	@Test
 	void test010_AddEdgeWithVertexNotInGraph() {
 		try {
 		graph.addVertex(harry);
 		graph.addVertex(kenny);
+		assertEquals(graph.order(), 2);
 		assertEquals(graph.size(), 0);
-		graph.addEdge(harry, saniya);  // TODO which exception would catch this?
+		graph.addEdge(harry, saniya);
+		assertEquals(graph.order(), 3);
+		assertEquals(graph.size(), 1);
 		} catch (DuplicateUserException e) {
 			fail("DuplicateUserException thrown.");
 		} catch (IllegalNullArgumentException e) {
 			fail("IllegalNullArgumentException thrown.");
 		} catch (DuplicateFriendshipException e) {
 			fail("DuplicateFriendshipException thrown, but this should not be a duplicate friendship.");
-		} finally {
+		}
+	}
+	
+	/**
+	 * This test checks that an edge in the graph has been removed from the graph by checking
+	 * that the size of the graph decreases by one.
+	 *
+	 */
+	@Test
+	void test011_RemoveValidEdge_in_graph() {
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
 			assertEquals(graph.size(), 0);
+			graph.addEdge(harry, kenny);
+			assertEquals(graph.size(), 1);
+			graph.removeEdge(harry, kenny);
+			assertEquals(graph.size(), 0);
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown.");
+		} catch (FriendshipNotFoundException e) {
+			fail("FriendshipNotFoundException thrown.");
+		} catch (UserNotFoundException e) {
+			fail("UserNotFoundException thrown.");
+		}
+	}
+	
+	/**
+	 * This test checks that an IllegalArgumentException is thrown and the size of the graph
+	 * does not change when an edge that contains a null vertex is attempted to be removed from
+	 * the graph.
+	 */
+	@Test
+	void test012_RemoveNullEdge_from_graph() {
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			assertEquals(graph.size(), 0);
+			graph.addEdge(harry, kenny);
+			assertEquals(graph.size(), 1);
+			graph.removeEdge(harry, null);
+			fail("IllegalArgumentException should have been thrown.");
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			// IllegalNullArgumentException should be caught here, since one vertex in edge is null
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown.");
+		} catch (FriendshipNotFoundException e) {
+			fail("FriendshipNotFoundException thrown.");
+		} catch (UserNotFoundException e) {
+			fail("UserNotFoundException thrown.");
+		} finally {
+			assertEquals(graph.size(), 1);
+		}
+	}
+		
+
+	/**
+	 * The method tests that the size of the graph does not change when an edge
+	 * that is not in the graph is attempted to be removed from the graph.
+	 */
+	@Test
+	void test013_RemoveEdge_not_in_graph() {
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			graph.addVertex(saniya);
+			assertEquals(graph.size(), 0);
+			graph.addEdge(harry, kenny);
+			assertEquals(graph.size(), 1);
+			graph.removeEdge(harry, saniya);
+			fail("FriendshipNotFoundException should have been thrown.");
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown.");
+		} catch (FriendshipNotFoundException e) {
+			// FriendshipNotFoundException should be caught here, since edge does not exist in graph
+		} catch (UserNotFoundException e) {
+			fail("UserNotFoundException thrown.");
+		} finally {
+			assertEquals(graph.size(), 1);
+		}
+	}
+	
+	/**
+	 * The method tests that a UserNotFoundException is thrown and the size and order of the graph
+	 * does not change when an edge that is not in graph that has a user that is not in the graph
+	 *  is attempted to be removed from the graph.
+	 */
+	@Test
+	void test014_RemoveEdgeWithUser_not_in_graph() {
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			graph.addVertex(saniya);
+			assertEquals(graph.order(), 3);
+			assertEquals(graph.size(), 0);
+			graph.addEdge(harry, kenny);
+			assertEquals(graph.size(), 1);
+			graph.removeEdge(harry, shannon);
+			fail("UserNotFoundException should have been thrown.");
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown.");
+		} catch (FriendshipNotFoundException e) {
+			fail("FriendshipNotFoundException thrown.");
+		} catch (UserNotFoundException e) {
+			// UserNotFoundException should be caught here, since one user does not exist in graph
+		} finally {
+			assertEquals(graph.order(), 3);
+			assertEquals(graph.size(), 1);
 		}
 	}
 }
