@@ -250,10 +250,14 @@ public class Graph implements GraphADT {
     return user.getFriends();
   }
 
+  /**
+   * Get all the vertices/users of the graph.
+   *
+   * @return a set of all vertices/users of the graph.
+   */
   @Override
   public Set<User> getAllVertices() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.vertices;
   }
 
   /**
