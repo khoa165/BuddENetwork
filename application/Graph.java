@@ -45,7 +45,7 @@ public class Graph implements GraphADT {
     if (user == null) {
       throw new IllegalNullArgumentException();
     }
-    boolean success = this.userNames.add(user.getName());
+    boolean success = this.userNames.add(user.getName()); // Add name.
     if (success) { // Add name successfully means name is not duplicate.
       this.vertices.add(user); // Then add user.
       this.order++; // Increment number of vertices.
@@ -54,11 +54,40 @@ public class Graph implements GraphADT {
     }
   }
 
+  /**
+   * Remove vertex/user and all of its associated edges/friendships in the
+   * graph.
+   *
+   * If vertex/user is null, throw IllegalNullArgumentException. If vertex/user
+   * does not exist in the graph, throw UserNotFoundException.
+   * 
+   * Valid argument conditions: 1. vertex/user is not null 2. vertex/user exist
+   * in the graph.
+   * 
+   * @param user vertex/user to be removed from the graph.
+   * 
+   * @throws IllegalNullArgumentException if argument is null.
+   * @throws UserNotFoundException        if vertex/user does not exist in the
+   *                                      graph.
+   */
   @Override
   public void removeVertex(User user)
       throws IllegalNullArgumentException, UserNotFoundException {
-    // TODO Auto-generated method stub
-
+    if (user == null) {
+      throw new IllegalNullArgumentException();
+    }
+    if (!this.vertices.contains(user)
+        || !this.userNames.contains(user.getName())) {
+      throw new UserNotFoundException();
+    }
+    // Loop through all friends of given user, remove given user from his/her
+    // friend's friend list and remove his/her friend from given user's friend
+    // list, then decrement size.
+    for (User userFriend : user.getFriends()) {
+      userFriend.getFriends().remove(user);
+      user.getFriends().remove(userFriend);
+      this.size--;
+    }
   }
 
   @Override
