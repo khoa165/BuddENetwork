@@ -5,6 +5,9 @@ package application;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.AfterAll;
@@ -390,6 +393,140 @@ class GraphTest {
 		} finally {
 			assertEquals(graph.order(), 3);
 			assertEquals(graph.size(), 1);
+		}
+	}
+	
+	/**
+	 * This method tests that all vertices in the graph are returned from the
+	 * getAllVertices method.
+	 */
+	@Test
+	void test015_GetAllVertices() {
+		Set<User> allCorrect = new HashSet<User>();
+		allCorrect.add(harry);
+		allCorrect.add(kenny);
+		allCorrect.add(saniya);
+		allCorrect.add(shannon);
+		Set<User> allVertices = null;
+
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			graph.addVertex(saniya);
+			graph.addVertex(shannon);
+			allVertices = graph.getAllVertices();
+		} catch (DuplicateUserException e){
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} finally {
+			if (!allCorrect.equals(allVertices)) {
+				fail("Not all vertices in the graph are returned from method. "
+						+ "Correct set is " + allCorrect + ", but returned "
+						+ allVertices);
+			}
+		}
+
+	}
+	
+	/**
+	 * This method tests that all of the correct neighboring vertices are
+	 * returned for a specific vertex in the graph.
+	 */
+	@Test
+	void test016_GetNeighbors_of_vertex_in_graph() {
+		Set<User> correctAdj = new HashSet<User>();
+		correctAdj.add(kenny);
+		correctAdj.add(saniya);
+		Set<User> allAdj = new HashSet<User>();	
+		
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			graph.addVertex(saniya);
+			graph.addEdge(harry, kenny);
+			graph.addEdge(harry, saniya);
+			allAdj = graph.getNeighbors(harry);
+		} catch (DuplicateUserException e){
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown.");
+		} catch (UserNotFoundException e) {
+			fail("UserNotFoundException thrown.");
+		} finally {
+			if (!correctAdj.equals(allAdj)) {
+				fail("Correct adjacent vertices list for the grpah is not returned from method. "
+						+ "Correct list is " + correctAdj + ", but returned "
+						+ allAdj);
+			}
+		}
+	}
+	
+	/**
+	 * This method tests that an IllegalNullArgumentException is thrown when the getNeighbors
+	 * method attempts to get neighbors of a null vertex.
+	 */
+	@Test
+	void test017_GetNeighbors_of_null_vertex_graph() {
+		Set<User> correctAdj = new HashSet<User>();
+		Set<User> allAdj = new HashSet<User>();	
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			graph.addVertex(saniya);
+			graph.addEdge(harry, kenny);
+			graph.addEdge(harry, saniya);
+			allAdj = graph.getNeighbors(null);
+			fail("IllegalNullArgumentException should have been thrown.");
+		} catch (DuplicateUserException e){
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			// IllegalNullArgumentException should be caught here, since vertex is null
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown.");
+		} catch (UserNotFoundException e) {
+			fail("UserNotFoundExceptoin thrown.");
+		} finally {
+			if (!correctAdj.equals(allAdj)) {
+				fail("Correct adjacent vertices list for the grpah is not returned from method. "
+						+ "Correct list is " + correctAdj + ", but returned "
+						+ allAdj);
+			}
+		}
+	}
+	
+	/**
+	 * This method tests that all of the correct neighboring vertices are
+	 * returned for a specific vertex in the graph.
+	 */
+	@Test
+	void test018_GetNeighbors_of_vertex_not_in_graph() {
+		Set<User> correctAdj = new HashSet<User>();
+		Set<User> allAdj = new HashSet<User>();	
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			graph.addVertex(saniya);
+			graph.addEdge(harry, kenny);
+			graph.addEdge(harry, saniya);
+			allAdj = graph.getNeighbors(shannon);
+			fail("UserNotFoundException should have been thrown.");
+		} catch (DuplicateUserException e){
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown.");
+		} catch (UserNotFoundException e) {
+			// UserNotFoundException should be caught here, since shannon is not user in graph
+		} finally {
+			if (!correctAdj.equals(allAdj)) {
+				fail("Correct adjacent vertices list for the grpah is not returned from method. "
+						+ "Correct list is " + correctAdj + ", but returned "
+						+ allAdj);
+			}
 		}
 	}
 }
