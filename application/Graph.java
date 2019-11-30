@@ -1,6 +1,8 @@
 package application;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Graph implements GraphADT {
@@ -8,6 +10,8 @@ public class Graph implements GraphADT {
   private Set<User> vertices;
   // Set of users' names to avoid duplicate name.
   private Set<String> userNames;
+  // Set of users' names to avoid duplicate name.
+  private Map<String, User> mapNameToUser;
   // Number of edges/connections in the graph.
   private int size;
   // Number of vertices/users in the graph.
@@ -20,6 +24,7 @@ public class Graph implements GraphADT {
   public Graph() {
     this.vertices = new HashSet<User>();
     this.userNames = new HashSet<String>();
+    this.mapNameToUser = new HashMap<String, User>();
     this.size = 0;
     this.order = 0;
   }
@@ -48,6 +53,7 @@ public class Graph implements GraphADT {
     boolean success = this.userNames.add(user.getName()); // Add name.
     if (success) { // Add name successfully means name is not duplicate.
       this.vertices.add(user); // Then add user.
+      this.mapNameToUser.put(user.getName(), user);
       this.order++; // Increment number of vertices.
     } else { // Fail to add name, that means name is duplicate.
       throw new DuplicateUserException();
@@ -88,6 +94,12 @@ public class Graph implements GraphADT {
       user.getFriends().remove(userFriend);
       this.size--;
     }
+
+    // Remove user, user's name and name-user pair from the data structure.
+    this.vertices.remove(user);
+    this.userNames.remove(user.getName());
+    this.mapNameToUser.remove(user.getName());
+    this.order--; // Decrement number of vertices.
   }
 
   /**
@@ -124,6 +136,7 @@ public class Graph implements GraphADT {
         && !this.userNames.contains(user1.getName())) {
       this.vertices.add(user1);
       this.userNames.add(user1.getName());
+      this.mapNameToUser.put(user1.getName(), user1);
       this.order++; // Increment number of vertices.
     }
     // Add user2 to the graph if user2 does not exist yet.
@@ -131,6 +144,7 @@ public class Graph implements GraphADT {
         && !this.userNames.contains(user2.getName())) {
       this.vertices.add(user2);
       this.userNames.add(user2.getName());
+      this.mapNameToUser.put(user2.getName(), user2);
       this.order++; // Increment number of vertices.
     }
     // Add user1 and user2 to each other's friend list, then increment size.
@@ -195,18 +209,16 @@ public class Graph implements GraphADT {
    * @param name name to find corresponding user.
    * 
    * @throws IllegalNullArgumentException if argument is null.
+   * @throws UserNotFoundException        if given name does not match any
+   *                                      existing vertex/user.
    */
   @Override
-  public User getUser(String name) throws IllegalNullArgumentException {
+  public User getUser(String name)
+      throws IllegalNullArgumentException, UserNotFoundException {
     if (name == null) {
       throw new IllegalNullArgumentException();
     }
-    for (User user : this.vertices) { // Loop through all users, compare name.
-      if (user.getName().equals(name)) {
-        return user;
-      }
-    }
-    return null;
+    return this.mapNameToUser.get(name);
   }
 
   /**

@@ -97,8 +97,11 @@ public interface GraphADT {
    * @param name name to find corresponding user.
    * 
    * @throws IllegalNullArgumentException if argument is null.
+   * @throws UserNotFoundException        if given name does not match any
+   *                                      existing vertex/user.
    */
-  public User getUser(String name) throws IllegalNullArgumentException;
+  public User getUser(String name)
+      throws IllegalNullArgumentException, UserNotFoundException;
 
   /**
    * Get all the vertices/users that connect to the give vertex/user.
