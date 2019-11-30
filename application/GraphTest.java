@@ -112,5 +112,68 @@ class GraphTest {
 		}
 	}
 	
-
+	/**
+	 * This method tests to see if a vertex is removed from graph after it has
+	 * been added
+	 */
+	@Test
+	void test004_RemoveVertex_in_graph() {
+		try {
+			graph.addVertex(harry);
+			graph.removeVertex(harry);
+			Set<User> vertices = graph.getAllVertices();
+			if (vertices.contains(harry)) {
+				fail("The graph should not contain vertex harry, but it does.");
+			}
+		} catch (DuplicateUserException e){
+			fail("DuplicateUserException thrown");
+		} catch (IllegalNullArgumentException e) {
+			fail("Cannot add a vertex for this user; the user is null.");
+		} catch (UserNotFoundException e) {
+			fail("The User harry is not already in the graph, so cannot remove vertex.");
+		} finally {
+			// Vertex harry in graph should have been removed, so graph order should be 0
+			assertEquals(graph.order(), 0);
+		}
+	}
+	
+	/**
+	 * This test checks to see if there is no change to the graph when a vertex
+	 * that is not in the graph is attempted to be removed.
+	 */
+	@Test
+	void test005_RemoveVertex_not_in_graph() {
+		try {
+			graph.addVertex(harry);
+			graph.removeVertex(kenny);
+		} catch (DuplicateUserException e){
+			fail("DuplicateUserException thrown");
+		} catch (IllegalNullArgumentException e) {
+			fail("Cannot add a vertex for this user; the user is null.");
+		} catch (UserNotFoundException e) {
+			// UserNotFoundException should be caught here, since kenny is not already in graph
+		} finally {
+			assertEquals(graph.order(), 1);
+		}
+	}
+	
+	/**
+	 * This test checks to see if an IllegalNullArgument Exception is thrown if the vertex to be
+	 * removed is null
+	 */
+	@Test
+	void test006_RemoveNullVertex_from_graph() {
+		try {
+			graph.addVertex(harry);
+			graph.removeVertex(null);
+		} catch (DuplicateUserException e){
+			fail("DuplicateUserException thrown");
+		} catch (IllegalNullArgumentException e) {
+			// IllegalNullArgumentException should be caught here, since User is null
+		} catch (UserNotFoundException e) {
+			fail("UserNotFoundException thrown.");
+		} finally {
+			assertEquals(graph.order(), 1);
+		}
+	}
 }
