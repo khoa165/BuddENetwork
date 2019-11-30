@@ -12,6 +12,7 @@ public class Graph implements GraphADT {
   private Set<String> userNames;
   // Set of users' names to avoid duplicate name.
   private Map<String, User> mapNameToUser;
+
   // Number of edges/connections in the graph.
   private int size;
   // Number of vertices/users in the graph.
