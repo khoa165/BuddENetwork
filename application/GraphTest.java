@@ -220,7 +220,7 @@ class GraphTest {
 		} catch (IllegalNullArgumentException e) {
 			fail("IllegalNullArgumentException thrown.");
 		} catch (DuplicateFriendshipException e) {
-			// DuplicateFriendshipException should be caught here, since harry and kenny friends
+			// DuplicateFriendshipException should be caught here, since harry and kenny are friends
 		} finally {
 			assertEquals(graph.size(), 1);
 		}
