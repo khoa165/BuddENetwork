@@ -21,7 +21,7 @@
   + Shannon finished implementing a substantial great amount of tests for [GraphTest.java](application/GraphTest.java).
   + Harry defined all methods for SocialNetwork data structure in [SocialNetworkADT.java](application/SocialNetworkADT.java).
 - December 1st:
-  + Kenny implemented all required methods for Graph data structure in [SocialNetwork.java](application/SocialNetwork.java).
+  + Kenny implemented all required methods for Social Network in [SocialNetwork.java](application/SocialNetwork.java).
 
 #### ***Upcoming goals:***
 - [X] Set up the repository and project.
