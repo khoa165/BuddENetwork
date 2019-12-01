@@ -22,7 +22,7 @@ public interface SocialNetworkADT {
    * 
    * @throws IllegalNullArgumentException if argument is null or empty string.
    * @throws DuplicateFriendshipException if friendship between the two users
-   *                                      does not exist in the social network.
+   *                                      exists in the social network.
    */
   public void addFriendship(String user1, String user2)
       throws IllegalNullArgumentException, DuplicateFriendshipException;
@@ -69,8 +69,8 @@ public interface SocialNetworkADT {
    * @throws DuplicateUserException       if username already exists in social
    *                                      network.
    */
-  public void addUser(String username)
-      throws IllegalNullArgumentException, DuplicateUserException;
+  public void addUser(String username) throws IllegalNullArgumentException,
+      DuplicateUserException;
 
   /**
    * Given a name, find corresponding user, remove user and all of his/her
@@ -88,8 +88,8 @@ public interface SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  public void removeUser(String username)
-      throws IllegalNullArgumentException, UserNotFoundException;
+  public void removeUser(String username) throws IllegalNullArgumentException,
+      UserNotFoundException;
 
   /**
    * Given a name, find corresponding user, return all the friends with the
@@ -174,8 +174,8 @@ public interface SocialNetworkADT {
    * @throws IllegalNullArgumentException if argument is null or empty string.
    * @throws FileNotFoundException        if file does not exist.
    */
-  public void loadFromFile(File filename)
-      throws IllegalNullArgumentException, FileNotFoundException;
+  public void loadFromFile(File filename) throws IllegalNullArgumentException,
+      FileNotFoundException;
 
   /**
    * Save changes to the graph as commands to file.
@@ -191,6 +191,6 @@ public interface SocialNetworkADT {
    * @throws IllegalNullArgumentException if argument is null or empty string.
    * @throws FileNotFoundException        if file does not exist.
    */
-  public void saveToFile(File filename)
-      throws IllegalNullArgumentException, FileNotFoundException;
+  public void saveToFile(File filename) throws IllegalNullArgumentException,
+      FileNotFoundException;
 }
