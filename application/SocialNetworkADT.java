@@ -2,6 +2,7 @@ package application;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -174,7 +175,7 @@ public interface SocialNetworkADT {
    * @throws IllegalNullArgumentException if argument is null or empty string.
    * @throws FileNotFoundException        if file does not exist.
    */
-  public void loadFromFile(File filename) throws IllegalNullArgumentException,
+  public void loadFromFile(String filename) throws IllegalNullArgumentException,
       FileNotFoundException;
 
   /**
@@ -190,7 +191,27 @@ public interface SocialNetworkADT {
    * 
    * @throws IllegalNullArgumentException if argument is null or empty string.
    * @throws FileNotFoundException        if file does not exist.
+   * @throws IOException                  if there is an error in saving changes
+   *                                      to a file.
    */
-  public void saveToFile(File filename) throws IllegalNullArgumentException,
-      FileNotFoundException;
+  public void saveToFile(String filename) throws IllegalNullArgumentException,
+      FileNotFoundException, IOException;
+
+  /**
+   * Gets the central user of the SocialNetwork.
+   * 
+   * @return the central user.
+   */
+  public User getCentralUser();
+
+  /**
+   * Sets the central user of the SocialNetwork.
+   * 
+   * @throws IllegalNullArgumentException if argument is null or empty string.
+   * @throws UserNotFoundException        if username does not exist in the
+   *                                      social network.
+   * 
+   */
+  public void setCentralUser(String username)
+      throws IllegalNullArgumentException, UserNotFoundException;
 }

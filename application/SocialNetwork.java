@@ -1,18 +1,26 @@
 package application;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 public class SocialNetwork implements SocialNetworkADT {
 
   private Graph graph;
+  private ArrayList<String> commands;
+  private User centralUser;
 
   public SocialNetwork() {
     this.graph = new Graph();
+    this.commands = new ArrayList<String>();
+    this.centralUser = null;
   }
 
   /**
@@ -71,6 +79,9 @@ public class SocialNetwork implements SocialNetworkADT {
 
     // Add edge in the graph while checking for a DuplicateFriendshipException
     this.graph.addEdge(userInstance1, userInstance2);
+
+    // Add command to list of commands
+    this.commands.add("a " + user1 + " " + user2);
   }
 
   /**
@@ -100,12 +111,16 @@ public class SocialNetwork implements SocialNetworkADT {
   public void removeFriendship(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException,
       FriendshipNotFoundException {
-    // Get user instances while checking for IllegalNullArgumentException and UserNotFoundException
+    // Get user instances while checking for IllegalNullArgumentException and
+    // UserNotFoundException
     User userInstance1 = this.graph.getUser(user1);
     User userInstance2 = this.graph.getUser(user2);
-    
+
     // Remove the friendship while checking for FriendshipNotFoundException
     this.graph.removeEdge(userInstance1, userInstance2);
+
+    // Add command to list of commands
+    this.commands.add("r " + user1 + " " + user2);
   }
 
   /**
@@ -131,6 +146,9 @@ public class SocialNetwork implements SocialNetworkADT {
     // Adds user while checking for IllegalNullArgumentException and
     // DuplicateUserException
     this.graph.addVertex(newUser);
+
+    // Add command to list of commands
+    this.commands.add("a " + username);
   }
 
   /**
@@ -159,8 +177,11 @@ public class SocialNetwork implements SocialNetworkADT {
     // IllegalNullArgumentException and UserNotFoundException
     User userToRemove = this.graph.getUser(username);
     this.graph.removeVertex(userToRemove);
+
+    // Add command to list of commands
+    this.commands.add("r " + username);
   }
-  
+
   /**
    * Given a name, find corresponding user, return all the friends with the
    * given user.
@@ -186,7 +207,7 @@ public class SocialNetwork implements SocialNetworkADT {
     User user = this.graph.getUser(username);
     return user.getFriends();
   }
-  
+
   /**
    * Given two names, find corresponding users, return all mutual friends
    * between them.
@@ -208,18 +229,19 @@ public class SocialNetwork implements SocialNetworkADT {
   @Override
   public Set<User> getMutualFriends(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException {
-    // Get user instances checking for IllegalNullArgumentException and UserNotFoundException
+    // Get user instances checking for IllegalNullArgumentException and
+    // UserNotFoundException
     User userInstance1 = this.graph.getUser(user1);
     User userInstance2 = this.graph.getUser(user2);
-    
+
     // Get friends of both users
     Set<User> friendsOfUser1 = userInstance1.getFriends();
     Set<User> friendsOfUser2 = userInstance2.getFriends();
-    
+
     // Get mutual friends
     Set<User> mutualFriends = new HashSet<User>();
     for (User friendOf1 : friendsOfUser1) {
-      for (User friendOf2 : friendsOfUser2)  {
+      for (User friendOf2 : friendsOfUser2) {
         if (friendOf1.equals(friendOf2)) {
           mutualFriends.add(friendOf1);
         }
@@ -227,7 +249,7 @@ public class SocialNetwork implements SocialNetworkADT {
     }
     return mutualFriends;
   }
-  
+
   /**
    * Given two names, find corresponding users, then find the shortest path to
    * connect from one user to another.
@@ -249,10 +271,11 @@ public class SocialNetwork implements SocialNetworkADT {
   @Override
   public List<User> getShortestPath(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException {
-    // TODO Auto-generated method stub
+    ArrayList<User> shortestPath = new ArrayList<User>();
+
     return null;
   }
-  
+
   /**
    * Build graphs of connected components and return a set of those graphs.
    * 
@@ -285,7 +308,7 @@ public class SocialNetwork implements SocialNetworkADT {
     }
     return graphs;
   }
-  
+
   /**
    * Load commands from file to construct social network.
    *
@@ -301,12 +324,73 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws FileNotFoundException        if file does not exist.
    */
   @Override
-  public void loadFromFile(File filename) throws IllegalNullArgumentException,
+  public void loadFromFile(String filename) throws IllegalNullArgumentException,
       FileNotFoundException {
-    
+    if (filename == null || filename.length() == 0) {
+      throw new IllegalNullArgumentException();
+    }
 
+    Scanner scnr = new Scanner(filename);
+    // Parse the file
+    while (scnr.hasNextLine()) {
+      // Add user and add friendship command
+      String command = scnr.next();
+      if (command.equals("a")) {
+        User user1 = new User(scnr.next());
+        if (scnr.hasNext()) {
+          User user2 = new User(scnr.next());
+          try {
+            this.graph.addEdge(user1, user2);
+          } catch (DuplicateFriendshipException e) {
+            e.printStackTrace();
+          }
+        } else {
+          try {
+            this.graph.addVertex(user1);
+          } catch (DuplicateUserException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+      // Remove user and remove friendship command
+      User user1 = null;
+      if (command.equals("r")) {
+        try {
+          user1 = this.graph.getUser(scnr.next());
+        } catch (UserNotFoundException e) {
+          e.printStackTrace();
+        }
+        if (scnr.hasNext()) {
+          try {
+            User user2 = this.graph.getUser(scnr.next());
+            try {
+              this.graph.removeEdge(user1, user2);
+            } catch (FriendshipNotFoundException e) {
+              e.printStackTrace();
+            }
+          } catch (UserNotFoundException e) {
+            e.printStackTrace();
+          }
+        } else {
+          try {
+            this.graph.removeVertex(user1);
+          } catch (UserNotFoundException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+      // Set central user command
+      if (command.equals("s")) {
+        try {
+          User centralUser = this.graph.getUser(scnr.next());
+          this.centralUser = centralUser;
+        } catch (UserNotFoundException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
-  
+
   /**
    * Save changes to the graph as commands to file.
    *
@@ -316,15 +400,53 @@ public class SocialNetwork implements SocialNetworkADT {
    * Valid argument conditions: 1. filename is neither null nor empty string 2.
    * file exists.
    * 
-   * @param filename name of file to load commands from.
+   * @param filename name of file to save the changes in the SocialNetwork.
    * 
    * @throws IllegalNullArgumentException if argument is null or empty string.
-   * @throws FileNotFoundException        if file does not exist.
+   * @throws IOException if there is an error in saving changes to a file.
    */
   @Override
-  public void saveToFile(File filename) throws IllegalNullArgumentException,
-      FileNotFoundException {
-    // TODO Auto-generated method stub
-
+  public void saveToFile(String filename) throws IllegalNullArgumentException,
+      IOException {
+    if (filename == null || filename.length() == 0) {
+      throw new IllegalNullArgumentException();
+    }
+    File file = new File(filename);
+    BufferedWriter out = new BufferedWriter(new FileWriter(file));
+    for (String command : this.commands) {
+      out.write(command + "\n");
+    }
+    out.close();
   }
+
+  /**
+   * Gets the central user of the SocialNetwork.
+   * 
+   * @return the central user.
+   */
+  @Override
+  public User getCentralUser() {
+    return this.centralUser;
+  }
+
+  /**
+   * Sets the central user of the SocialNetwork.
+   * 
+   * @throws IllegalNullArgumentException if argument is null or empty string.
+   * @throws UserNotFoundException        if username does not exist in the
+   *                                      social network.
+   * 
+   */
+  @Override
+  public void setCentralUser(String username)
+      throws IllegalNullArgumentException, UserNotFoundException {
+    if (username == null || username.length() == 0) {
+      throw new IllegalNullArgumentException();
+    }
+    // Sets the user while checking for UserNotFoundException
+    this.centralUser = this.graph.getUser(username);
+    // Add command to list of commands
+    this.commands.add("s " + username);
+  }
+
 }
