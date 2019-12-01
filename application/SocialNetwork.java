@@ -252,11 +252,38 @@ public class SocialNetwork implements SocialNetworkADT {
     // TODO Auto-generated method stub
     return null;
   }
-
+  
+  /**
+   * Build graphs of connected components and return a set of those graphs.
+   * 
+   * @return set of graphs of connected of components.
+   */
   @Override
   public Set<Graph> getConnectedComponents() {
-    // TODO Auto-generated method stub
-    return null;
+    Set<Graph> graphs = new HashSet<Graph>();
+    Set<User> users = this.graph.getAllVertices();
+    for (User user : users) {
+      try {
+        Set<User> neighbors = this.graph.getNeighbors(user);
+        Graph graphForUser = new Graph();
+        for (User neighbor : neighbors) {
+          try {
+            graphForUser.addEdge(user, neighbor);
+          } catch (DuplicateFriendshipException e) {
+            // DuplicateFriendshipException should not be thrown
+            e.printStackTrace();
+          }
+          graphs.add(graphForUser);
+        }
+      } catch (IllegalNullArgumentException e) {
+        // IllegalNullArgumentException should not be thrown
+        e.printStackTrace();
+      } catch (UserNotFoundException e) {
+        // UserNotFoundException should not be thrown
+        e.printStackTrace();
+      }
+    }
+    return graphs;
   }
 
   @Override

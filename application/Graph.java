@@ -223,7 +223,7 @@ public class Graph implements GraphADT {
   }
 
   /**
-   * Get all the vertices/users that connect to the give vertex/user.
+   * Get all the vertices/users that connect to the given vertex/user.
    *
    * If vertex/user is null, throw IllegalNullArgumentException. If vertex/user
    * does not exist in the graph, throw UserNotFoundException.
