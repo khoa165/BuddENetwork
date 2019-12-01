@@ -285,14 +285,42 @@ public class SocialNetwork implements SocialNetworkADT {
     }
     return graphs;
   }
-
+  
+  /**
+   * Load commands from file to construct social network.
+   *
+   * If filename is null or empty string, throw IllegalNullArgumentException. If
+   * file is not found, throw FileNotFoundException.
+   * 
+   * Valid argument conditions: 1. filename is neither null nor empty string 2.
+   * file exists.
+   * 
+   * @param filename name of file to load commands from.
+   * 
+   * @throws IllegalNullArgumentException if argument is null or empty string.
+   * @throws FileNotFoundException        if file does not exist.
+   */
   @Override
   public void loadFromFile(File filename) throws IllegalNullArgumentException,
       FileNotFoundException {
-    // TODO Auto-generated method stub
+    
 
   }
-
+  
+  /**
+   * Save changes to the graph as commands to file.
+   *
+   * If filename is null or empty string, throw IllegalNullArgumentException. If
+   * file is not found, throw FileNotFoundException.
+   * 
+   * Valid argument conditions: 1. filename is neither null nor empty string 2.
+   * file exists.
+   * 
+   * @param filename name of file to load commands from.
+   * 
+   * @throws IllegalNullArgumentException if argument is null or empty string.
+   * @throws FileNotFoundException        if file does not exist.
+   */
   @Override
   public void saveToFile(File filename) throws IllegalNullArgumentException,
       FileNotFoundException {

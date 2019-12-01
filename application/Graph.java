@@ -46,8 +46,8 @@ public class Graph implements GraphADT {
    *                                      graph.
    */
   @Override
-  public void addVertex(User user)
-      throws IllegalNullArgumentException, DuplicateUserException {
+  public void addVertex(User user) throws IllegalNullArgumentException,
+      DuplicateUserException {
     if (user == null) {
       throw new IllegalNullArgumentException();
     }
@@ -78,13 +78,13 @@ public class Graph implements GraphADT {
    *                                      graph.
    */
   @Override
-  public void removeVertex(User user)
-      throws IllegalNullArgumentException, UserNotFoundException {
+  public void removeVertex(User user) throws IllegalNullArgumentException,
+      UserNotFoundException {
     if (user == null) {
       throw new IllegalNullArgumentException();
     }
-    if (!this.vertices.contains(user)
-        || !this.userNames.contains(user.getName())) {
+    if (!this.vertices.contains(user) || !this.userNames.contains(user
+        .getName())) {
       throw new UserNotFoundException();
     }
     // Loop through all friends of given user, remove given user from his/her
@@ -128,21 +128,21 @@ public class Graph implements GraphADT {
     if (user1 == null || user2 == null) {
       throw new IllegalNullArgumentException();
     }
-    if (user1.getFriends().contains(user2)
-        || user2.getFriends().contains(user1)) {
+    if (user1.getFriends().contains(user2) || user2.getFriends().contains(
+        user1)) {
       throw new DuplicateFriendshipException();
     }
     // Add user1 to the graph if user1 does not exist yet.
-    if (!this.vertices.contains(user1)
-        && !this.userNames.contains(user1.getName())) {
+    if (!this.vertices.contains(user1) && !this.userNames.contains(user1
+        .getName())) {
       this.vertices.add(user1);
       this.userNames.add(user1.getName());
       this.mapNameToUser.put(user1.getName(), user1);
       this.order++; // Increment number of vertices.
     }
     // Add user2 to the graph if user2 does not exist yet.
-    if (!this.vertices.contains(user2)
-        && !this.userNames.contains(user2.getName())) {
+    if (!this.vertices.contains(user2) && !this.userNames.contains(user2
+        .getName())) {
       this.vertices.add(user2);
       this.userNames.add(user2.getName());
       this.mapNameToUser.put(user2.getName(), user2);
@@ -181,16 +181,15 @@ public class Graph implements GraphADT {
     if (user1 == null || user2 == null) {
       throw new IllegalNullArgumentException();
     }
-    if (!this.vertices.contains(user1)
-        || !this.userNames.contains(user1.getName())
-        || !this.vertices.contains(user2)
-        || !this.userNames.contains(user2.getName())) {
+    if (!this.vertices.contains(user1) || !this.userNames.contains(user1
+        .getName()) || !this.vertices.contains(user2) || !this.userNames
+            .contains(user2.getName())) {
       throw new UserNotFoundException();
     }
     // If both users exist in each other friend list, then remove them from each
     // other's friend list, then decrement size.
-    if (user1.getFriends().contains(user2)
-        && user2.getFriends().contains(user1)) {
+    if (user1.getFriends().contains(user2) && user2.getFriends().contains(
+        user1)) {
       user1.getFriends().remove(user2);
       user2.getFriends().remove(user1);
       this.size--;
@@ -214,8 +213,8 @@ public class Graph implements GraphADT {
    *                                      existing vertex/user.
    */
   @Override
-  public User getUser(String name)
-      throws IllegalNullArgumentException, UserNotFoundException {
+  public User getUser(String name) throws IllegalNullArgumentException,
+      UserNotFoundException {
     if (name == null) {
       throw new IllegalNullArgumentException();
     }
@@ -239,13 +238,13 @@ public class Graph implements GraphADT {
    *                                      graph.
    */
   @Override
-  public Set<User> getNeighbors(User user)
-      throws IllegalNullArgumentException, UserNotFoundException {
+  public Set<User> getNeighbors(User user) throws IllegalNullArgumentException,
+      UserNotFoundException {
     if (user == null) {
       throw new IllegalNullArgumentException();
     }
-    if (!this.vertices.contains(user)
-        || !this.userNames.contains(user.getName())) {
+    if (!this.vertices.contains(user) || !this.userNames.contains(user
+        .getName())) {
       throw new UserNotFoundException();
     }
     return user.getFriends();
