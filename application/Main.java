@@ -3,6 +3,7 @@ package application;
 import java.util.List;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -15,11 +16,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -94,23 +98,26 @@ public class Main extends Application {
 		newUserName.setPromptText("Please Enter a Name");
 		addUserHBox.getChildren().addAll(newUser, newUserName);
 		addUserHBox.setSpacing(10);
-		
+
 		// create hbox for removing user
 		HBox removeUserHBox = new HBox();
 		Button removeUser = new Button("Remove User");
-		// List<String> allUsersList = List.of("Harry", "Kenny", "Saniya", "Shannon");
-		// ComboBox<String> removeUserName = new ComboBox<String>(FXCollections.observableList(allUsersList));
+		// List<String> allUsersList = List.of("Harry", "Kenny", "Saniya",
+		// "Shannon");
+		// ComboBox<String> removeUserName = new
+		// ComboBox<String>(FXCollections.observableList(allUsersList));
 		TextField removeUserName = new TextField();
 		removeUserName.setPromptText("Please Enter a Name");
 		removeUserHBox.getChildren().addAll(removeUser, removeUserName);
 		removeUserHBox.setSpacing(29);
-		
+
 		// create vbox for user functions
 		VBox userVBox = new VBox();
 		userVBox.getChildren().addAll(addUserHBox, removeUserHBox);
 		userVBox.setSpacing(10);
-		
-		// create hbox for adding BuddE connection between central user and other user
+
+		// create hbox for adding BuddE connection between central user and
+		// other user
 		HBox addBuddEHBox = new HBox();
 		// Label addBuddECentralUser = new Label("Harry");
 		Button addBuddE = new Button("Add BuddE");
@@ -118,8 +125,9 @@ public class Main extends Application {
 		addBuddEOtherUser.setPromptText("Please Enter a Name");
 		addBuddEHBox.getChildren().addAll(addBuddE, addBuddEOtherUser);
 		addBuddEHBox.setSpacing(31);
-		
-		// create hbox for removing BuddE connection between central user and other user
+
+		// create hbox for removing BuddE connection between central user and
+		// other user
 		HBox removeBuddEHBox = new HBox();
 		// Label removeBuddECentralUser = new Label("Harry");
 		Button removeBuddE = new Button("Remove BuddE");
@@ -127,50 +135,39 @@ public class Main extends Application {
 		removeBuddEOtherUser.setPromptText("Please Enter a Name");
 		removeBuddEHBox.getChildren().addAll(removeBuddE, removeBuddEOtherUser);
 		removeBuddEHBox.setSpacing(10);
-		
+
 		// create vbox for BuddE functions
 		VBox buddEVBox = new VBox();
 		buddEVBox.getChildren().addAll(addBuddEHBox, removeBuddEHBox);
 		buddEVBox.setSpacing(10);
-		
+
 		// create separator between user and buddE functions
 		Separator separator1 = new Separator();
-		//separator1.setMaxWidth(150);
+		// separator1.setMaxWidth(150);
 		
+		// create separator between buddE functions and mutual BuddEs/friends
+		Separator separator2 = new Separator();
+
 		// Add vbox with hboxes in it to right pane
 		VBox rightVBox = new VBox();
-		rightVBox.getChildren().addAll(userVBox, separator1, buddEVBox);
+		rightVBox.getChildren().addAll(userVBox, separator1, buddEVBox, separator2);
 		rightVBox.setSpacing(20);
-		
+
 		// set right pane
 		root.setRight(rightVBox);
 
-//		// Add accordion pane to right pane
-//		TitledPane addNewUserPane = new TitledPane("Add New User",
-//				new TextField("Enter a Name"));
-//		TitledPane addNewBuddEPane = new TitledPane("Add BuddE Friendship",
-//				new TextField("Enter a Name"));
-//		TitledPane removeUserPane = new TitledPane("Remove User",
-//				new TextField("Enter a Name"));
-//		TitledPane removeBuddEPane = new TitledPane("Remove BuddE Friendship",
-//				new TextField("Enter a Name"));
-//		TitledPane mutualFriendsPane = new TitledPane("University of Michigan",
-//				new Button("Wolverines"));
-//		Accordion accordion = new Accordion();
-//		accordion.getPanes().addAll(addNewUserPane, addNewBuddEPane,
-//				removeUserPane, removeBuddEPane, mutualFriendsPane);
-//		root.setRight(accordion);
 
 		// Add done button to bottom pane
 		Text status = new Text("Status: ");
 		root.setBottom(status);
 		Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-			// Add the stuff and set the primary stage
-			primaryStage.setTitle(APP_TITLE);
-			primaryStage.setScene(mainScene);
-			primaryStage.show();
+		// Add the stuff and set the primary stage
+		primaryStage.setTitle(APP_TITLE);
+		primaryStage.setScene(mainScene);
+		primaryStage.show();
 	}
+	
 
 	/**
 	 * @param args
@@ -178,4 +175,5 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+	
 }
