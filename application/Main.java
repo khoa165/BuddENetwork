@@ -131,12 +131,64 @@ public class Main extends Application {
     // Add title to top of the root pane    
     root.setTop(new Label(APP_TITLE));
     
-    // Add image to hbox to go in top pane
-    VBox logoVBox = new VBox();
+    // Add image to label to go in top pane
+    Label logo = new Label();
     Image pic = new Image("buddENetworkLogo.png");
     ImageView seeLogo = new ImageView();
     seeLogo.setImage(pic);
-    logoVBox.getChildren().addAll(seeLogo);
+    logo.setGraphic(seeLogo);
+    //logoVBox.getChildren().addAll(seeLogo);
+    //root.setLeft(logo);
+    
+    // new vbox
+    VBox newVBox = new VBox();
+    Image newPic = new Image("New.png");
+    ImageView seeNew = new ImageView();
+    seeNew.setImage(newPic);
+    Button newIcon = new Button();
+    newIcon.setGraphic(seeNew);
+    Label newLabel = new Label("New");
+    newVBox.getChildren().addAll(newIcon, newLabel);
+    
+    // open vbox
+    VBox openVBox = new VBox();
+    Image openPic = new Image("Open.png");
+    ImageView seeOpen = new ImageView();
+    seeOpen.setImage(openPic);
+    Button open = new Button();
+    open.setGraphic(seeOpen);
+    Label openLabel = new Label("Open");
+    openVBox.getChildren().addAll(open, openLabel);
+    
+    // undo vbox
+    VBox undoVBox = new VBox();
+    Image undoPic = new Image("Undo.png");
+    ImageView seeUndo = new ImageView();
+    seeUndo.setImage(undoPic);
+    Button undo = new Button();
+    undo.setGraphic(seeUndo);
+    Label undoLabel = new Label("Undo");
+    undoVBox.getChildren().addAll(undo, undoLabel);
+    
+    // redo vbox
+    VBox redoVBox = new VBox();
+    Image redoPic = new Image("Redo.png");
+    ImageView seeRedo = new ImageView();
+    seeRedo.setImage(redoPic);
+    Button redo = new Button();
+    redo.setGraphic(seeRedo);
+    Label redoLabel = new Label("Redo");
+    redoVBox.getChildren().addAll(redo, redoLabel);
+    
+    // save vbox
+    VBox saveVBox = new VBox();
+    Image savePic = new Image("Save.png");
+    ImageView seeSave = new ImageView();
+    seeSave.setImage(savePic);
+    Button save = new Button();
+    save.setGraphic(seeSave);
+    Label saveLabel = new Label("Save");
+    saveVBox.getChildren().addAll(save, saveLabel);
       
     // Add vbox for setting central user
     VBox setCentralUser = new VBox();
@@ -147,22 +199,22 @@ public class Main extends Application {
     
     // create tool bar of functions for top pane
     ToolBar toolBar = new ToolBar(
-    	     new Button("New"),
-    	     new Button("Open"),
+    	     newVBox,
+    	     openVBox,
     	     new Separator(),
-    	     new Button("Undo"),
-    	     new Button("Redo"),
+    	     undoVBox,
+    	     redoVBox,
     	     new Separator(),
-    	     new Button("Save"),
+    	     saveVBox,
     	     new Separator(),
     	     setCentralUser
     	 );
     
     // Add hbox with vboxes in it to top pane
     HBox topHBox = new HBox();
-    topHBox.getChildren().addAll(toolBar);
+    topHBox.getChildren().addAll(logo, toolBar);
     topHBox.setSpacing(10);
-    topHBox.setStyle("-fx-background-color: blue");
+    //topHBox.setStyle("-fx-background-color: blue");
 
     // set top pane
     root.setTop(topHBox);
