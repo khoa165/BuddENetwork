@@ -22,7 +22,7 @@
   + Harry defined all methods for SocialNetwork data structure in [SocialNetworkADT.java](application/SocialNetworkADT.java).
 - December 1st:
   + Kenny implemented all required methods for Social Network in [SocialNetwork.java](application/SocialNetwork.java).
-  + Shannon created GUI draft -> Need to still adjust size of images in GUI for readability in top pane tool bar
+  + Shannon created GUI draft (based on class example) -> Need to still adjust size of images in GUI for readability in top pane tool bar
   + Saniya created method to visualize Mutual BuddEs in GUI
 
 #### ***Upcoming goals:***
