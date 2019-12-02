@@ -115,7 +115,11 @@ public class Main extends Application {
 		VBox userVBox = new VBox();
 		userVBox.getChildren().addAll(addUserHBox, removeUserHBox);
 		userVBox.setSpacing(10);
-
+		
+	      // create separator between user and buddE functions
+        Separator separator1 = new Separator();
+        // separator1.setMaxWidth(150);
+		
 		// create hbox for adding BuddE connection between central user and
 		// other user
 		HBox addBuddEHBox = new HBox();
@@ -141,16 +145,45 @@ public class Main extends Application {
 		buddEVBox.getChildren().addAll(addBuddEHBox, removeBuddEHBox);
 		buddEVBox.setSpacing(10);
 
-		// create separator between user and buddE functions
-		Separator separator1 = new Separator();
-		// separator1.setMaxWidth(150);
 		
-		// create separator between buddE functions and mutual BuddEs/friends
-		Separator separator2 = new Separator();
+        // create separator between buddE functions and mutual BuddEs/friends
+        Separator separator2 = new Separator();
+		
+        
+        
+        
+        
+		
+		// ---------------------- Mutual BuddEs code ------------------------------
+        ListView<String> list = new ListView<>();
+        ObservableList<String> mutualFriends = FXCollections
+                .observableList(List.of("Saniya", "Shannon"));
 
+        VBox mutualBuddEsVBox = new VBox();
+        
+        Label mutualBuddEsTitle = new Label("Mutual BuddEs");
+        
+        Scene scene = new Scene(mutualBuddEsVBox, 100, 100);
+        // stage.setScene(scene);
+        // stage.setTitle("Mutual BuddEs");
+        mutualBuddEsVBox.getChildren().addAll(list);
+        VBox.setVgrow(list, Priority.ALWAYS);
+
+        list.setItems(mutualFriends);
+
+        list.setCellFactory((ListView<String> l) -> new addFriendToCell());
+
+        //stage.show();
+        
+        
+        // ------------------End Mutual BuddEs code -------------------------------
+        
+        
+        
 		// Add vbox with hboxes in it to right pane
 		VBox rightVBox = new VBox();
-		rightVBox.getChildren().addAll(userVBox, separator1, buddEVBox, separator2);
+		rightVBox.getChildren().addAll(userVBox, separator1, buddEVBox, separator2, mutualBuddEsTitle, mutualBuddEsVBox);
+		//rightVBox.getChildren().addAll(userVBox, separator1, buddEVBox, separator2);
 		rightVBox.setSpacing(20);
 
 		// set right pane
@@ -168,6 +201,23 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 	
+	/**
+	 * Please note that this class allows us to view the list of mutual BuddEs,
+	 * between the central user and one of his/her buddEs.  
+	 * @author 
+	 *
+	 */
+	static class addFriendToCell extends ListCell<String> {
+      @Override
+      public void updateItem(String item, boolean empty) {
+          super.updateItem(item, empty);
+          Label friendNameLabel;
+          if (item != null) {
+              friendNameLabel = new Label(item);
+              setGraphic(friendNameLabel);
+          }
+      }
+  }
 
 	/**
 	 * @param args
