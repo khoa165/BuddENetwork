@@ -85,8 +85,8 @@ public class Main extends Application {
   // NOTE: this.getParameters().getRaw() will get these also
   private List<String> args;
 
-  private static final int WINDOW_WIDTH = 800;
-  private static final int WINDOW_HEIGHT = 700;
+  private static final int WINDOW_WIDTH = 1400;
+  private static final int WINDOW_HEIGHT = 800;
   private static final int CANVAS_WIDTH = 400;
   private static final int CANVAS_HEIGHT = 200;
   private static final String APP_TITLE = "BuddE Network";
