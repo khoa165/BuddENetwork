@@ -197,6 +197,17 @@ public class Main extends Application {
     userOptions.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
     setCentralUser.getChildren().addAll(set, userOptions);
     
+    // create custom search field
+    HBox searchHBox = new HBox();
+    TextField searchField = new TextField();
+    searchField.setPromptText("Search for User");
+    Label searchLabel = new Label();
+    Image searchPic = new Image("Search.png");
+    ImageView seeSearch = new ImageView();
+    seeSearch.setImage(searchPic);
+    searchLabel.setGraphic(seeSearch);
+    searchHBox.getChildren().addAll(searchLabel, searchField);
+    
     // create tool bar of functions for top pane
     ToolBar toolBar = new ToolBar(
     	     newVBox,
@@ -207,7 +218,9 @@ public class Main extends Application {
     	     new Separator(),
     	     saveVBox,
     	     new Separator(),
-    	     setCentralUser
+    	     setCentralUser,
+    	     new Separator(),
+    	     searchHBox
     	 );
     
     // Add hbox with vboxes in it to top pane
