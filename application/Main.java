@@ -72,6 +72,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -85,7 +86,7 @@ public class Main extends Application {
   private List<String> args;
 
   private static final int WINDOW_WIDTH = 800;
-  private static final int WINDOW_HEIGHT = 500;
+  private static final int WINDOW_HEIGHT = 700;
   private static final int CANVAS_WIDTH = 400;
   private static final int CANVAS_HEIGHT = 200;
   private static final String APP_TITLE = "BuddE Network";
@@ -121,6 +122,8 @@ public class Main extends Application {
     gc.fillOval(250 - 15, 50 - 15, 30, 30);
 
     centerVBox.getChildren().add(canvas);
+    // set background color of center pane
+    centerVBox.setStyle("-fx-background-color: white");
 
     // Main layout is Border Pane example (top,left,center,right,bottom)
     BorderPane root = new BorderPane();
@@ -157,8 +160,9 @@ public class Main extends Application {
     
     // Add hbox with vboxes in it to top pane
     HBox topHBox = new HBox();
-    topHBox.getChildren().addAll(logoVBox, toolBar);
+    topHBox.getChildren().addAll(toolBar);
     topHBox.setSpacing(10);
+    topHBox.setStyle("-fx-background-color: blue");
 
     // set top pane
     root.setTop(topHBox);
@@ -171,7 +175,15 @@ public class Main extends Application {
 //    ComboBox<String> comBox = new ComboBox<String>();
 //    comBox.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
 //    root.setLeft(comBox);
+    
+    // create separator between user and buddE functions
+    Separator separator1 = new Separator();
 
+    // Title for BuddEs section
+    Label userSettingsTitle = new Label("User Settings");
+    userSettingsTitle.setFont(Font.font (16));
+    userSettingsTitle.setTextFill(Color.BLUE);
+    
     // create hbox for add new user
     HBox addUserHBox = new HBox();
     Button newUser = new Button("Create New User");
@@ -194,12 +206,17 @@ public class Main extends Application {
 
     // create vbox for user functions
     VBox userVBox = new VBox();
-    userVBox.getChildren().addAll(addUserHBox, removeUserHBox);
+    userVBox.getChildren().addAll(userSettingsTitle, addUserHBox, removeUserHBox);
     userVBox.setSpacing(10);
 
     // create separator between user and buddE functions
-    Separator separator1 = new Separator();
+    Separator separator2 = new Separator();
     // separator1.setMaxWidth(150);
+    
+    // Title for BuddEs section
+    Label buddESettingsTitle = new Label("BuddE Settings");
+    buddESettingsTitle.setFont(Font.font (16));
+    buddESettingsTitle.setTextFill(Color.BLUE);
 
     // create hbox for adding BuddE connection between central user and
     // other user
@@ -223,15 +240,17 @@ public class Main extends Application {
 
     // create vbox for BuddE functions
     VBox buddEVBox = new VBox();
-    buddEVBox.getChildren().addAll(addBuddEHBox, removeBuddEHBox);
+    buddEVBox.getChildren().addAll(buddESettingsTitle, addBuddEHBox, removeBuddEHBox);
     buddEVBox.setSpacing(10);
 
 
     // create separator between buddE functions and mutual BuddEs/friends
-    Separator separator2 = new Separator();
+    Separator separator3 = new Separator();
     
     // Title for Mutual BuddEs section
     Label mutualBuddEsTitle = new Label("Mutual BuddEs");
+    mutualBuddEsTitle.setFont(Font.font (16));
+    mutualBuddEsTitle.setTextFill(Color.BLUE);
     
     // create hbox with button and text field for Mutual BuddEs section
     HBox mutualBuddEsHBox = new HBox();
@@ -264,11 +283,13 @@ public class Main extends Application {
 
     // ------------------End Mutual BuddEs code -------------------------------
 
+    // create separator between user and buddE functions
+    Separator separator4 = new Separator();
     
     // Add vbox with hboxes in it to right pane
     VBox rightVBox = new VBox();
-    rightVBox.getChildren().addAll(userVBox, separator1, buddEVBox, separator2,
-        mutualBuddEsTitle, mutualBuddEsHBox, mutualBuddEsVBox);
+    rightVBox.getChildren().addAll(separator1, userVBox, separator2, buddEVBox, separator3,
+        mutualBuddEsTitle, mutualBuddEsHBox, mutualBuddEsVBox, separator4);
     rightVBox.setSpacing(10);
 
     // set right pane
@@ -276,12 +297,20 @@ public class Main extends Application {
 
 
     // Add done button to bottom pane
-    Text status = new Text("Status: ");
-    root.setBottom(status);
+    HBox statusHBox = new HBox();
+    Label status = new Label("STATUS: ");
+    status.setFont(Font.font ("Calibri", FontWeight.BOLD, 24));
+    status.setTextFill(Color.BLUE);
+    TextField statusMessage = new TextField();
+    statusHBox.getChildren().addAll(status, statusMessage);
+    //statusHBox.setStyle("-fx-background-color: blue");
+    
+    root.setBottom(statusHBox);
     Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Add the stuff and set the primary stage
     primaryStage.setTitle(APP_TITLE);
+    primaryStage.getIcons().add(new Image("buddENetworkIcon.png"));
     primaryStage.setScene(mainScene);
     primaryStage.show();
   }
