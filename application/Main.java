@@ -84,7 +84,7 @@ public class Main extends Application {
   private List<String> args;
 
   private static final int WINDOW_WIDTH = 800;
-  private static final int WINDOW_HEIGHT = 400;
+  private static final int WINDOW_HEIGHT = 500;
   private static final int CANVAS_WIDTH = 400;
   private static final int CANVAS_HEIGHT = 200;
   private static final String APP_TITLE = "BuddE Network";
@@ -192,16 +192,26 @@ public class Main extends Application {
 
     // create separator between buddE functions and mutual BuddEs/friends
     Separator separator2 = new Separator();
-
-
+    
+    // Title for Mutual BuddEs section
+    Label mutualBuddEsTitle = new Label("Mutual BuddEs");
+    
+    // create hbox with button and text field for Mutual BuddEs section
+    HBox mutualBuddEsHBox = new HBox();
+    // Label removeBuddECentralUser = new Label("Harry");
+    Button findMutualBuddEs = new Button("Find Mutual BuddEs");
+    TextField otherUserName = new TextField();
+    otherUserName.setPromptText("Please Enter a Name");
+    mutualBuddEsHBox.getChildren().addAll(findMutualBuddEs, otherUserName);
+    mutualBuddEsHBox.setSpacing(10);
+    
+    
     // ---------------------- Mutual BuddEs code ------------------------------
     ListView<String> list = new ListView<>();
     ObservableList<String> mutualFriends =
         FXCollections.observableList(List.of("Saniya", "Shannon"));
 
     VBox mutualBuddEsVBox = new VBox();
-
-    Label mutualBuddEsTitle = new Label("Mutual BuddEs");
 
     Scene scene = new Scene(mutualBuddEsVBox, 100, 100);
     // stage.setScene(scene);
@@ -217,12 +227,12 @@ public class Main extends Application {
 
     // ------------------End Mutual BuddEs code -------------------------------
 
+    
     // Add vbox with hboxes in it to right pane
     VBox rightVBox = new VBox();
     rightVBox.getChildren().addAll(userVBox, separator1, buddEVBox, separator2,
-        mutualBuddEsTitle, mutualBuddEsVBox);
-    // rightVBox.getChildren().addAll(userVBox, separator1, buddEVBox, separator2);
-    rightVBox.setSpacing(20);
+        mutualBuddEsTitle, mutualBuddEsHBox, mutualBuddEsVBox);
+    rightVBox.setSpacing(10);
 
     // set right pane
     root.setRight(rightVBox);
