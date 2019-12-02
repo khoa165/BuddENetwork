@@ -65,6 +65,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -123,17 +124,53 @@ public class Main extends Application {
 
     // Main layout is Border Pane example (top,left,center,right,bottom)
     BorderPane root = new BorderPane();
-
-    // Add title to top of the root pane
+    
+    // Add title to top of the root pane    
     root.setTop(new Label(APP_TITLE));
+    
+    // Add image to hbox to go in top pane
+    VBox logoVBox = new VBox();
+    Image pic = new Image("buddENetworkLogo.png");
+    ImageView seeLogo = new ImageView();
+    seeLogo.setImage(pic);
+    logoVBox.getChildren().addAll(seeLogo);
+      
+    // Add vbox for setting central user
+    VBox setCentralUser = new VBox();
+    Label set = new Label("Set Central User");
+    ComboBox<String> userOptions = new ComboBox<String>();
+    userOptions.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
+    setCentralUser.getChildren().addAll(set, userOptions);
+    
+    // create tool bar of functions for top pane
+    ToolBar toolBar = new ToolBar(
+    	     new Button("New"),
+    	     new Button("Open"),
+    	     new Separator(),
+    	     new Button("Undo"),
+    	     new Button("Redo"),
+    	     new Separator(),
+    	     new Button("Save"),
+    	     new Separator(),
+    	     setCentralUser
+    	 );
+    
+    // Add hbox with vboxes in it to top pane
+    HBox topHBox = new HBox();
+    topHBox.getChildren().addAll(logoVBox, toolBar);
+    topHBox.setSpacing(10);
+
+    // set top pane
+    root.setTop(topHBox);
 
     // Add the vertical box to the center of the root pane
     root.setCenter(centerVBox);
-
+    
+    // TODO Do we want to add anything in the left pane?
     // Add ComboBox to left pane
-    ComboBox<String> comBox = new ComboBox<String>();
-    comBox.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
-    root.setLeft(comBox);
+//    ComboBox<String> comBox = new ComboBox<String>();
+//    comBox.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
+//    root.setLeft(comBox);
 
     // create hbox for add new user
     HBox addUserHBox = new HBox();
