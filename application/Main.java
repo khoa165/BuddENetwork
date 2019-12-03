@@ -120,9 +120,8 @@ public class Main extends Application {
     HBox searchVBox = createSearchField();
 
     // Add vbox for setting central user
-    User centralUser = buddENetwork.getCentralUser();
-    Set<User> friends = buddENetwork.getFriends(centralUser.getName());
-    VBox setCentralUser = createDropdown(friends, "Set central user");
+    Set<User> users = buddENetwork.getAllUsers();
+    VBox setCentralUser = createDropdown(users, "Set central user");
 
     // create tool bar of functions for top pane
     ToolBar toolBar = new ToolBar(newVBox, openVBox, new Separator(), undoVBox,

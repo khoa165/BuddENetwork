@@ -43,40 +43,21 @@ public class SocialNetwork implements SocialNetworkADT {
    */
   public void addFriendship(String user1, String user2)
       throws IllegalNullArgumentException, DuplicateFriendshipException {
-    if (user1 == null || user2 == null) {
-      throw new IllegalNullArgumentException();
-    }
-    if (user1.length() == 0 || user2.length() == 0) {
+    if (user1 == null || user2 == null || user1.length() == 0
+        || user2.length() == 0) {
       throw new IllegalNullArgumentException();
     }
 
     // Get user instances
-    User userInstance1 = null;
-    User userInstance2 = null;
-    try {
-      userInstance1 = this.graph.getUser(user1);
-    } catch (UserNotFoundException e) {
+    User userInstance1 = this.graph.getUser(user1);
+    User userInstance2 = this.graph.getUser(user2);
+    if (userInstance1 == null) {
       userInstance1 = new User(user1);
-      try {
-        this.graph.addVertex(userInstance1);
-      } catch (DuplicateUserException e1) {
-        // DuplicateUserException should not be thrown
-        e1.printStackTrace();
-      }
     }
-    try {
-      userInstance2 = this.graph.getUser(user2);
-    } catch (UserNotFoundException e) {
+    if (userInstance2 == null) {
       userInstance2 = new User(user2);
-      try {
-        this.graph.addVertex(userInstance2);
-      } catch (DuplicateUserException e1) {
-        // DuplicateUserException should not be thrown
-        e1.printStackTrace();
-      }
     }
 
-    // Add edge in the graph while checking for a DuplicateFriendshipException
     this.graph.addEdge(userInstance1, userInstance2);
 
     // Add command to list of commands
@@ -136,8 +117,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws DuplicateUserException       if username already exists in social
    *                                      network.
    */
-  public void addUser(String username) throws IllegalNullArgumentException,
-      DuplicateUserException {
+  public void addUser(String username)
+      throws IllegalNullArgumentException, DuplicateUserException {
     // Create an instance of User from the username
     User newUser = new User(username);
     // Adds user while checking for IllegalNullArgumentException and
@@ -164,8 +145,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  public void removeUser(String username) throws IllegalNullArgumentException,
-      UserNotFoundException {
+  public void removeUser(String username)
+      throws IllegalNullArgumentException, UserNotFoundException {
     if (username == null || username.length() == 0) {
       throw new IllegalNullArgumentException();
     }
@@ -177,7 +158,7 @@ public class SocialNetwork implements SocialNetworkADT {
     // Add command to list of commands
     this.commands.add("r " + username);
   }
-  
+
   /**
    * Get all the users of the social network.
    *
@@ -324,8 +305,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws IllegalNullArgumentException if argument is null or empty string.
    * @throws FileNotFoundException        if file does not exist.
    */
-  public void loadFromFile(String filename) throws IllegalNullArgumentException,
-      FileNotFoundException {
+  public void loadFromFile(String filename)
+      throws IllegalNullArgumentException, FileNotFoundException {
     if (filename == null || filename.length() == 0) {
       throw new IllegalNullArgumentException();
     }
@@ -403,10 +384,11 @@ public class SocialNetwork implements SocialNetworkADT {
    * @param filename name of file to save the changes in the SocialNetwork.
    * 
    * @throws IllegalNullArgumentException if argument is null or empty string.
-   * @throws IOException if there is an error in saving changes to a file.
+   * @throws IOException                  if there is an error in saving changes
+   *                                      to a file.
    */
-  public void saveToFile(String filename) throws IllegalNullArgumentException,
-      IOException {
+  public void saveToFile(String filename)
+      throws IllegalNullArgumentException, IOException {
     if (filename == null || filename.length() == 0) {
       throw new IllegalNullArgumentException();
     }
