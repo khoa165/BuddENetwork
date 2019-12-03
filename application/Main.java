@@ -44,7 +44,9 @@
 
 package application;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -85,6 +87,7 @@ public class Main extends Application {
   // store any command-line arguments that were entered.
   // NOTE: this.getParameters().getRaw() will get these also
   private List<String> args;
+  private static SocialNetwork buddENetwork = new SocialNetwork();
 
   private static final int WINDOW_WIDTH = 1400;
   private static final int WINDOW_HEIGHT = 750;
@@ -105,15 +108,7 @@ public class Main extends Application {
 
     // ---------------------- Top Pane ----------------------------------------
     // Add image to label to go in top pane
-    Label logo = new Label();
-    Image logoPic = new Image("buddENetworkLogo.png");
-    ImageView logoView = new ImageView();
-    logoView.setImage(logoPic);
-    logoView.setFitHeight(75); // Set image height.
-    logoView.setPreserveRatio(true); // Keep original image ratio.
-    logo.setGraphic(logoView);
-    // logoVBox.getChildren().addAll(seeLogo);
-    // root.setLeft(logo);
+    ImageView logoView = createLogo();
 
     // Create New, Open file, Undo, Redo, Save file buttons.
     VBox newVBox = createNavbarButton("New.png", "New");
@@ -125,11 +120,9 @@ public class Main extends Application {
     HBox searchVBox = createSearchField();
 
     // Add vbox for setting central user
-    VBox setCentralUser = new VBox();
-    Label set = new Label("Set Central User");
-    ComboBox<String> userOptions = new ComboBox<String>();
-    userOptions.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
-    setCentralUser.getChildren().addAll(set, userOptions);
+    User centralUser = buddENetwork.getCentralUser();
+    Set<User> friends = buddENetwork.getFriends(centralUser.getName());
+    VBox setCentralUser = createDropdown(friends, "Set central user");
 
     // create tool bar of functions for top pane
     ToolBar toolBar = new ToolBar(newVBox, openVBox, new Separator(), undoVBox,
@@ -138,7 +131,7 @@ public class Main extends Application {
 
     // Add hbox with vboxes in it to top pane
     HBox topHBox = new HBox();
-    topHBox.getChildren().addAll(logo, toolBar);
+    topHBox.getChildren().addAll(logoView, toolBar);
     topHBox.setSpacing(10);
     // topHBox.setStyle("-fx-background-color: blue");
 
@@ -209,8 +202,6 @@ public class Main extends Application {
     // ---------------------- End of center pane ------------------------------
 
     // ---------------------- Right pane --------------------------------------
-
-
     // create separator between user and buddE functions
     Separator separator1 = new Separator();
 
@@ -300,7 +291,6 @@ public class Main extends Application {
 
     // set right pane
     root.setRight(rightVBox);
-
     // ---------------------- End of right pane -------------------------------
 
 
@@ -342,6 +332,15 @@ public class Main extends Application {
     }
   }
 
+  private static ImageView createLogo() {
+    Image logoPic = new Image("buddENetworkLogo.png");
+    ImageView logoView = new ImageView();
+    logoView.setImage(logoPic);
+    logoView.setFitHeight(75); // Set image height.
+    logoView.setPreserveRatio(true); // Keep original image ratio.
+    return logoView;
+  }
+
   private static VBox createNavbarButton(String iconFilename, String label) {
     VBox vBox = new VBox(); // Create a VBox.
     Image icon = new Image(iconFilename); // Import image.
@@ -370,6 +369,16 @@ public class Main extends Application {
     // Add search button and input field.
     hBox.getChildren().addAll(searchField, searchButton);
     return hBox;
+  }
+
+  private static VBox createDropdown(Set<User> users, String label) {
+    VBox vBox = new VBox(); // Create a VBox.
+    Label dropdownLabel = new Label(label); // Create a label for drop-down.
+    ComboBox<User> dropdown = new ComboBox<User>(); // Create a drop-down.
+    dropdown.getItems().addAll(users); // Add items to the drop-down.
+    // Add label and drop-down.
+    vBox.getChildren().addAll(dropdownLabel, dropdown);
+    return vBox;
   }
 
   private static HBox createInputField(String buttonLabel, int spacing) {

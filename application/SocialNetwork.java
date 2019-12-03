@@ -41,7 +41,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws DuplicateFriendshipException if friendship between the two users
    *                                      exists in the social network.
    */
-  @Override
   public void addFriendship(String user1, String user2)
       throws IllegalNullArgumentException, DuplicateFriendshipException {
     if (user1 == null || user2 == null) {
@@ -107,7 +106,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws FriendshipNotFoundException  if friendship does not exist in the
    *                                      social network.
    */
-  @Override
   public void removeFriendship(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException,
       FriendshipNotFoundException {
@@ -138,7 +136,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws DuplicateUserException       if username already exists in social
    *                                      network.
    */
-  @Override
   public void addUser(String username) throws IllegalNullArgumentException,
       DuplicateUserException {
     // Create an instance of User from the username
@@ -167,7 +164,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  @Override
   public void removeUser(String username) throws IllegalNullArgumentException,
       UserNotFoundException {
     if (username == null || username.length() == 0) {
@@ -180,6 +176,15 @@ public class SocialNetwork implements SocialNetworkADT {
 
     // Add command to list of commands
     this.commands.add("r " + username);
+  }
+  
+  /**
+   * Get all the users of the social network.
+   *
+   * @return a set of all users of the social network.
+   */
+  public Set<User> getAllUsers() {
+    return this.graph.getAllVertices();
   }
 
   /**
@@ -199,7 +204,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  @Override
   public Set<User> getFriends(String username)
       throws IllegalNullArgumentException, UserNotFoundException {
     // Gets the instance of the user while checking for
@@ -226,7 +230,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  @Override
   public Set<User> getMutualFriends(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException {
     // Get user instances checking for IllegalNullArgumentException and
@@ -268,7 +271,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  @Override
   public List<User> getShortestPath(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException {
     ArrayList<User> shortestPath = new ArrayList<User>();
@@ -281,7 +283,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * 
    * @return set of graphs of connected of components.
    */
-  @Override
   public Set<Graph> getConnectedComponents() {
     Set<Graph> graphs = new HashSet<Graph>();
     Set<User> users = this.graph.getAllVertices();
@@ -323,7 +324,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws IllegalNullArgumentException if argument is null or empty string.
    * @throws FileNotFoundException        if file does not exist.
    */
-  @Override
   public void loadFromFile(String filename) throws IllegalNullArgumentException,
       FileNotFoundException {
     if (filename == null || filename.length() == 0) {
@@ -405,7 +405,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws IllegalNullArgumentException if argument is null or empty string.
    * @throws IOException if there is an error in saving changes to a file.
    */
-  @Override
   public void saveToFile(String filename) throws IllegalNullArgumentException,
       IOException {
     if (filename == null || filename.length() == 0) {
@@ -424,7 +423,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * 
    * @return the central user.
    */
-  @Override
   public User getCentralUser() {
     return this.centralUser;
   }
@@ -437,7 +435,6 @@ public class SocialNetwork implements SocialNetworkADT {
    *                                      social network.
    * 
    */
-  @Override
   public void setCentralUser(String username)
       throws IllegalNullArgumentException, UserNotFoundException {
     if (username == null || username.length() == 0) {
