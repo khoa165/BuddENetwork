@@ -84,9 +84,6 @@ import javafx.stage.Stage;
  *
  */
 public class Main extends Application {
-  // store any command-line arguments that were entered.
-  // NOTE: this.getParameters().getRaw() will get these also
-  private List<String> args;
   private static SocialNetwork buddENetwork = new SocialNetwork();
 
   private static final int WINDOW_WIDTH = 1400;
@@ -97,16 +94,70 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    // save args example
-    args = this.getParameters().getRaw();
 
-    // Create a vertical box with Hello labels for each args
-    VBox centerVBox = new VBox();
 
-    // Main layout is Border Pane example (top,left,center,right,bottom)
+    // Main layout is Border Pane example (top, left, center, right, bottom).
     BorderPane root = new BorderPane();
 
     // ---------------------- Top Pane ----------------------------------------
+    HBox topHBox = setupTopBox();
+    root.setTop(topHBox); // Set top pane.
+
+    // ---------------------- Center pane -------------------------------------
+    VBox centerVBox = setupCenterBox();
+    root.setCenter(centerVBox); // Set center pane.
+
+    // ---------------------- Right pane --------------------------------------
+    VBox rightVBox = setupRightBox();
+    root.setRight(rightVBox); // Set right pane.
+
+    // TODO Do we want to add anything in the left pane?
+    // Add ComboBox to left pane
+    // ComboBox<String> comBox = new ComboBox<String>();
+    // comBox.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
+    // root.setLeft(comBox);
+
+
+
+    // Add done button to bottom pane
+    HBox statusHBox = new HBox();
+    Label status = new Label("STATUS: ");
+    status.setFont(Font.font("Calibri", FontWeight.BOLD, 24));
+    status.setTextFill(Color.BLUE);
+    TextField statusMessage = new TextField();
+    statusHBox.getChildren().addAll(status, statusMessage);
+    // statusHBox.setStyle("-fx-background-color: blue");
+
+    root.setBottom(statusHBox);
+    Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    // Add the stuff and set the primary stage
+    primaryStage.setTitle(APP_TITLE);
+    primaryStage.getIcons().add(new Image("buddENetworkIcon.png"));
+    primaryStage.setScene(mainScene);
+    primaryStage.show();
+  }
+
+  /**
+   * Please note that this class allows us to view the list of mutual BuddEs,
+   * between the central user and one of his/her buddEs.
+   * 
+   * @author
+   *
+   */
+  static class addFriendToCell extends ListCell<String> {
+    @Override
+    public void updateItem(String item, boolean empty) {
+      super.updateItem(item, empty);
+      Label friendNameLabel;
+      if (item != null) {
+        friendNameLabel = new Label(item);
+        setGraphic(friendNameLabel);
+      }
+    }
+  }
+
+  private static HBox setupTopBox() {
     // Add image to label to go in top pane
     ImageView logoView = createLogo();
 
@@ -129,17 +180,16 @@ public class Main extends Application {
         new Separator(), setCentralUser);
 
     // Add hbox with vboxes in it to top pane
-    HBox topHBox = new HBox();
-    topHBox.getChildren().addAll(logoView, toolBar);
-    topHBox.setSpacing(10);
+    HBox topBox = new HBox();
+    topBox.getChildren().addAll(logoView, toolBar);
+    topBox.setSpacing(10);
     // topHBox.setStyle("-fx-background-color: blue");
 
-    // set top pane
-    root.setTop(topHBox);
+    return topBox;
+  }
 
-    // ---------------------- End of top pane ---------------------------------
-
-    // ---------------------- Center pane -------------------------------------
+  private static VBox setupCenterBox() {
+    VBox centerBox = new VBox();
     // Add interactive graph to center pane
     // Creates a canvas that can draw shapes and text. Height: 550, width: 1000
     Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -156,9 +206,9 @@ public class Main extends Application {
     // Edge connecting Shannon and Kenny
     gc.strokeLine(500, 225, 500, 225 - 150);
     // Edge connecting Shannon and Saniya
-    gc.strokeLine(500, 225, 500 - 150, 225);
+    gc.strokeLine(500, 225, 500 - 150, 225 + 100);
     // Edge connecting Shannon and Harry
-    gc.strokeLine(500, 225, 500 + 150, 225);
+    gc.strokeLine(500, 225, 500 + 150, 225 + 100);
 
     // Draw circles (vertices) to represent people and lines connecting the
     // central user and their friends
@@ -174,33 +224,24 @@ public class Main extends Application {
     // Kenny's node
     gc.fillOval(500 - 20, 225 - 150 - 20, 40, 40);
     // Saniya's node
-    gc.fillOval(500 - 150 - 20, 225 - 20, 40, 40);
+    gc.fillOval(500 - 150 - 20, 225 + 100 - 20, 40, 40);
     // Harry's node
-    gc.fillOval(500 + 150 - 20, 225 - 20, 40, 40);
+    gc.fillOval(500 + 150 - 20, 225 + 100 - 20, 40, 40);
 
     // Add names other than the central user to circles (vertices)
     gc.setFill(Color.RED);
     gc.fillText("Kenny", 500 - 20, 225 - 150);
-    gc.fillText("Saniya", 500 - 150 - 20, 225);
-    gc.fillText("Harry", 500 + 150 - 20, 225);
+    gc.fillText("Saniya", 500 - 150 - 20, 225 + 100);
+    gc.fillText("Harry", 500 + 150 - 20, 225 + 100);
 
-    centerVBox.getChildren().add(canvas);
+    centerBox.getChildren().add(canvas);
     // set background color of center pane
-    centerVBox.setStyle("-fx-background-color: white");
+    centerBox.setStyle("-fx-background-color: white");
 
-    // Add the vertical box to the center of the root pane
-    root.setCenter(centerVBox);
+    return centerBox;
+  }
 
-    // TODO Do we want to add anything in the left pane?
-    // Add ComboBox to left pane
-    // ComboBox<String> comBox = new ComboBox<String>();
-    // comBox.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
-    // root.setLeft(comBox);
-
-
-    // ---------------------- End of center pane ------------------------------
-
-    // ---------------------- Right pane --------------------------------------
+  private static VBox setupRightBox() {
     // create separator between user and buddE functions
     Separator separator1 = new Separator();
 
@@ -282,53 +323,13 @@ public class Main extends Application {
     Separator separator4 = new Separator();
 
     // Add vbox with hboxes in it to right pane
-    VBox rightVBox = new VBox();
-    rightVBox.getChildren().addAll(separator1, userVBox, separator2, buddEVBox,
+    VBox rightBox = new VBox();
+    rightBox.getChildren().addAll(separator1, userVBox, separator2, buddEVBox,
         separator3, mutualBuddEsTitle, mutualBuddEsHBox, mutualBuddEsVBox,
         separator4);
-    rightVBox.setSpacing(10);
+    rightBox.setSpacing(10);
 
-    // set right pane
-    root.setRight(rightVBox);
-    // ---------------------- End of right pane -------------------------------
-
-
-    // Add done button to bottom pane
-    HBox statusHBox = new HBox();
-    Label status = new Label("STATUS: ");
-    status.setFont(Font.font("Calibri", FontWeight.BOLD, 24));
-    status.setTextFill(Color.BLUE);
-    TextField statusMessage = new TextField();
-    statusHBox.getChildren().addAll(status, statusMessage);
-    // statusHBox.setStyle("-fx-background-color: blue");
-
-    root.setBottom(statusHBox);
-    Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-    // Add the stuff and set the primary stage
-    primaryStage.setTitle(APP_TITLE);
-    primaryStage.getIcons().add(new Image("buddENetworkIcon.png"));
-    primaryStage.setScene(mainScene);
-    primaryStage.show();
-  }
-
-  /**
-   * Please note that this class allows us to view the list of mutual BuddEs,
-   * between the central user and one of his/her buddEs.
-   * 
-   * @author
-   *
-   */
-  static class addFriendToCell extends ListCell<String> {
-    @Override
-    public void updateItem(String item, boolean empty) {
-      super.updateItem(item, empty);
-      Label friendNameLabel;
-      if (item != null) {
-        friendNameLabel = new Label(item);
-        setGraphic(friendNameLabel);
-      }
-    }
+    return rightBox;
   }
 
   private static ImageView createLogo() {
