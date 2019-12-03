@@ -67,6 +67,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
@@ -169,7 +170,7 @@ public class Main extends Application {
     HBox searchVBox = createSearchField();
 
     // Add vbox for setting central user
-    Set<User> users = buddENetwork.getAllUsers();
+    Set<String> users = buddENetwork.getAllUsernames();
     VBox setCentralUser = createDropdown(users, "Set central user");
 
     // create tool bar of functions for top pane
@@ -348,9 +349,11 @@ public class Main extends Application {
     iconView.setPreserveRatio(true); // Keep original image ratio.
     Button iconButton = new Button(); // Create a button.
     iconButton.setGraphic(iconView); // Link button with image view.
+    iconButton.setOnAction(e -> createInputDialog());
     Label buttonLabel = new Label(label); // Label for button.
     vBox.getChildren().addAll(iconButton, buttonLabel); // Add button and label.
     return vBox;
+
   }
 
   private static HBox createSearchField() {
@@ -369,10 +372,10 @@ public class Main extends Application {
     return hBox;
   }
 
-  private static VBox createDropdown(Set<User> users, String label) {
+  private static VBox createDropdown(Set<String> users, String label) {
     VBox vBox = new VBox(); // Create a VBox.
     Label dropdownLabel = new Label(label); // Create a label for drop-down.
-    ComboBox<User> dropdown = new ComboBox<User>(); // Create a drop-down.
+    ComboBox<String> dropdown = new ComboBox<String>(); // Create a drop-down.
     dropdown.getItems().addAll(users); // Add items to the drop-down.
     // Add label and drop-down.
     vBox.getChildren().addAll(dropdownLabel, dropdown);
@@ -387,6 +390,12 @@ public class Main extends Application {
     hBox.getChildren().addAll(button, inputField);
     hBox.setSpacing(spacing);
     return hBox;
+  }
+
+  private static void createInputDialog() {
+    TextInputDialog dialog = new TextInputDialog("Please enter filename:");
+    dialog.setHeaderText("Provide valid file to load your social network.");
+    dialog.show();
   }
 
   /**

@@ -45,7 +45,6 @@ public class Graph implements GraphADT {
    * @throws DuplicateUserException       if vertex/user already exists in
    *                                      graph.
    */
-  @Override
   public void addVertex(User user) throws IllegalNullArgumentException,
       DuplicateUserException {
     if (user == null) {
@@ -77,7 +76,6 @@ public class Graph implements GraphADT {
    * @throws UserNotFoundException        if vertex/user does not exist in the
    *                                      graph.
    */
-  @Override
   public void removeVertex(User user) throws IllegalNullArgumentException,
       UserNotFoundException {
     if (user == null) {
@@ -122,7 +120,6 @@ public class Graph implements GraphADT {
    * @throws DuplicateFriendshipException if edge/friendship already exists in
    *                                      graph.
    */
-  @Override
   public void addEdge(User user1, User user2)
       throws IllegalNullArgumentException, DuplicateFriendshipException {
     if (user1 == null || user2 == null) {
@@ -174,7 +171,6 @@ public class Graph implements GraphADT {
    * @throws FriendshipNotFoundException  if edge/friendship does not exist in
    *                                      the graph.
    */
-  @Override
   public void removeEdge(User user1, User user2)
       throws IllegalNullArgumentException, UserNotFoundException,
       FriendshipNotFoundException {
@@ -210,7 +206,6 @@ public class Graph implements GraphADT {
    * 
    * @throws IllegalNullArgumentException if argument is null.
    */
-  @Override
   public User getUser(String name) throws IllegalNullArgumentException {
     if (name == null || name.length() == 0) {
       throw new IllegalNullArgumentException();
@@ -234,7 +229,6 @@ public class Graph implements GraphADT {
    * @throws UserNotFoundException        if vertex/user does not exist in the
    *                                      graph.
    */
-  @Override
   public Set<User> getNeighbors(User user) throws IllegalNullArgumentException,
       UserNotFoundException {
     if (user == null) {
@@ -252,9 +246,17 @@ public class Graph implements GraphADT {
    *
    * @return a set of all vertices/users of the graph.
    */
-  @Override
   public Set<User> getAllVertices() {
     return this.vertices;
+  }
+  
+  /**
+   * Get all the usernames of the graph.
+   *
+   * @return a set of all usernames of the graph.
+   */
+  public Set<String> getAllUsernames() {
+    return this.userNames;
   }
 
   /**
@@ -262,7 +264,6 @@ public class Graph implements GraphADT {
    * 
    * @return number of edges/friendships in the graph.
    */
-  @Override
   public int size() {
     return this.size;
   }
@@ -272,7 +273,6 @@ public class Graph implements GraphADT {
    * 
    * @return number of vertices/users in graph.
    */
-  @Override
   public int order() {
     return this.order;
   }
