@@ -212,7 +212,7 @@ public class Graph implements GraphADT {
    */
   @Override
   public User getUser(String name) throws IllegalNullArgumentException {
-    if (name == null) {
+    if (name == null || name.length() == 0) {
       throw new IllegalNullArgumentException();
     }
     return this.mapNameToUser.get(name);
