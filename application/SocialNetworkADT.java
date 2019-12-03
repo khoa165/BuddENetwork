@@ -90,7 +90,7 @@ public interface SocialNetworkADT {
    */
   public void removeUser(String username)
       throws IllegalNullArgumentException, UserNotFoundException;
-  
+
   /**
    * Get all the users of the social network.
    *
@@ -179,10 +179,11 @@ public interface SocialNetworkADT {
    * @param filename name of file to load commands from.
    * 
    * @throws IllegalNullArgumentException if argument is null or empty string.
-   * @throws FileNotFoundException        if file does not exist.
+   * @throws IOException                  if there is error happening while
+   *                                      reading file.
    */
   public void loadFromFile(String filename)
-      throws IllegalNullArgumentException, FileNotFoundException;
+      throws IllegalNullArgumentException, IOException;
 
   /**
    * Save changes to the graph as commands to file.
