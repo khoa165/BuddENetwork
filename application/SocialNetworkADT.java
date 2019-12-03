@@ -1,6 +1,5 @@
 package application;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -70,8 +69,8 @@ public interface SocialNetworkADT {
    * @throws DuplicateUserException       if username already exists in social
    *                                      network.
    */
-  public void addUser(String username) throws IllegalNullArgumentException,
-      DuplicateUserException;
+  public void addUser(String username)
+      throws IllegalNullArgumentException, DuplicateUserException;
 
   /**
    * Given a name, find corresponding user, remove user and all of his/her
@@ -89,8 +88,15 @@ public interface SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  public void removeUser(String username) throws IllegalNullArgumentException,
-      UserNotFoundException;
+  public void removeUser(String username)
+      throws IllegalNullArgumentException, UserNotFoundException;
+
+  /**
+   * Get all the users of the social network.
+   *
+   * @return a set of all users of the social network.
+   */
+  public Set<User> getAllUsers();
 
   /**
    * Given a name, find corresponding user, return all the friends with the
@@ -173,10 +179,11 @@ public interface SocialNetworkADT {
    * @param filename name of file to load commands from.
    * 
    * @throws IllegalNullArgumentException if argument is null or empty string.
-   * @throws FileNotFoundException        if file does not exist.
+   * @throws IOException                  if there is error happening while
+   *                                      reading file.
    */
-  public void loadFromFile(String filename) throws IllegalNullArgumentException,
-      FileNotFoundException;
+  public void loadFromFile(String filename)
+      throws IllegalNullArgumentException, IOException;
 
   /**
    * Save changes to the graph as commands to file.
@@ -194,8 +201,8 @@ public interface SocialNetworkADT {
    * @throws IOException                  if there is an error in saving changes
    *                                      to a file.
    */
-  public void saveToFile(String filename) throws IllegalNullArgumentException,
-      FileNotFoundException, IOException;
+  public void saveToFile(String filename)
+      throws IllegalNullArgumentException, FileNotFoundException, IOException;
 
   /**
    * Gets the central user of the SocialNetwork.
@@ -207,10 +214,17 @@ public interface SocialNetworkADT {
   /**
    * Sets the central user of the SocialNetwork.
    * 
+   * If username is null or empty string, throw IllegalNullArgumentException. If
+   * username does not exist in the social network, throw UserNotFoundException.
+   * 
+   * Valid argument conditions: 1. username is neither null nor empty string 2.
+   * username exists.
+   * 
+   * @param username name of the user to be set as central user.
+   * 
    * @throws IllegalNullArgumentException if argument is null or empty string.
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
-   * 
    */
   public void setCentralUser(String username)
       throws IllegalNullArgumentException, UserNotFoundException;

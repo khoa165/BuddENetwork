@@ -2,7 +2,7 @@ package application;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,46 +41,23 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws DuplicateFriendshipException if friendship between the two users
    *                                      exists in the social network.
    */
-  @Override
   public void addFriendship(String user1, String user2)
       throws IllegalNullArgumentException, DuplicateFriendshipException {
-    if (user1 == null || user2 == null) {
-      throw new IllegalNullArgumentException();
-    }
-    if (user1.length() == 0 || user2.length() == 0) {
-      throw new IllegalNullArgumentException();
-    }
+    // Get user instances, IllegalNullArgumentException may be thrown.
+    User userInstance1 = this.graph.getUser(user1);
+    User userInstance2 = this.graph.getUser(user2);
 
-    // Get user instances
-    User userInstance1 = null;
-    User userInstance2 = null;
-    try {
-      userInstance1 = this.graph.getUser(user1);
-    } catch (UserNotFoundException e) {
+    if (userInstance1 == null) { // User not found, create user.
       userInstance1 = new User(user1);
-      try {
-        this.graph.addVertex(userInstance1);
-      } catch (DuplicateUserException e1) {
-        // DuplicateUserException should not be thrown
-        e1.printStackTrace();
-      }
     }
-    try {
-      userInstance2 = this.graph.getUser(user2);
-    } catch (UserNotFoundException e) {
+    if (userInstance2 == null) { // User not found, create user.
       userInstance2 = new User(user2);
-      try {
-        this.graph.addVertex(userInstance2);
-      } catch (DuplicateUserException e1) {
-        // DuplicateUserException should not be thrown
-        e1.printStackTrace();
-      }
     }
 
-    // Add edge in the graph while checking for a DuplicateFriendshipException
+    // Add friendship, DuplicateFriendshipException may be thrown.
     this.graph.addEdge(userInstance1, userInstance2);
 
-    // Add command to list of commands
+    // Add command to list of commands.
     this.commands.add("a " + user1 + " " + user2);
   }
 
@@ -107,19 +84,21 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws FriendshipNotFoundException  if friendship does not exist in the
    *                                      social network.
    */
-  @Override
   public void removeFriendship(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException,
       FriendshipNotFoundException {
-    // Get user instances while checking for IllegalNullArgumentException and
-    // UserNotFoundException
+    // Get user instances, IllegalNullArgumentException may be thrown.
     User userInstance1 = this.graph.getUser(user1);
     User userInstance2 = this.graph.getUser(user2);
 
-    // Remove the friendship while checking for FriendshipNotFoundException
+    if (userInstance1 == null || userInstance2 == null) { // User not found.
+      throw new UserNotFoundException();
+    }
+
+    // Remove friendship, FriendshipNotFoundException may be thrown.
     this.graph.removeEdge(userInstance1, userInstance2);
 
-    // Add command to list of commands
+    // Add command to list of commands.
     this.commands.add("r " + user1 + " " + user2);
   }
 
@@ -138,16 +117,19 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws DuplicateUserException       if username already exists in social
    *                                      network.
    */
-  @Override
-  public void addUser(String username) throws IllegalNullArgumentException,
-      DuplicateUserException {
-    // Create an instance of User from the username
+  public void addUser(String username)
+      throws IllegalNullArgumentException, DuplicateUserException {
+    if (username == null || username.length() == 0) {
+      throw new IllegalNullArgumentException();
+    }
+
+    // Create an instance of User from the username.
     User newUser = new User(username);
-    // Adds user while checking for IllegalNullArgumentException and
-    // DuplicateUserException
+
+    // Adds user to the graph, DuplicateUserException may be thrown.
     this.graph.addVertex(newUser);
 
-    // Add command to list of commands
+    // Add command to list of commands.
     this.commands.add("a " + username);
   }
 
@@ -167,19 +149,28 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  @Override
-  public void removeUser(String username) throws IllegalNullArgumentException,
-      UserNotFoundException {
-    if (username == null || username.length() == 0) {
-      throw new IllegalNullArgumentException();
-    }
-    // Gets the instance of the user while checking for
-    // IllegalNullArgumentException and UserNotFoundException
+  public void removeUser(String username)
+      throws IllegalNullArgumentException, UserNotFoundException {
+    // Get user instance, IllegalNullArgumentException may be thrown.
     User userToRemove = this.graph.getUser(username);
-    this.graph.removeVertex(userToRemove);
 
-    // Add command to list of commands
+    if (userToRemove == null) { // User not found.
+      throw new UserNotFoundException();
+    } else { // User found.
+      this.graph.removeVertex(userToRemove);
+    }
+
+    // Add command to list of commands.
     this.commands.add("r " + username);
+  }
+
+  /**
+   * Get all the users of the social network.
+   *
+   * @return a set of all users of the social network.
+   */
+  public Set<User> getAllUsers() {
+    return this.graph.getAllVertices();
   }
 
   /**
@@ -199,13 +190,15 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  @Override
   public Set<User> getFriends(String username)
       throws IllegalNullArgumentException, UserNotFoundException {
-    // Gets the instance of the user while checking for
-    // IllegalNullArgumentException and UserNotFoundException
+    // Get user instance, IllegalNullArgumentException may be thrown.
     User user = this.graph.getUser(username);
-    return user.getFriends();
+
+    if (user == null) { // User not found.
+      throw new UserNotFoundException();
+    }
+    return user.getFriends(); // User found.
   }
 
   /**
@@ -226,13 +219,15 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  @Override
   public Set<User> getMutualFriends(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException {
-    // Get user instances checking for IllegalNullArgumentException and
-    // UserNotFoundException
+    // Get user instances, IllegalNullArgumentException may be thrown.
     User userInstance1 = this.graph.getUser(user1);
     User userInstance2 = this.graph.getUser(user2);
+
+    if (userInstance1 == null || userInstance2 == null) { // User not found.
+      throw new UserNotFoundException();
+    }
 
     // Get friends of both users
     Set<User> friendsOfUser1 = userInstance1.getFriends();
@@ -240,11 +235,9 @@ public class SocialNetwork implements SocialNetworkADT {
 
     // Get mutual friends
     Set<User> mutualFriends = new HashSet<User>();
-    for (User friendOf1 : friendsOfUser1) {
-      for (User friendOf2 : friendsOfUser2) {
-        if (friendOf1.equals(friendOf2)) {
-          mutualFriends.add(friendOf1);
-        }
+    for (User friend : friendsOfUser1) {
+      if (friendsOfUser2.contains(friend)) {
+        mutualFriends.add(friend);
       }
     }
     return mutualFriends;
@@ -268,7 +261,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  @Override
   public List<User> getShortestPath(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException {
     ArrayList<User> shortestPath = new ArrayList<User>();
@@ -281,7 +273,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * 
    * @return set of graphs of connected of components.
    */
-  @Override
   public Set<Graph> getConnectedComponents() {
     Set<Graph> graphs = new HashSet<Graph>();
     Set<User> users = this.graph.getAllVertices();
@@ -321,74 +312,53 @@ public class SocialNetwork implements SocialNetworkADT {
    * @param filename name of file to load commands from.
    * 
    * @throws IllegalNullArgumentException if argument is null or empty string.
-   * @throws FileNotFoundException        if file does not exist.
+   * @throws IOException                  if there is error happening while
+   *                                      reading file.
    */
-  @Override
-  public void loadFromFile(String filename) throws IllegalNullArgumentException,
-      FileNotFoundException {
+  public void loadFromFile(String filename)
+      throws IllegalNullArgumentException, IOException {
     if (filename == null || filename.length() == 0) {
       throw new IllegalNullArgumentException();
     }
 
-    Scanner scnr = new Scanner(filename);
-    // Parse the file
-    while (scnr.hasNextLine()) {
-      // Add user and add friendship command
-      String command = scnr.next();
-      if (command.equals("a")) {
-        User user1 = new User(scnr.next());
-        if (scnr.hasNext()) {
-          User user2 = new User(scnr.next());
-          try {
-            this.graph.addEdge(user1, user2);
-          } catch (DuplicateFriendshipException e) {
-            e.printStackTrace();
+    FileInputStream file = null; // File input stream.
+    Scanner scnr; // Define scanner.
+
+    file = new FileInputStream(filename); // Read a file.
+    // Assign variable to scanner reading from a file.
+    scnr = new Scanner(file);
+    try {
+      while (scnr.hasNextLine()) {
+        String line = scnr.nextLine().trim();
+        String[] command = line.split(" ");
+        if (command.length > 1) {
+          // Add friendship command.
+          if (command.length == 3 && command[0].contentEquals("a")) {
+            this.addFriendship(command[1], command[2]);
           }
-        } else {
-          try {
-            this.graph.addVertex(user1);
-          } catch (DuplicateUserException e) {
-            e.printStackTrace();
+          // Add user command.
+          else if (command.length == 2 && command[0].contentEquals("a")) {
+            this.addUser(command[1]);
           }
-        }
-      }
-      // Remove user and remove friendship command
-      User user1 = null;
-      if (command.equals("r")) {
-        try {
-          user1 = this.graph.getUser(scnr.next());
-        } catch (UserNotFoundException e) {
-          e.printStackTrace();
-        }
-        if (scnr.hasNext()) {
-          try {
-            User user2 = this.graph.getUser(scnr.next());
-            try {
-              this.graph.removeEdge(user1, user2);
-            } catch (FriendshipNotFoundException e) {
-              e.printStackTrace();
-            }
-          } catch (UserNotFoundException e) {
-            e.printStackTrace();
+          // Remove friendship command.
+          else if (command.length == 3 && command[0].contentEquals("r")) {
+            this.removeFriendship(command[1], command[2]);
           }
-        } else {
-          try {
-            this.graph.removeVertex(user1);
-          } catch (UserNotFoundException e) {
-            e.printStackTrace();
+          // Remove user command.
+          else if (command.length == 3 && command[0].contentEquals("r")) {
+            this.removeUser(command[1]);
+          }
+          // Set central user command.
+          else if (command.length == 2 && command[0].contentEquals("s")) {
+            this.setCentralUser(command[1]);
           }
         }
       }
-      // Set central user command
-      if (command.equals("s")) {
-        try {
-          User centralUser = this.graph.getUser(scnr.next());
-          this.centralUser = centralUser;
-        } catch (UserNotFoundException e) {
-          e.printStackTrace();
-        }
-      }
+    } catch (Exception e) {
+
     }
+    scnr.close(); // Close scanner.
+    file.close(); // Close file.
   }
 
   /**
@@ -403,11 +373,11 @@ public class SocialNetwork implements SocialNetworkADT {
    * @param filename name of file to save the changes in the SocialNetwork.
    * 
    * @throws IllegalNullArgumentException if argument is null or empty string.
-   * @throws IOException if there is an error in saving changes to a file.
+   * @throws IOException                  if there is an error in saving changes
+   *                                      to a file.
    */
-  @Override
-  public void saveToFile(String filename) throws IllegalNullArgumentException,
-      IOException {
+  public void saveToFile(String filename)
+      throws IllegalNullArgumentException, IOException {
     if (filename == null || filename.length() == 0) {
       throw new IllegalNullArgumentException();
     }
@@ -424,7 +394,6 @@ public class SocialNetwork implements SocialNetworkADT {
    * 
    * @return the central user.
    */
-  @Override
   public User getCentralUser() {
     return this.centralUser;
   }
@@ -437,7 +406,6 @@ public class SocialNetwork implements SocialNetworkADT {
    *                                      social network.
    * 
    */
-  @Override
   public void setCentralUser(String username)
       throws IllegalNullArgumentException, UserNotFoundException {
     if (username == null || username.length() == 0) {

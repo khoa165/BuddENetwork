@@ -209,13 +209,10 @@ public class Graph implements GraphADT {
    * @param name name to find corresponding user.
    * 
    * @throws IllegalNullArgumentException if argument is null.
-   * @throws UserNotFoundException        if given name does not match any
-   *                                      existing vertex/user.
    */
   @Override
-  public User getUser(String name) throws IllegalNullArgumentException,
-      UserNotFoundException {
-    if (name == null) {
+  public User getUser(String name) throws IllegalNullArgumentException {
+    if (name == null || name.length() == 0) {
       throw new IllegalNullArgumentException();
     }
     return this.mapNameToUser.get(name);
