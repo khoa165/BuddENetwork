@@ -94,8 +94,6 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-
-
     // Main layout is Border Pane example (top, left, center, right, bottom).
     BorderPane root = new BorderPane();
 
@@ -133,7 +131,7 @@ public class Main extends Application {
 
     // Add the stuff and set the primary stage
     primaryStage.setTitle(APP_TITLE);
-    primaryStage.getIcons().add(new Image("buddENetworkIcon.png"));
+    primaryStage.getIcons().add(new Image("images/buddENetworkIcon.png"));
     primaryStage.setScene(mainScene);
     primaryStage.show();
   }
@@ -162,11 +160,11 @@ public class Main extends Application {
     ImageView logoView = createLogo();
 
     // Create New, Open file, Undo, Redo, Save file buttons.
-    VBox newVBox = createNavbarButton("New.png", "New");
-    VBox openVBox = createNavbarButton("Load.png", "Load file");
-    VBox undoVBox = createNavbarButton("Undo.png", "Undo");
-    VBox redoVBox = createNavbarButton("Redo.png", "Redo");
-    VBox saveVBox = createNavbarButton("Save.png", "Save file");
+    VBox newVBox = createNavbarButton("images/New.png", "New");
+    VBox openVBox = createNavbarButton("images/Load.png", "Load file");
+    VBox undoVBox = createNavbarButton("images/Undo.png", "Undo");
+    VBox redoVBox = createNavbarButton("images/Redo.png", "Redo");
+    VBox saveVBox = createNavbarButton("images/Save.png", "Save file");
     // Create custom search field.
     HBox searchVBox = createSearchField();
 
@@ -333,7 +331,7 @@ public class Main extends Application {
   }
 
   private static ImageView createLogo() {
-    Image logoPic = new Image("buddENetworkLogo.png");
+    Image logoPic = new Image("images/buddENetworkLogo.png");
     ImageView logoView = new ImageView();
     logoView.setImage(logoPic);
     logoView.setFitHeight(75); // Set image height.
@@ -359,7 +357,7 @@ public class Main extends Application {
     HBox hBox = new HBox(); // Create a VBox.
     TextField searchField = new TextField(); // Create an input field.
     searchField.setPromptText("Search for User"); // Placeholder for text.
-    Image searchIcon = new Image("Search.png"); // Import image.
+    Image searchIcon = new Image("images/Search.png"); // Import image.
     ImageView iconView = new ImageView(); // Create image view.
     iconView.setImage(searchIcon); // Link image view and image.
     iconView.setFitWidth(20); // Set image width.
