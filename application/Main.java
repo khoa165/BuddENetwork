@@ -1,7 +1,7 @@
 //////////////////// ALL ASSIGNMENTS INCLUDE THIS SECTION /////////////////////
 //
 // Title: Main.java
-// Files: Main.java   (A-Team 12 Milestone 2)
+// Files: Main.java (A-Team 12 Milestone 2)
 // Course: CS 400, Section 001/002, Fall 2019
 //
 // Authors: Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar
@@ -33,8 +33,8 @@
 /////////////////////////////// 80 COLUMNS WIDE ///////////////////////////////
 
 /**
- * Please note that this class is A Team 12's implementation of the JavaFX 
- * Project, which is the BuddE Network.  
+ * Please note that this class is A Team 12's implementation of the JavaFX
+ * Project, which is the BuddE Network.
  * 
  * @author Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar,
  *         Professor Deppeler, Teaching Assistants
@@ -48,6 +48,7 @@ import java.util.List;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -86,9 +87,9 @@ public class Main extends Application {
   private List<String> args;
 
   private static final int WINDOW_WIDTH = 1400;
-  private static final int WINDOW_HEIGHT = 800;
-  private static final int CANVAS_WIDTH = 400;
-  private static final int CANVAS_HEIGHT = 200;
+  private static final int WINDOW_HEIGHT = 750;
+  private static final int CANVAS_WIDTH = 1000;
+  private static final int CANVAS_HEIGHT = 550;
   private static final String APP_TITLE = "BuddE Network";
 
   @Override
@@ -127,206 +128,116 @@ public class Main extends Application {
 
     // Main layout is Border Pane example (top,left,center,right,bottom)
     BorderPane root = new BorderPane();
-    
-    // Add title to top of the root pane    
+
+    // Add title to top of the root pane
     root.setTop(new Label(APP_TITLE));
-    
+
     // Add image to label to go in top pane
     Label logo = new Label();
-    Image pic = new Image("buddENetworkLogo.png");
-    ImageView seeLogo = new ImageView();
-    seeLogo.setImage(pic);
-    logo.setGraphic(seeLogo);
-    //logoVBox.getChildren().addAll(seeLogo);
-    //root.setLeft(logo);
-    
-    // new vbox
-    VBox newVBox = new VBox();
-    Image newPic = new Image("New.png");
-    ImageView seeNew = new ImageView();
-    seeNew.setImage(newPic);
-    Button newIcon = new Button();
-    newIcon.setGraphic(seeNew);
-    Label newLabel = new Label("New");
-    newVBox.getChildren().addAll(newIcon, newLabel);
-    
-    // open vbox
-    VBox openVBox = new VBox();
-    Image openPic = new Image("Open.png");
-    ImageView seeOpen = new ImageView();
-    seeOpen.setImage(openPic);
-    Button open = new Button();
-    open.setGraphic(seeOpen);
-    Label openLabel = new Label("Open");
-    openVBox.getChildren().addAll(open, openLabel);
-    
-    // undo vbox
-    VBox undoVBox = new VBox();
-    Image undoPic = new Image("Undo.png");
-    ImageView seeUndo = new ImageView();
-    seeUndo.setImage(undoPic);
-    Button undo = new Button();
-    undo.setGraphic(seeUndo);
-    Label undoLabel = new Label("Undo");
-    undoVBox.getChildren().addAll(undo, undoLabel);
-    
-    // redo vbox
-    VBox redoVBox = new VBox();
-    Image redoPic = new Image("Redo.png");
-    ImageView seeRedo = new ImageView();
-    seeRedo.setImage(redoPic);
-    Button redo = new Button();
-    redo.setGraphic(seeRedo);
-    Label redoLabel = new Label("Redo");
-    redoVBox.getChildren().addAll(redo, redoLabel);
-    
-    // save vbox
-    VBox saveVBox = new VBox();
-    Image savePic = new Image("Save.png");
-    ImageView seeSave = new ImageView();
-    seeSave.setImage(savePic);
-    Button save = new Button();
-    save.setGraphic(seeSave);
-    Label saveLabel = new Label("Save");
-    saveVBox.getChildren().addAll(save, saveLabel);
-      
+    Image logoPic = new Image("buddENetworkLogo.png");
+    ImageView logoView = new ImageView();
+    logoView.setImage(logoPic);
+    logoView.setFitHeight(75); // Set image height.
+    logoView.setPreserveRatio(true); // Keep original image ratio.
+    logo.setGraphic(logoView);
+    // logoVBox.getChildren().addAll(seeLogo);
+    // root.setLeft(logo);
+
+    // Create New, Open file, Undo, Redo, Save file buttons.
+    VBox newVBox = createNavbarButton("New.png", "New");
+    VBox openVBox = createNavbarButton("Load.png", "Load file");
+    VBox undoVBox = createNavbarButton("Undo.png", "Undo");
+    VBox redoVBox = createNavbarButton("Redo.png", "Redo");
+    VBox saveVBox = createNavbarButton("Save.png", "Save file");
+    // Create custom search field.
+    HBox searchVBox = createSearchField();
+
     // Add vbox for setting central user
     VBox setCentralUser = new VBox();
     Label set = new Label("Set Central User");
     ComboBox<String> userOptions = new ComboBox<String>();
     userOptions.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
     setCentralUser.getChildren().addAll(set, userOptions);
-    
-    // create custom search field
-    HBox searchHBox = new HBox();
-    TextField searchField = new TextField();
-    searchField.setPromptText("Search for User");
-    Label searchLabel = new Label();
-    Image searchPic = new Image("Search.png");
-    ImageView seeSearch = new ImageView();
-    seeSearch.setImage(searchPic);
-    searchLabel.setGraphic(seeSearch);
-    searchHBox.getChildren().addAll(searchLabel, searchField);
-    
+
+
+
     // create tool bar of functions for top pane
-    ToolBar toolBar = new ToolBar(
-    	     newVBox,
-    	     openVBox,
-    	     new Separator(),
-    	     undoVBox,
-    	     redoVBox,
-    	     new Separator(),
-    	     saveVBox,
-    	     new Separator(),
-    	     setCentralUser,
-    	     new Separator(),
-    	     searchHBox
-    	 );
-    
+    ToolBar toolBar = new ToolBar(newVBox, openVBox, new Separator(), undoVBox,
+        redoVBox, new Separator(), saveVBox, new Separator(), searchVBox,
+        new Separator(), setCentralUser);
+
     // Add hbox with vboxes in it to top pane
     HBox topHBox = new HBox();
     topHBox.getChildren().addAll(logo, toolBar);
     topHBox.setSpacing(10);
-    //topHBox.setStyle("-fx-background-color: blue");
+    // topHBox.setStyle("-fx-background-color: blue");
 
     // set top pane
     root.setTop(topHBox);
 
     // Add the vertical box to the center of the root pane
     root.setCenter(centerVBox);
-    
+
     // TODO Do we want to add anything in the left pane?
     // Add ComboBox to left pane
-//    ComboBox<String> comBox = new ComboBox<String>();
-//    comBox.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
-//    root.setLeft(comBox);
-    
+    // ComboBox<String> comBox = new ComboBox<String>();
+    // comBox.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
+    // root.setLeft(comBox);
+
     // create separator between user and buddE functions
     Separator separator1 = new Separator();
 
     // Title for BuddEs section
     Label userSettingsTitle = new Label("User Settings");
-    userSettingsTitle.setFont(Font.font (16));
+    userSettingsTitle.setFont(Font.font(16));
     userSettingsTitle.setTextFill(Color.BLUE);
-    
-    // create hbox for add new user
-    HBox addUserHBox = new HBox();
-    Button newUser = new Button("Create New User");
-    TextField newUserName = new TextField();
-    newUserName.setPromptText("Please Enter a Name");
-    addUserHBox.getChildren().addAll(newUser, newUserName);
-    addUserHBox.setSpacing(10);
 
-    // create hbox for removing user
-    HBox removeUserHBox = new HBox();
-    Button removeUser = new Button("Remove User");
-    // List<String> allUsersList = List.of("Harry", "Kenny", "Saniya",
-    // "Shannon");
-    // ComboBox<String> removeUserName = new
-    // ComboBox<String>(FXCollections.observableList(allUsersList));
-    TextField removeUserName = new TextField();
-    removeUserName.setPromptText("Please Enter a Name");
-    removeUserHBox.getChildren().addAll(removeUser, removeUserName);
-    removeUserHBox.setSpacing(29);
+    // Create input fields to add new user and remove user.
+    HBox addUserHBox = createInputField("Create New User", 10);
+    HBox removeUserHBox = createInputField("Remove User", 29);
 
     // create vbox for user functions
     VBox userVBox = new VBox();
-    userVBox.getChildren().addAll(userSettingsTitle, addUserHBox, removeUserHBox);
+    userVBox.getChildren().addAll(userSettingsTitle, addUserHBox,
+        removeUserHBox);
     userVBox.setSpacing(10);
 
     // create separator between user and buddE functions
     Separator separator2 = new Separator();
     // separator1.setMaxWidth(150);
-    
+
     // Title for BuddEs section
     Label buddESettingsTitle = new Label("BuddE Settings");
-    buddESettingsTitle.setFont(Font.font (16));
+    buddESettingsTitle.setFont(Font.font(16));
     buddESettingsTitle.setTextFill(Color.BLUE);
 
     // create hbox for adding BuddE connection between central user and
     // other user
-    HBox addBuddEHBox = new HBox();
-    // Label addBuddECentralUser = new Label("Harry");
-    Button addBuddE = new Button("Add BuddE");
-    TextField addBuddEOtherUser = new TextField();
-    addBuddEOtherUser.setPromptText("Please Enter a Name");
-    addBuddEHBox.getChildren().addAll(addBuddE, addBuddEOtherUser);
-    addBuddEHBox.setSpacing(31);
+    HBox addBuddEHBox = createInputField("Add BuddE", 39);
 
     // create hbox for removing BuddE connection between central user and
     // other user
-    HBox removeBuddEHBox = new HBox();
-    // Label removeBuddECentralUser = new Label("Harry");
-    Button removeBuddE = new Button("Remove BuddE");
-    TextField removeBuddEOtherUser = new TextField();
-    removeBuddEOtherUser.setPromptText("Please Enter a Name");
-    removeBuddEHBox.getChildren().addAll(removeBuddE, removeBuddEOtherUser);
-    removeBuddEHBox.setSpacing(10);
+    HBox removeBuddEHBox = createInputField("Remove BuddE", 18);
 
     // create vbox for BuddE functions
     VBox buddEVBox = new VBox();
-    buddEVBox.getChildren().addAll(buddESettingsTitle, addBuddEHBox, removeBuddEHBox);
+    buddEVBox.getChildren().addAll(buddESettingsTitle, addBuddEHBox,
+        removeBuddEHBox);
     buddEVBox.setSpacing(10);
 
 
     // create separator between buddE functions and mutual BuddEs/friends
     Separator separator3 = new Separator();
-    
+
     // Title for Mutual BuddEs section
     Label mutualBuddEsTitle = new Label("Mutual BuddEs");
-    mutualBuddEsTitle.setFont(Font.font (16));
+    mutualBuddEsTitle.setFont(Font.font(16));
     mutualBuddEsTitle.setTextFill(Color.BLUE);
-    
+
     // create hbox with button and text field for Mutual BuddEs section
-    HBox mutualBuddEsHBox = new HBox();
-    // Label removeBuddECentralUser = new Label("Harry");
-    Button findMutualBuddEs = new Button("Find Mutual BuddEs");
-    TextField otherUserName = new TextField();
-    otherUserName.setPromptText("Please Enter a Name");
-    mutualBuddEsHBox.getChildren().addAll(findMutualBuddEs, otherUserName);
-    mutualBuddEsHBox.setSpacing(10);
-    
-    
+    HBox mutualBuddEsHBox = createInputField("Mutual BuddEs", 19);
+
+
     // ---------------------- Mutual BuddEs code ------------------------------
     ListView<String> list = new ListView<>();
     ObservableList<String> mutualFriends =
@@ -350,11 +261,12 @@ public class Main extends Application {
 
     // create separator between user and buddE functions
     Separator separator4 = new Separator();
-    
+
     // Add vbox with hboxes in it to right pane
     VBox rightVBox = new VBox();
-    rightVBox.getChildren().addAll(separator1, userVBox, separator2, buddEVBox, separator3,
-        mutualBuddEsTitle, mutualBuddEsHBox, mutualBuddEsVBox, separator4);
+    rightVBox.getChildren().addAll(separator1, userVBox, separator2, buddEVBox,
+        separator3, mutualBuddEsTitle, mutualBuddEsHBox, mutualBuddEsVBox,
+        separator4);
     rightVBox.setSpacing(10);
 
     // set right pane
@@ -364,12 +276,12 @@ public class Main extends Application {
     // Add done button to bottom pane
     HBox statusHBox = new HBox();
     Label status = new Label("STATUS: ");
-    status.setFont(Font.font ("Calibri", FontWeight.BOLD, 24));
+    status.setFont(Font.font("Calibri", FontWeight.BOLD, 24));
     status.setTextFill(Color.BLUE);
     TextField statusMessage = new TextField();
     statusHBox.getChildren().addAll(status, statusMessage);
-    //statusHBox.setStyle("-fx-background-color: blue");
-    
+    // statusHBox.setStyle("-fx-background-color: blue");
+
     root.setBottom(statusHBox);
     Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -381,8 +293,8 @@ public class Main extends Application {
   }
 
   /**
-   * Please note that this class allows us to view the list of mutual BuddEs, between the central user
-   * and one of his/her buddEs.
+   * Please note that this class allows us to view the list of mutual BuddEs,
+   * between the central user and one of his/her buddEs.
    * 
    * @author
    *
@@ -397,6 +309,46 @@ public class Main extends Application {
         setGraphic(friendNameLabel);
       }
     }
+  }
+
+  private static VBox createNavbarButton(String iconFilename, String label) {
+    VBox vBox = new VBox(); // Create a VBox.
+    Image icon = new Image(iconFilename); // Import image.
+    ImageView iconView = new ImageView(); // Create image view.
+    iconView.setImage(icon); // Link image view and image.
+    iconView.setFitWidth(50); // Set image width.
+    iconView.setPreserveRatio(true); // Keep original image ratio.
+    Button iconButton = new Button(); // Create a button.
+    iconButton.setGraphic(iconView); // Link button with image view.
+    Label buttonLabel = new Label(label); // Label for button.
+    vBox.getChildren().addAll(iconButton, buttonLabel); // Add button and label.
+    return vBox;
+  }
+
+  private static HBox createSearchField() {
+    HBox hBox = new HBox(); // Create a VBox.
+    TextField searchField = new TextField(); // Create an input field.
+    searchField.setPromptText("Search for User"); // Placeholder for text.
+    Image searchIcon = new Image("Search.png"); // Import image.
+    ImageView iconView = new ImageView(); // Create image view.
+    iconView.setImage(searchIcon); // Link image view and image.
+    iconView.setFitWidth(20); // Set image width.
+    iconView.setPreserveRatio(true); // Keep original image ratio.
+    Button searchButton = new Button(); // Create a button to search.
+    searchButton.setGraphic(iconView); // Link button with image view.
+    // Add search button and input field.
+    hBox.getChildren().addAll(searchField, searchButton);
+    return hBox;
+  }
+  
+  private static HBox createInputField(String buttonLabel, int spacing) {
+    HBox hBox = new HBox();
+    Button button = new Button(buttonLabel);
+    TextField inputField = new TextField();
+    inputField.setPromptText("Please Enter a Name");
+    hBox.getChildren().addAll(button, inputField);
+    hBox.setSpacing(spacing);
+    return hBox;
   }
 
   /**
