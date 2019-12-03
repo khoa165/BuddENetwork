@@ -44,6 +44,7 @@
 
 package application;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -86,6 +87,7 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
   private static SocialNetwork buddENetwork = new SocialNetwork();
+  private static String currentFilename = null;
 
   private static final int WINDOW_WIDTH = 1400;
   private static final int WINDOW_HEIGHT = 750;
@@ -349,7 +351,7 @@ public class Main extends Application {
     iconView.setPreserveRatio(true); // Keep original image ratio.
     Button iconButton = new Button(); // Create a button.
     iconButton.setGraphic(iconView); // Link button with image view.
-    iconButton.setOnAction(e -> createInputDialog());
+    iconButton.setOnAction(e -> createInputDialogAndLoadFile());
     Label buttonLabel = new Label(label); // Label for button.
     vBox.getChildren().addAll(iconButton, buttonLabel); // Add button and label.
     return vBox;
@@ -392,10 +394,30 @@ public class Main extends Application {
     return hBox;
   }
 
-  private static void createInputDialog() {
+  private static void createInputDialogAndLoadFile() {
     TextInputDialog dialog = new TextInputDialog("Please enter filename:");
     dialog.setHeaderText("Provide valid file to load your social network.");
-    dialog.show();
+    dialog.showAndWait();
+    currentFilename = dialog.getEditor().getText();
+    loadFileAndInitializeDate();
+  }
+
+  private static void loadFileAndInitializeDate() {
+    try {
+      buddENetwork.loadFromFile(currentFilename);
+    } catch (IOException e) {
+      Alert alert = new Alert(AlertType.WARNING,
+          currentFilename + " does not exist in the directory.");
+      alert.show();
+    } catch (IllegalNullArgumentException e) {
+      Alert alert =
+          new Alert(AlertType.WARNING, "Empty filename is not acceptable.");
+      alert.show();
+    } catch (Exception e) {
+      Alert alert =
+          new Alert(AlertType.WARNING, "Sorry, unexpected error occured.");
+      alert.show();
+    }
   }
 
   /**
