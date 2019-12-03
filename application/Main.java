@@ -88,6 +88,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
   private static SocialNetwork buddENetwork = new SocialNetwork();
   private static String currentFilename = null;
+  private static VBox allUsersDropdownVBox = null;
 
   private static final int WINDOW_WIDTH = 1400;
   private static final int WINDOW_HEIGHT = 750;
@@ -173,12 +174,12 @@ public class Main extends Application {
 
     // Add vbox for setting central user
     Set<String> users = buddENetwork.getAllUsernames();
-    VBox setCentralUser = createDropdown(users, "Set central user");
+    allUsersDropdownVBox = createDropdown(users, "Set central user");
 
     // create tool bar of functions for top pane
     ToolBar toolBar = new ToolBar(newVBox, openVBox, new Separator(), undoVBox,
         redoVBox, new Separator(), saveVBox, new Separator(), searchVBox,
-        new Separator(), setCentralUser);
+        new Separator(), allUsersDropdownVBox);
 
     // Add hbox with vboxes in it to top pane
     HBox topBox = new HBox();
@@ -399,12 +400,13 @@ public class Main extends Application {
     dialog.setHeaderText("Provide valid file to load your social network.");
     dialog.showAndWait();
     currentFilename = dialog.getEditor().getText();
-    loadFileAndInitializeDate();
+    loadSocialNetwork();
+    updateDropdownOfAllUsers();
   }
 
-  private static void loadFileAndInitializeDate() {
+  private static void loadSocialNetwork() {
     try {
-      buddENetwork.loadFromFile(currentFilename);
+      buddENetwork.loadFromFile("data-files/" + currentFilename);
     } catch (IOException e) {
       Alert alert = new Alert(AlertType.WARNING,
           currentFilename + " does not exist in the directory.");
@@ -418,6 +420,14 @@ public class Main extends Application {
           new Alert(AlertType.WARNING, "Sorry, unexpected error occured.");
       alert.show();
     }
+  }
+  
+  private static void updateDropdownOfAllUsers() {
+    Set<String> users = buddENetwork.getAllUsernames();
+    allUsersDropdownVBox.getChildren().remove(1);
+    ComboBox<String> dropdown = new ComboBox<String>(); // Create a drop-down.
+    dropdown.getItems().addAll(users); // Add items to the drop-down.
+    allUsersDropdownVBox.getChildren().add(dropdown);
   }
 
   /**
