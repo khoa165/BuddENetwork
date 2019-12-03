@@ -100,38 +100,10 @@ public class Main extends Application {
     // Create a vertical box with Hello labels for each args
     VBox centerVBox = new VBox();
 
-    // Add interactive graph to center pane
-    // Creates a canvas that can draw shapes and text
-    Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-    GraphicsContext gc = canvas.getGraphicsContext2D();
-    // Write some text
-    // Text is filled with the fill color
-    gc.setFill(Color.GREEN);
-    gc.setFont(new Font(30));
-    gc.fillText("Hello World!", 70, 170);
-    // Draw a line
-    // Lines use the stroke color
-    gc.setStroke(Color.BLUE);
-    gc.setLineWidth(2);
-    gc.strokeLine(40, 100, 250, 50);
-    // Draw a few circles
-    gc.setFill(Color.BLACK);
-    // The circles draw from the top left, so to center them, subtract the
-    // radius from each coordinate
-    gc.fillOval(40 - 15, 100 - 15, 30, 30);
-    gc.setFill(Color.RED);
-    gc.fillOval(250 - 15, 50 - 15, 30, 30);
-
-    centerVBox.getChildren().add(canvas);
-    // set background color of center pane
-    centerVBox.setStyle("-fx-background-color: white");
-
     // Main layout is Border Pane example (top,left,center,right,bottom)
     BorderPane root = new BorderPane();
 
-    // Add title to top of the root pane
-    root.setTop(new Label(APP_TITLE));
-
+    // ---------------------- Top Pane ----------------------------------------
     // Add image to label to go in top pane
     Label logo = new Label();
     Image logoPic = new Image("buddENetworkLogo.png");
@@ -159,8 +131,6 @@ public class Main extends Application {
     userOptions.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
     setCentralUser.getChildren().addAll(set, userOptions);
 
-
-
     // create tool bar of functions for top pane
     ToolBar toolBar = new ToolBar(newVBox, openVBox, new Separator(), undoVBox,
         redoVBox, new Separator(), saveVBox, new Separator(), searchVBox,
@@ -175,6 +145,57 @@ public class Main extends Application {
     // set top pane
     root.setTop(topHBox);
 
+    // ---------------------- End of top pane ---------------------------------
+
+    // ---------------------- Center pane -------------------------------------
+    // Add interactive graph to center pane
+    // Creates a canvas that can draw shapes and text. Height: 550, width: 1000
+    Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    // Set text attributes
+    gc.setFont(new Font(10));
+
+    // Set stroke attributes
+    gc.setStroke(Color.BLUE);
+    gc.setLineWidth(2);
+
+    // Draw lines between central user and their friends before adding circles
+    // to prevent the lines from writing over the circles
+    // Edge connecting Shannon and Kenny
+    gc.strokeLine(500, 225, 500, 225 - 150);
+    // Edge connecting Shannon and Saniya
+    gc.strokeLine(500, 225, 500 - 150, 225);
+    // Edge connecting Shannon and Harry
+    gc.strokeLine(500, 225, 500 + 150, 225);
+
+    // Draw circles (vertices) to represent people and lines connecting the
+    // central user and their friends
+    // Shannon's node (central user)
+    gc.setFill(Color.RED);
+    // The circles draw from the top left, so to center them, subtract the
+    // radius from each coordinate
+    gc.fillOval(500 - 20, 225 - 20, 40, 40);
+    // Names are centered in the middle of the circle
+    gc.setFill(Color.GRAY);
+    gc.fillText("Shannon", 500 - 20, 225);
+
+    // Kenny's node
+    gc.fillOval(500 - 20, 225 - 150 - 20, 40, 40);
+    // Saniya's node
+    gc.fillOval(500 - 150 - 20, 225 - 20, 40, 40);
+    // Harry's node
+    gc.fillOval(500 + 150 - 20, 225 - 20, 40, 40);
+
+    // Add names other than the central user to circles (vertices)
+    gc.setFill(Color.RED);
+    gc.fillText("Kenny", 500 - 20, 225 - 150);
+    gc.fillText("Saniya", 500 - 150 - 20, 225);
+    gc.fillText("Harry", 500 + 150 - 20, 225);
+
+    centerVBox.getChildren().add(canvas);
+    // set background color of center pane
+    centerVBox.setStyle("-fx-background-color: white");
+
     // Add the vertical box to the center of the root pane
     root.setCenter(centerVBox);
 
@@ -183,6 +204,12 @@ public class Main extends Application {
     // ComboBox<String> comBox = new ComboBox<String>();
     // comBox.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
     // root.setLeft(comBox);
+
+
+    // ---------------------- End of center pane ------------------------------
+
+    // ---------------------- Right pane --------------------------------------
+
 
     // create separator between user and buddE functions
     Separator separator1 = new Separator();
@@ -195,6 +222,7 @@ public class Main extends Application {
     // Create input fields to add new user and remove user.
     HBox addUserHBox = createInputField("Create New User", 10);
     HBox removeUserHBox = createInputField("Remove User", 29);
+
 
     // create vbox for user functions
     VBox userVBox = new VBox();
@@ -238,6 +266,7 @@ public class Main extends Application {
     HBox mutualBuddEsHBox = createInputField("Mutual BuddEs", 19);
 
 
+
     // ---------------------- Mutual BuddEs code ------------------------------
     ListView<String> list = new ListView<>();
     ObservableList<String> mutualFriends =
@@ -271,6 +300,8 @@ public class Main extends Application {
 
     // set right pane
     root.setRight(rightVBox);
+
+    // ---------------------- End of right pane -------------------------------
 
 
     // Add done button to bottom pane
@@ -340,7 +371,7 @@ public class Main extends Application {
     hBox.getChildren().addAll(searchField, searchButton);
     return hBox;
   }
-  
+
   private static HBox createInputField(String buttonLabel, int spacing) {
     HBox hBox = new HBox();
     Button button = new Button(buttonLabel);
