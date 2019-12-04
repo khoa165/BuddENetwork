@@ -89,6 +89,10 @@ public class Main extends Application {
   private static SocialNetwork buddENetwork = new SocialNetwork();
   private static String currentFilename = null;
   private static VBox allUsersDropdownVBox = null;
+  
+  private static HBox topHBox = null;
+  private static VBox centerVBox = null;
+  private static VBox rightVBox = null;
 
   private static final int WINDOW_WIDTH = 1400;
   private static final int WINDOW_HEIGHT = 750;
@@ -102,15 +106,15 @@ public class Main extends Application {
     BorderPane root = new BorderPane();
 
     // ---------------------- Top Pane ----------------------------------------
-    HBox topHBox = setupTopBox();
+    topHBox = setupTopBox();
     root.setTop(topHBox); // Set top pane.
 
     // ---------------------- Center pane -------------------------------------
-    VBox centerVBox = setupCenterBox();
+    centerVBox = setupCenterBox();
     root.setCenter(centerVBox); // Set center pane.
 
     // ---------------------- Right pane --------------------------------------
-    VBox rightVBox = setupRightBox();
+    rightVBox = setupRightBox();
     root.setRight(rightVBox); // Set right pane.
 
     // TODO Do we want to add anything in the left pane?
@@ -197,10 +201,10 @@ public class Main extends Application {
     Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     GraphicsContext gc = canvas.getGraphicsContext2D();
     // Set text attributes
-    gc.setFont(new Font(10));
+    gc.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
 
     // Set stroke attributes
-    gc.setStroke(Color.BLUE);
+    gc.setStroke(Color.BLACK);
     gc.setLineWidth(2);
 
     // Draw lines between central user and their friends before adding circles
@@ -218,23 +222,24 @@ public class Main extends Application {
     gc.setFill(Color.RED);
     // The circles draw from the top left, so to center them, subtract the
     // radius from each coordinate
-    gc.fillOval(500 - 20, 225 - 20, 40, 40);
+    gc.fillOval(500 - 40, 225 - 40, 80, 80);
     // Names are centered in the middle of the circle
-    gc.setFill(Color.GRAY);
-    gc.fillText("Shannon", 500 - 20, 225);
-
+    gc.setFill(Color.YELLOW);
+    gc.fillText("Shannon", 500 - 40 + 5, 225 + 5);
+    
+    gc.setFill(Color.BLUE);
     // Kenny's node
-    gc.fillOval(500 - 20, 225 - 150 - 20, 40, 40);
+    gc.fillOval(500 - 40, 225 - 150 - 40, 80, 80);
     // Saniya's node
-    gc.fillOval(500 - 150 - 20, 225 + 100 - 20, 40, 40);
+    gc.fillOval(500 - 150 - 40, 225 + 100 - 40, 80, 80);
     // Harry's node
-    gc.fillOval(500 + 150 - 20, 225 + 100 - 20, 40, 40);
+    gc.fillOval(500 + 150 - 40, 225 + 100 - 40, 80, 80);
 
     // Add names other than the central user to circles (vertices)
-    gc.setFill(Color.RED);
-    gc.fillText("Kenny", 500 - 20, 225 - 150);
-    gc.fillText("Saniya", 500 - 150 - 20, 225 + 100);
-    gc.fillText("Harry", 500 + 150 - 20, 225 + 100);
+    gc.setFill(Color.YELLOW);
+    gc.fillText("Kenny", 500 - 40 + 5, 225 - 150 + 5);
+    gc.fillText("Saniya", 500 - 150 - 40 + 5, 225 + 100 + 5);
+    gc.fillText("Harry", 500 + 150 - 40 + 5, 225 + 100 + 5);
 
     centerBox.getChildren().add(canvas);
     // set background color of center pane
@@ -424,10 +429,59 @@ public class Main extends Application {
   
   private static void updateDropdownOfAllUsers() {
     Set<String> users = buddENetwork.getAllUsernames();
-    allUsersDropdownVBox.getChildren().remove(1);
+    allUsersDropdownVBox.getChildren().clear();
     ComboBox<String> dropdown = new ComboBox<String>(); // Create a drop-down.
     dropdown.getItems().addAll(users); // Add items to the drop-down.
     allUsersDropdownVBox.getChildren().add(dropdown);
+  }
+  
+  private static void drawGraph() {
+    Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    // Set text attributes
+    gc.setFont(new Font(20));
+
+    // Set stroke attributes
+    gc.setStroke(Color.BLUE);
+    gc.setLineWidth(2);
+
+    // Draw lines between central user and their friends before adding circles
+    // to prevent the lines from writing over the circles
+    // Edge connecting Shannon and Kenny
+    gc.strokeLine(500, 225, 500, 225 - 150);
+    // Edge connecting Shannon and Saniya
+    gc.strokeLine(500, 225, 500 - 150, 225 + 100);
+    // Edge connecting Shannon and Harry
+    gc.strokeLine(500, 225, 500 + 150, 225 + 100);
+
+    // Draw circles (vertices) to represent people and lines connecting the
+    // central user and their friends
+    // Shannon's node (central user)
+    gc.setFill(Color.RED);
+    // The circles draw from the top left, so to center them, subtract the
+    // radius from each coordinate
+    gc.fillOval(500 - 20, 225 - 20, 40, 40);
+    // Names are centered in the middle of the circle
+    gc.setFill(Color.YELLOW);
+    gc.fillText("Shannon", 500 - 20, 225);
+
+    // Kenny's node
+    gc.fillOval(500 - 20, 225 - 150 - 20, 40, 40);
+    // Saniya's node
+    gc.fillOval(500 - 150 - 20, 225 + 100 - 20, 40, 40);
+    // Harry's node
+    gc.fillOval(500 + 150 - 20, 225 + 100 - 20, 40, 40);
+
+    // Add names other than the central user to circles (vertices)
+    gc.setFill(Color.YELLOW);
+    gc.fillText("Kenny", 500 - 20, 225 - 150);
+    gc.fillText("Saniya", 500 - 150 - 20, 225 + 100);
+    gc.fillText("Harry", 500 + 150 - 20, 225 + 100);
+    
+    centerVBox.getChildren().clear();
+    centerVBox.getChildren().add(canvas);
+    // set background color of center pane
+    centerVBox.setStyle("-fx-background-color: white");
   }
 
   /**
