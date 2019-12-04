@@ -46,6 +46,7 @@ package application;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -55,6 +56,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -74,6 +76,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * @author Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar.
@@ -138,6 +141,21 @@ public class Main extends Application {
     primaryStage.getIcons().add(new Image("images/buddENetworkIcon.png"));
     primaryStage.setScene(mainScene);
     primaryStage.show();
+    primaryStage.setOnCloseRequest(e -> confirmWhenClose(primaryStage, e));
+  }
+
+  private static void confirmWhenClose(Stage stage, WindowEvent e) {
+    Alert closeConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+    Button exitButton =
+        (Button) closeConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+    exitButton.setText("Exit");
+    closeConfirmation.setHeaderText(
+        "Are you sure you want to exit without saving? If so, all the changes"
+        + " that you have made to the social network would not be saved.");
+    Optional<ButtonType> closeResponse = closeConfirmation.showAndWait();
+    if (!ButtonType.OK.equals(closeResponse.get())) {
+      e.consume();
+    }
   }
 
   /**
@@ -335,7 +353,7 @@ public class Main extends Application {
     vBox.getChildren().addAll(dropdownLabel, dropdown);
     return vBox;
   }
-  
+
   private static void setCentralUserFromDropdown(ComboBox<String> dropdown) {
     String chosenUser = dropdown.getValue();
     System.out.println(chosenUser);
@@ -390,7 +408,7 @@ public class Main extends Application {
     ComboBox<String> dropdown = new ComboBox<String>(); // Create a drop-down.
     dropdown.getItems().addAll(users); // Add items to the drop-down.
     allUsersDropdownVBox.getChildren().add(dropdown);
-    
+
     dropdown.setOnAction(e -> setCentralUserFromDropdown(dropdown));
   }
 
