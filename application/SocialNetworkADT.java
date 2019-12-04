@@ -99,6 +99,13 @@ public interface SocialNetworkADT {
   public Set<User> getAllUsers();
 
   /**
+   * Get all the usernames of the social network.
+   *
+   * @return a set of all usernames of the social network.
+   */
+  public Set<String> getAllUsernames();
+
+  /**
    * Given a name, find corresponding user, return all the friends with the
    * given user.
    *
