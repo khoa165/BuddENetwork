@@ -89,15 +89,17 @@ public class Main extends Application {
   private static SocialNetwork buddENetwork = new SocialNetwork();
   private static String currentFilename = null;
   private static VBox allUsersDropdownVBox = null;
-  
+
   private static HBox topHBox = null;
   private static VBox centerVBox = null;
   private static VBox rightVBox = null;
 
-  private static final int WINDOW_WIDTH = 1400;
-  private static final int WINDOW_HEIGHT = 750;
-  private static final int CANVAS_WIDTH = 1000;
-  private static final int CANVAS_HEIGHT = 550;
+  private static final double WINDOW_WIDTH = 1400;
+  private static final double WINDOW_HEIGHT = 750;
+  private static final double CANVAS_WIDTH = 1000;
+  private static final double CANVAS_HEIGHT = 550;
+  private static final double RADIUS = 40;
+  private static final double DISTANCE = 200;
   private static final String APP_TITLE = "BuddE Network";
 
   @Override
@@ -226,7 +228,7 @@ public class Main extends Application {
     // Names are centered in the middle of the circle
     gc.setFill(Color.YELLOW);
     gc.fillText("Shannon", 500 - 40 + 5, 225 + 5);
-    
+
     gc.setFill(Color.BLUE);
     // Kenny's node
     gc.fillOval(500 - 40, 225 - 150 - 40, 80, 80);
@@ -361,7 +363,6 @@ public class Main extends Application {
     Label buttonLabel = new Label(label); // Label for button.
     vBox.getChildren().addAll(iconButton, buttonLabel); // Add button and label.
     return vBox;
-
   }
 
   private static HBox createSearchField() {
@@ -407,6 +408,7 @@ public class Main extends Application {
     currentFilename = dialog.getEditor().getText();
     loadSocialNetwork();
     updateDropdownOfAllUsers();
+    drawGraph();
   }
 
   private static void loadSocialNetwork() {
@@ -426,7 +428,7 @@ public class Main extends Application {
       alert.show();
     }
   }
-  
+
   private static void updateDropdownOfAllUsers() {
     Set<String> users = buddENetwork.getAllUsernames();
     allUsersDropdownVBox.getChildren().clear();
@@ -434,54 +436,71 @@ public class Main extends Application {
     dropdown.getItems().addAll(users); // Add items to the drop-down.
     allUsersDropdownVBox.getChildren().add(dropdown);
   }
-  
+
   private static void drawGraph() {
     Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     GraphicsContext gc = canvas.getGraphicsContext2D();
     // Set text attributes
-    gc.setFont(new Font(20));
-
+    gc.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
     // Set stroke attributes
-    gc.setStroke(Color.BLUE);
+    gc.setStroke(Color.BLACK);
     gc.setLineWidth(2);
 
-    // Draw lines between central user and their friends before adding circles
-    // to prevent the lines from writing over the circles
-    // Edge connecting Shannon and Kenny
-    gc.strokeLine(500, 225, 500, 225 - 150);
-    // Edge connecting Shannon and Saniya
-    gc.strokeLine(500, 225, 500 - 150, 225 + 100);
-    // Edge connecting Shannon and Harry
-    gc.strokeLine(500, 225, 500 + 150, 225 + 100);
 
     // Draw circles (vertices) to represent people and lines connecting the
     // central user and their friends
-    // Shannon's node (central user)
     gc.setFill(Color.RED);
     // The circles draw from the top left, so to center them, subtract the
     // radius from each coordinate
-    gc.fillOval(500 - 20, 225 - 20, 40, 40);
+    double centerX = CANVAS_WIDTH / 2.0;
+    double centerY = CANVAS_HEIGHT / 2.0;
     // Names are centered in the middle of the circle
     gc.setFill(Color.YELLOW);
-    gc.fillText("Shannon", 500 - 20, 225);
+    if (buddENetwork.getCentralUser() != null) {
+      String centralName = buddENetwork.getCentralUser().getName();
+      int numFriends = -1;
+      try {
+        Set<User> friends = buddENetwork.getFriends(centralName);
+        numFriends = friends.size();
 
-    // Kenny's node
-    gc.fillOval(500 - 20, 225 - 150 - 20, 40, 40);
-    // Saniya's node
-    gc.fillOval(500 - 150 - 20, 225 + 100 - 20, 40, 40);
-    // Harry's node
-    gc.fillOval(500 + 150 - 20, 225 + 100 - 20, 40, 40);
+        double[][] coords = getCoordinates(numFriends);
+        int i = 0;
+        for (User friend : buddENetwork.getFriends(centralName)) {
+          double x = centerX + coords[i][0];
+          double y = centerY + coords[i][1];
+          gc.strokeLine(centerX, centerY, x, y);
 
-    // Add names other than the central user to circles (vertices)
-    gc.setFill(Color.YELLOW);
-    gc.fillText("Kenny", 500 - 20, 225 - 150);
-    gc.fillText("Saniya", 500 - 150 - 20, 225 + 100);
-    gc.fillText("Harry", 500 + 150 - 20, 225 + 100);
-    
+          gc.setFill(Color.BLUE);
+          gc.fillOval(x - RADIUS, y - RADIUS, RADIUS * 2.0, RADIUS * 2.0);
+
+          gc.setFill(Color.YELLOW);
+          gc.fillText(friend.getName(), x - RADIUS + 5, y + 5);
+          i++;
+        }
+        gc.setFill(Color.RED);
+        gc.fillOval(centerX - RADIUS, centerY - RADIUS, RADIUS * 2.0,
+            RADIUS * 2.0);
+        gc.setFill(Color.YELLOW);
+        gc.fillText(centralName, centerX - RADIUS + 5, centerY + 5);
+      } catch (Exception e) {
+      }
+    }
+
     centerVBox.getChildren().clear();
     centerVBox.getChildren().add(canvas);
     // set background color of center pane
     centerVBox.setStyle("-fx-background-color: white");
+  }
+
+  private static double[][] getCoordinates(int numUsers) {
+    double[][] coords = new double[numUsers][2];
+    double angle = Math.PI * 2.0 / numUsers;
+    for (int i = 0; i < numUsers; ++i) {
+      double anglePosition = angle * i;
+      coords[i][0] = Math.sin(anglePosition) * DISTANCE;
+      coords[i][1] = Math.cos(anglePosition) * DISTANCE;
+    }
+    return coords;
   }
 
   /**
