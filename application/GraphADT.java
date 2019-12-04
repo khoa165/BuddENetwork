@@ -98,8 +98,7 @@ public interface GraphADT {
    * 
    * @throws IllegalNullArgumentException if argument is null.
    */
-  public User getUser(String name)
-      throws IllegalNullArgumentException;
+  public User getUser(String name) throws IllegalNullArgumentException;
 
   /**
    * Get all the vertices/users that connect to the give vertex/user.
@@ -126,7 +125,7 @@ public interface GraphADT {
    * @return a set of all vertices/users of the graph.
    */
   public Set<User> getAllVertices();
-  
+
   /**
    * Get all the usernames of the graph.
    *

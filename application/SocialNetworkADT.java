@@ -97,7 +97,7 @@ public interface SocialNetworkADT {
    * @return a set of all users of the social network.
    */
   public Set<User> getAllUsers();
-  
+
   /**
    * Get all the usernames of the social network.
    *

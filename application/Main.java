@@ -87,6 +87,8 @@ public class Main extends Application {
   private static String currentFilename = null;
   private static VBox allUsersDropdownVBox = null;
 
+  private static boolean socialNetworkChangedAndUnsaved = false;
+
   private static HBox topHBox = null;
   private static VBox centerVBox = null;
   private static VBox rightVBox = null;
@@ -144,20 +146,6 @@ public class Main extends Application {
     primaryStage.setOnCloseRequest(e -> confirmWhenClose(primaryStage, e));
   }
 
-  private static void confirmWhenClose(Stage stage, WindowEvent e) {
-    Alert closeConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-    Button exitButton =
-        (Button) closeConfirmation.getDialogPane().lookupButton(ButtonType.OK);
-    exitButton.setText("Exit");
-    closeConfirmation.setHeaderText(
-        "Are you sure you want to exit without saving? If so, all the changes"
-        + " that you have made to the social network would not be saved.");
-    Optional<ButtonType> closeResponse = closeConfirmation.showAndWait();
-    if (!ButtonType.OK.equals(closeResponse.get())) {
-      e.consume();
-    }
-  }
-
   /**
    * Please note that this class allows us to view the list of mutual BuddEs,
    * between the central user and one of his/her buddEs.
@@ -182,11 +170,11 @@ public class Main extends Application {
     ImageView logoView = createLogo();
 
     // Create New, Open file, Undo, Redo, Save file buttons.
-    VBox newVBox = createNavbarButton("images/New.png", "New");
-    VBox openVBox = createNavbarButton("images/Load.png", "Load file");
-    VBox undoVBox = createNavbarButton("images/Undo.png", "Undo");
-    VBox redoVBox = createNavbarButton("images/Redo.png", "Redo");
-    VBox saveVBox = createNavbarButton("images/Save.png", "Save file");
+    VBox newVBox = createNavbarButton("images/New.png", "New", 0);
+    VBox openVBox = createNavbarButton("images/Load.png", "Load file", 1);
+    VBox undoVBox = createNavbarButton("images/Undo.png", "Undo", 2);
+    VBox redoVBox = createNavbarButton("images/Redo.png", "Redo", 3);
+    VBox saveVBox = createNavbarButton("images/Save.png", "Save file", 4);
     // Create custom search field.
     HBox searchVBox = createSearchField();
 
@@ -313,7 +301,8 @@ public class Main extends Application {
     return logoView;
   }
 
-  private static VBox createNavbarButton(String iconFilename, String label) {
+  private static VBox createNavbarButton(String iconFilename, String label,
+      int index) {
     VBox vBox = new VBox(); // Create a VBox.
     Image icon = new Image(iconFilename); // Import image.
     ImageView iconView = new ImageView(); // Create image view.
@@ -322,7 +311,17 @@ public class Main extends Application {
     iconView.setPreserveRatio(true); // Keep original image ratio.
     Button iconButton = new Button(); // Create a button.
     iconButton.setGraphic(iconView); // Link button with image view.
-    iconButton.setOnAction(e -> createInputDialogAndLoadFile());
+
+    // Event handler for different buttons, differentiate by index.
+    switch (index) {
+      case 0:
+      case 1:
+        iconButton.setOnAction(e -> createInputDialogAndLoadFile());
+      case 2:
+      case 3:
+      case 4:
+      default:
+    }
     Label buttonLabel = new Label(label); // Label for button.
     vBox.getChildren().addAll(iconButton, buttonLabel); // Add button and label.
     return vBox;
@@ -359,6 +358,7 @@ public class Main extends Application {
     System.out.println(chosenUser);
     try {
       buddENetwork.setCentralUser(chosenUser);
+      socialNetworkChangedAndUnsaved = true;
       drawGraph();
     } catch (Exception e) {
     }
@@ -421,7 +421,6 @@ public class Main extends Application {
     gc.setStroke(Color.BLACK);
     gc.setLineWidth(2);
 
-
     // Draw circles (vertices) to represent people and lines connecting the
     // central user and their friends
     gc.setFill(Color.RED);
@@ -476,6 +475,22 @@ public class Main extends Application {
       coords[i][1] = Math.cos(anglePosition) * DISTANCE;
     }
     return coords;
+  }
+
+  private static void confirmWhenClose(Stage stage, WindowEvent e) {
+    if (socialNetworkChangedAndUnsaved) {
+      Alert closeConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+      Button exitButton = (Button) closeConfirmation.getDialogPane()
+          .lookupButton(ButtonType.OK);
+      exitButton.setText("Exit");
+      closeConfirmation.setHeaderText(
+          "Are you sure you want to exit without saving? If so, all the changes"
+              + " that you have made to the social network would not be saved.");
+      Optional<ButtonType> closeResponse = closeConfirmation.showAndWait();
+      if (!ButtonType.OK.equals(closeResponse.get())) {
+        e.consume();
+      }
+    }
   }
 
   /**

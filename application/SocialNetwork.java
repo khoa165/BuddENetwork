@@ -172,7 +172,7 @@ public class SocialNetwork implements SocialNetworkADT {
   public Set<User> getAllUsers() {
     return this.graph.getAllVertices();
   }
-  
+
   /**
    * Get all the usernames of the social network.
    *
