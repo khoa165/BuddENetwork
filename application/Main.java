@@ -45,23 +45,19 @@
 package application;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -69,7 +65,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -78,7 +73,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -198,55 +192,6 @@ public class Main extends Application {
 
   private static VBox setupCenterBox() {
     VBox centerBox = new VBox();
-    // Add interactive graph to center pane
-    // Creates a canvas that can draw shapes and text. Height: 550, width: 1000
-    Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-    GraphicsContext gc = canvas.getGraphicsContext2D();
-    // Set text attributes
-    gc.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
-
-    // Set stroke attributes
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(2);
-
-    // Draw lines between central user and their friends before adding circles
-    // to prevent the lines from writing over the circles
-    // Edge connecting Shannon and Kenny
-    gc.strokeLine(500, 225, 500, 225 - 150);
-    // Edge connecting Shannon and Saniya
-    gc.strokeLine(500, 225, 500 - 150, 225 + 100);
-    // Edge connecting Shannon and Harry
-    gc.strokeLine(500, 225, 500 + 150, 225 + 100);
-
-    // Draw circles (vertices) to represent people and lines connecting the
-    // central user and their friends
-    // Shannon's node (central user)
-    gc.setFill(Color.RED);
-    // The circles draw from the top left, so to center them, subtract the
-    // radius from each coordinate
-    gc.fillOval(500 - 40, 225 - 40, 80, 80);
-    // Names are centered in the middle of the circle
-    gc.setFill(Color.YELLOW);
-    gc.fillText("Shannon", 500 - 40 + 5, 225 + 5);
-
-    gc.setFill(Color.BLUE);
-    // Kenny's node
-    gc.fillOval(500 - 40, 225 - 150 - 40, 80, 80);
-    // Saniya's node
-    gc.fillOval(500 - 150 - 40, 225 + 100 - 40, 80, 80);
-    // Harry's node
-    gc.fillOval(500 + 150 - 40, 225 + 100 - 40, 80, 80);
-
-    // Add names other than the central user to circles (vertices)
-    gc.setFill(Color.YELLOW);
-    gc.fillText("Kenny", 500 - 40 + 5, 225 - 150 + 5);
-    gc.fillText("Saniya", 500 - 150 - 40 + 5, 225 + 100 + 5);
-    gc.fillText("Harry", 500 + 150 - 40 + 5, 225 + 100 + 5);
-
-    centerBox.getChildren().add(canvas);
-    // set background color of center pane
-    centerBox.setStyle("-fx-background-color: white");
-
     return centerBox;
   }
 
@@ -281,7 +226,7 @@ public class Main extends Application {
 
     // create hbox for adding BuddE connection between central user and
     // other user
-    HBox addBuddEHBox = createInputField("Add BuddE", 39);
+    HBox addBuddEHBox = createInputField("Add BuddE", 40);
 
     // create hbox for removing BuddE connection between central user and
     // other user
@@ -390,12 +335,22 @@ public class Main extends Application {
     vBox.getChildren().addAll(dropdownLabel, dropdown);
     return vBox;
   }
+  
+  private static void setCentralUserFromDropdown(ComboBox<String> dropdown) {
+    String chosenUser = dropdown.getValue();
+    System.out.println(chosenUser);
+    try {
+      buddENetwork.setCentralUser(chosenUser);
+      drawGraph();
+    } catch (Exception e) {
+    }
+  }
 
   private static HBox createInputField(String buttonLabel, int spacing) {
     HBox hBox = new HBox();
     Button button = new Button(buttonLabel);
     TextField inputField = new TextField();
-    inputField.setPromptText("Please Enter a Name");
+    inputField.setPromptText("Please enter a name");
     hBox.getChildren().addAll(button, inputField);
     hBox.setSpacing(spacing);
     return hBox;
@@ -435,6 +390,8 @@ public class Main extends Application {
     ComboBox<String> dropdown = new ComboBox<String>(); // Create a drop-down.
     dropdown.getItems().addAll(users); // Add items to the drop-down.
     allUsersDropdownVBox.getChildren().add(dropdown);
+    
+    dropdown.setOnAction(e -> setCentralUserFromDropdown(dropdown));
   }
 
   private static void drawGraph() {
