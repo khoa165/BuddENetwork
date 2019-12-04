@@ -198,6 +198,8 @@ public class Main extends Application {
 
   private static VBox setupCenterBox() {
     VBox centerBox = new VBox();
+    // set background color of center pane
+    centerBox.setStyle("-fx-background-color: white");
     return centerBox;
   }
 

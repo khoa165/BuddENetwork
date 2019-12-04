@@ -22,8 +22,16 @@
   + Harry defined all methods for SocialNetwork data structure in [SocialNetworkADT.java](application/SocialNetworkADT.java).
 - December 1st:
   + Kenny implemented all required methods for Social Network in [SocialNetwork.java](application/SocialNetwork.java).
-  + Shannon created GUI draft (based on class example) -> Need to still adjust size of images in GUI for readability in top pane tool bar
-  + Saniya created method to visualize Mutual BuddEs in GUI
+  + Shannon implemented code to structure the graphical components of the application.
+  + Shannon implemented code to create static GUI to display navbar that show all the options for the user to interact with application, such as loading file and saving file, adding and removing users or friendships.
+  + Saniya implemented code to create static GUI to visualize Mutual BuddEs between two users.
+- December 2nd:
+  + Kenny implemented code to create static GUI of social network that displays connections from central user to their friends.
+  + Harry refactored Shannon's GUI code by breaking it down to methods.
+- December 3rd:
+  + Harry implemented code to load the social network from the file and generate graph dynamically.
+  + Harry implemented code to shift graph to show corresponding friends when user sets new central user of the social network.
+  + Saniya started implementing codes to test [SocialNetwork.java](application/SocialNetwork.java) in [SocialNetworkTest.java](application/SocialNetworkTest.java).
 
 #### ***Upcoming goals:***
 - [X] Set up the repository and project.
