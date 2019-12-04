@@ -261,7 +261,7 @@ public class Main extends Application {
     // ---------------------- Mutual BuddEs code ------------------------------
     ListView<String> list = new ListView<>();
     ObservableList<String> mutualFriends =
-        FXCollections.observableList(List.of("Saniya", "Shannon"));
+        FXCollections.observableList(List.of(""));
 
     VBox mutualBuddEsVBox = new VBox();
 
