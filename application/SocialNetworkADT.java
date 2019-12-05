@@ -143,7 +143,7 @@ public interface SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  public Set<User> getMutualFriends(String user1, String user2)
+  public Set<String> getMutualFriends(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException;
 
   /**
