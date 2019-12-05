@@ -32,4 +32,14 @@ public class User {
       return true;
     }
   }
+  
+  public boolean removeFriend(User friend) {
+    if (this.friendNames.contains(friend.getName())) {
+      this.friendNames.remove(friend.getName());
+      this.friends.remove(friend);
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

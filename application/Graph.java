@@ -89,8 +89,8 @@ public class Graph implements GraphADT {
     // friend's friend list and remove his/her friend from given user's friend
     // list, then decrement size.
     for (User userFriend : user.getFriends()) {
-      userFriend.getFriends().remove(user);
-      user.getFriends().remove(userFriend);
+      user.removeFriend(userFriend);
+      userFriend.removeFriend(user);
       this.size--;
     }
 
@@ -187,8 +187,8 @@ public class Graph implements GraphADT {
     // other's friend list, then decrement size.
     if (user1.getFriends().contains(user2)
         && user2.getFriends().contains(user1)) {
-      user1.getFriends().remove(user2);
-      user2.getFriends().remove(user1);
+      user1.removeFriend(user2);
+      user2.removeFriend(user1);
       this.size--;
     } else { // Otherwise, friendship is not found between given users.
       throw new FriendshipNotFoundException();
