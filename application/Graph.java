@@ -89,8 +89,8 @@ public class Graph implements GraphADT {
     // friend's friend list and remove his/her friend from given user's friend
     // list, then decrement size.
     for (User userFriend : user.getFriends()) {
-      user.getFriends().remove(userFriend);
-      userFriend.getFriends().remove(user);
+      user.removeFriend(userFriend);
+      userFriend.removeFriend(user);
       this.size--;
     }
 
