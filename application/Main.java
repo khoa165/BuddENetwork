@@ -45,12 +45,14 @@
 package application;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -73,6 +75,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -87,13 +90,11 @@ public class Main extends Application {
   private static String currentFilename = null;
   private static VBox allUsersDropdownVBox = null;
 
-  private static BorderPane root;
-
   private static boolean socialNetworkChangedAndUnsaved = false;
 
-  private static HBox topHBox = null;
-  private static VBox centerVBox = null;
-  private static VBox rightVBox = null;
+  private static HBox topSection = new HBox();
+  private static VBox centerSection = new VBox();
+  private static VBox rightSection = new VBox();
 
   private static final double WINDOW_WIDTH = 1400;
   private static final double WINDOW_HEIGHT = 750;
@@ -102,31 +103,25 @@ public class Main extends Application {
   private static final double RADIUS = 40;
   private static final double DISTANCE = 200;
   private static final String APP_TITLE = "BuddE Network";
-  
+
   private static User centralU = null;
 
   @Override
   public void start(Stage primaryStage) throws Exception {
     // Main layout is Border Pane example (top, left, center, right, bottom).
-    root = new BorderPane();
+    BorderPane root = new BorderPane();
 
     // ---------------------- Top Pane ----------------------------------------
-    topHBox = setupTopBox();
-    root.setTop(topHBox); // Set top pane.
+    setupTopBox();
+    root.setTop(topSection); // Set top pane.
 
     // ---------------------- Center pane -------------------------------------
-    centerVBox = setupCenterBox();
-    root.setCenter(centerVBox); // Set center pane.
+    setupCenterBox();
+    root.setCenter(centerSection); // Set center pane.
 
     // ---------------------- Right pane --------------------------------------
-    rightVBox = setupRightBox();
-    root.setRight(rightVBox); // Set right pane.
-
-    // TODO Do we want to add anything in the left pane?
-    // Add ComboBox to left pane
-    // ComboBox<String> comBox = new ComboBox<String>();
-    // comBox.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
-    // root.setLeft(comBox);
+    setupRightBox();
+    root.setRight(rightSection); // Set right pane.
 
 
 
@@ -169,52 +164,37 @@ public class Main extends Application {
     }
   }
 
-  private static HBox setupTopBox() {
-    // Add image to label to go in top pane
+  private static void setupTopBox() {
+    // Create social network/application logo.
     ImageView logoView = createLogo();
 
-    // Create New, Open file, Undo, Redo, Save file buttons.
-    VBox newVBox = createNavbarButton("images/New.png", "New", 0);
-    VBox openVBox = createNavbarButton("images/Load.png", "Load file", 1);
-    VBox undoVBox = createNavbarButton("images/Undo.png", "Undo", 2);
-    VBox redoVBox = createNavbarButton("images/Redo.png", "Redo", 3);
-    VBox saveVBox = createNavbarButton("images/Save.png", "Save file", 4);
-    // Create custom search field.
-    HBox searchVBox = createSearchField();
+    // Create tool bar of functions for top pane.
+    ToolBar toolBar = new ToolBar();
+    // Add navbar items to tool bar.
+    toolBar.getItems().addAll(setupNavbar());
+    toolBar.setStyle("-fx-background-color: #b21f66");
 
-    // Add vbox for setting central user
-    Set<String> users = buddENetwork.getAllUsernames();
-    allUsersDropdownVBox = createDropdown(users, "Set central user");
-
-    // create tool bar of functions for top pane
-    ToolBar toolBar = new ToolBar(newVBox, openVBox, new Separator(), undoVBox,
-        redoVBox, new Separator(), saveVBox, new Separator(), searchVBox,
-        new Separator(), allUsersDropdownVBox);
-
-    // Add hbox with vboxes in it to top pane
-    HBox topBox = new HBox();
-    topBox.getChildren().addAll(logoView, toolBar);
-    topBox.setSpacing(10);
-    // topHBox.setStyle("-fx-background-color: blue");
-
-    return topBox;
+    // Add logo and navbar to topHBox.
+    topSection.getChildren().addAll(logoView, toolBar);
+    topSection.setSpacing(10);
+    topSection.setStyle("-fx-background-color: #b21f66");
   }
 
   private static VBox setupCenterBox() {
-    VBox centerBox = new VBox();
     // set background color of center pane
-    centerBox.setStyle("-fx-background-color: white");
-    return centerBox;
+    centerSection.setStyle(
+        "-fx-background-color: linear-gradient(to right, #61045F, #AA076B)");
+    return centerSection;
   }
 
-  private static VBox setupRightBox() {
+  private static void setupRightBox() {
     // create separator between user and buddE functions
     Separator separator1 = new Separator();
 
     // Title for BuddEs section
     Label userSettingsTitle = new Label("User Settings");
     userSettingsTitle.setFont(Font.font(16));
-    userSettingsTitle.setTextFill(Color.BLUE);
+    userSettingsTitle.setTextFill(Color.YELLOW);
 
     // Create input fields to add new user and remove user.
     HBox addUserHBox = createInputField("Create New User", 10, 0);
@@ -234,7 +214,7 @@ public class Main extends Application {
     // Title for BuddEs section
     Label buddESettingsTitle = new Label("BuddE Settings");
     buddESettingsTitle.setFont(Font.font(16));
-    buddESettingsTitle.setTextFill(Color.BLUE);
+    buddESettingsTitle.setTextFill(Color.YELLOW);
 
     // create hbox for adding BuddE connection between central user and
     // other user
@@ -257,7 +237,7 @@ public class Main extends Application {
     // Title for Mutual BuddEs section
     Label mutualBuddEsTitle = new Label("Mutual BuddEs");
     mutualBuddEsTitle.setFont(Font.font(16));
-    mutualBuddEsTitle.setTextFill(Color.BLUE);
+    mutualBuddEsTitle.setTextFill(Color.YELLOW);
 
     // create hbox with button and text field for Mutual BuddEs section
     HBox mutualBuddEsHBox = createInputField("Mutual BuddEs", 19, 4);
@@ -289,13 +269,40 @@ public class Main extends Application {
     Separator separator4 = new Separator();
 
     // Add vbox with hboxes in it to right pane
-    VBox rightBox = new VBox();
-    rightBox.getChildren().addAll(separator1, userVBox, separator2, buddEVBox,
-        separator3, mutualBuddEsTitle, mutualBuddEsHBox, mutualBuddEsVBox,
-        separator4);
-    rightBox.setSpacing(10);
+    rightSection.getChildren().addAll(userVBox, separator2, buddEVBox, separator3,
+        mutualBuddEsTitle, mutualBuddEsHBox, mutualBuddEsVBox, separator4);
+    rightSection.setSpacing(10);
+    rightSection.setStyle("-fx-background-color: #AA076B; -fx-border-color: black; "
+        + "-fx-border-width: 0 0 0 3; -fx-padding: 0 10 0 10;");
+  }
 
-    return rightBox;
+  private static List<Node> setupNavbar() {
+    List<Node> navbar = new ArrayList<Node>();
+    // Create button to create new social network.
+    navbar.add(createNavbarButton("images/New.png", "New", 0));
+
+    navbar.add(new Separator());
+    // Create button to load existing social network.
+    navbar.add(createNavbarButton("images/Load.png", "Load file", 1));
+    // Create button to save social network.
+    navbar.add(createNavbarButton("images/Save.png", "Save file", 2));
+
+    navbar.add(new Separator());
+    // Create button to undo change to social network.
+    navbar.add(createNavbarButton("images/Undo.png", "Undo", 3));
+    // Create button to redo change to social network.
+    navbar.add(createNavbarButton("images/Redo.png", "Redo", 4));
+
+    navbar.add(new Separator());
+    // Create button to search for user.
+    navbar.add(createSearchField());
+
+    navbar.add(new Separator());
+    // Create drop-down to set central user.
+    Set<String> users = buddENetwork.getAllUsernames();
+    allUsersDropdownVBox = createDropdown(users, "Set central user");
+    navbar.add(allUsersDropdownVBox);
+    return navbar;
   }
 
   private static ImageView createLogo() {
@@ -334,31 +341,40 @@ public class Main extends Application {
       default:
     }
     Label buttonLabel = new Label(label); // Label for button.
+    buttonLabel.setTextFill(Color.WHITE);
     vBox.getChildren().addAll(iconButton, buttonLabel); // Add button and label.
     return vBox;
   }
 
-  private static HBox createSearchField() {
+  private static VBox createSearchField() {
     HBox hBox = new HBox(); // Create a VBox.
+    // Create a label for search field.
+    Label searchLabel = new Label("Search user");
+    searchLabel.setTextFill(Color.WHITE);
     TextField searchField = new TextField(); // Create an input field.
     searchField.setPromptText("Search for User"); // Placeholder for text.
+    searchField.setPrefSize(150, 25);
     Image searchIcon = new Image("images/Search.png"); // Import image.
     ImageView iconView = new ImageView(); // Create image view.
     iconView.setImage(searchIcon); // Link image view and image.
-    iconView.setFitWidth(20); // Set image width.
+    iconView.setFitHeight(17); // Set image width.
     iconView.setPreserveRatio(true); // Keep original image ratio.
     Button searchButton = new Button(); // Create a button to search.
     searchButton.setGraphic(iconView); // Link button with image view.
     // Add search button and input field.
     hBox.getChildren().addAll(searchField, searchButton);
-    return hBox;
+    VBox vBox = new VBox();
+    vBox.getChildren().addAll(searchLabel, hBox);
+    return vBox;
   }
 
   private static VBox createDropdown(Set<String> users, String label) {
     VBox vBox = new VBox(); // Create a VBox.
     Label dropdownLabel = new Label(label); // Create a label for drop-down.
+    dropdownLabel.setTextFill(Color.WHITE);
     ComboBox<String> dropdown = new ComboBox<String>(); // Create a drop-down.
     dropdown.getItems().addAll(users); // Add items to the drop-down.
+    dropdown.setPrefSize(150, 25);
     // Add label and drop-down.
     vBox.getChildren().addAll(dropdownLabel, dropdown);
     return vBox;
@@ -366,7 +382,6 @@ public class Main extends Application {
 
   private static void setCentralUserFromDropdown(ComboBox<String> dropdown) {
     String chosenUser = dropdown.getValue();
-    System.out.println(chosenUser);
     try {
       buddENetwork.setCentralUser(chosenUser);
       socialNetworkChangedAndUnsaved = true;
@@ -390,6 +405,7 @@ public class Main extends Application {
 
   private static void socialNetworkAction(TextField inputField, int index) {
     String name = inputField.getText();
+    inputField.setText("");
     String centralName = buddENetwork.getCentralUser().getName();
     // Event handler for different buttons, differentiate by index.
     try {
@@ -468,7 +484,6 @@ public class Main extends Application {
 
     // Draw circles (vertices) to represent people and lines connecting the
     // central user and their friends
-    gc.setFill(Color.RED);
     // The circles draw from the top left, so to center them, subtract the
     // radius from each coordinate
     double centerX = CANVAS_WIDTH / 2.0;
@@ -489,28 +504,30 @@ public class Main extends Application {
           double y = centerY + coords[i][1];
           gc.strokeLine(centerX, centerY, x, y);
 
-          gc.setFill(Color.BLUE);
+          gc.setFill(
+              Paint.valueOf("linear-gradient(to top left, #E5F230, #54DB63)"));
           gc.fillOval(x - RADIUS, y - RADIUS, RADIUS * 2.0, RADIUS * 2.0);
 
-          gc.setFill(Color.YELLOW);
+          gc.setFill(Paint.valueOf("#0100EC"));
           gc.fillText(friend.getName(), x - RADIUS + 5, y + 5);
           i++;
         }
-        gc.setFill(Color.RED);
+
+        // gc.setFill(Paint.valueOf(
+        // "linear-gradient(to top left, #FFE031, #F04579)"));
+        gc.setFill(
+            Paint.valueOf("linear-gradient(to top left, #00FFED, #9D00C6)"));
         gc.fillOval(centerX - RADIUS, centerY - RADIUS, RADIUS * 2.0,
             RADIUS * 2.0);
-        gc.setFill(Color.YELLOW);
+        gc.setFill(Paint.valueOf("#f6da63"));
         gc.fillText(centralName, centerX - RADIUS + 5, centerY + 5);
       } catch (Exception e) {
       }
     }
 
-    centerVBox.getChildren().clear();
+    centerSection.getChildren().clear();
     // centerVBox = new VBox();
-    centerVBox.getChildren().add(canvas);
-    // set background color of center pane
-    centerVBox.setStyle("-fx-background-color: white");
-    // root.setTop(centerVBox);
+    centerSection.getChildren().add(canvas);
   }
 
   private static double[][] getCoordinates(int numUsers) {
