@@ -207,6 +207,7 @@ public class SocialNetwork implements SocialNetworkADT {
     if (user == null) { // User not found.
       throw new UserNotFoundException();
     }
+
     return user.getFriends(); // User found.
   }
 

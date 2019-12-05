@@ -87,6 +87,8 @@ public class Main extends Application {
   private static String currentFilename = null;
   private static VBox allUsersDropdownVBox = null;
 
+  private static BorderPane root;
+
   private static boolean socialNetworkChangedAndUnsaved = false;
 
   private static HBox topHBox = null;
@@ -100,11 +102,13 @@ public class Main extends Application {
   private static final double RADIUS = 40;
   private static final double DISTANCE = 200;
   private static final String APP_TITLE = "BuddE Network";
+  
+  private static User centralU = null;
 
   @Override
   public void start(Stage primaryStage) throws Exception {
     // Main layout is Border Pane example (top, left, center, right, bottom).
-    BorderPane root = new BorderPane();
+    root = new BorderPane();
 
     // ---------------------- Top Pane ----------------------------------------
     topHBox = setupTopBox();
@@ -213,8 +217,8 @@ public class Main extends Application {
     userSettingsTitle.setTextFill(Color.BLUE);
 
     // Create input fields to add new user and remove user.
-    HBox addUserHBox = createInputField("Create New User", 10);
-    HBox removeUserHBox = createInputField("Remove User", 29);
+    HBox addUserHBox = createInputField("Create New User", 10, 0);
+    HBox removeUserHBox = createInputField("Remove User", 29, 1);
 
 
     // create vbox for user functions
@@ -234,11 +238,11 @@ public class Main extends Application {
 
     // create hbox for adding BuddE connection between central user and
     // other user
-    HBox addBuddEHBox = createInputField("Add BuddE", 40);
+    HBox addBuddEHBox = createInputField("Add BuddE", 40, 2);
 
     // create hbox for removing BuddE connection between central user and
     // other user
-    HBox removeBuddEHBox = createInputField("Remove BuddE", 18);
+    HBox removeBuddEHBox = createInputField("Remove BuddE", 18, 3);
 
     // create vbox for BuddE functions
     VBox buddEVBox = new VBox();
@@ -256,7 +260,7 @@ public class Main extends Application {
     mutualBuddEsTitle.setTextFill(Color.BLUE);
 
     // create hbox with button and text field for Mutual BuddEs section
-    HBox mutualBuddEsHBox = createInputField("Mutual BuddEs", 19);
+    HBox mutualBuddEsHBox = createInputField("Mutual BuddEs", 19, 4);
 
 
 
@@ -317,11 +321,16 @@ public class Main extends Application {
     // Event handler for different buttons, differentiate by index.
     switch (index) {
       case 0:
+        break;
       case 1:
         iconButton.setOnAction(e -> createInputDialogAndLoadFile());
+        break;
       case 2:
+        break;
       case 3:
+        break;
       case 4:
+        break;
       default:
     }
     Label buttonLabel = new Label(label); // Label for button.
@@ -366,14 +375,47 @@ public class Main extends Application {
     }
   }
 
-  private static HBox createInputField(String buttonLabel, int spacing) {
+  private static HBox createInputField(String buttonLabel, int spacing,
+      int index) {
     HBox hBox = new HBox();
     Button button = new Button(buttonLabel);
     TextField inputField = new TextField();
     inputField.setPromptText("Please enter a name");
     hBox.getChildren().addAll(button, inputField);
     hBox.setSpacing(spacing);
+
+    button.setOnAction(e -> socialNetworkAction(inputField, index));
     return hBox;
+  }
+
+  private static void socialNetworkAction(TextField inputField, int index) {
+    String name = inputField.getText();
+    String centralName = buddENetwork.getCentralUser().getName();
+    // Event handler for different buttons, differentiate by index.
+    try {
+      switch (index) {
+        case 0:
+          buddENetwork.addUser(name);
+          break;
+        case 1:
+          buddENetwork.removeUser(name);
+          break;
+        case 2:
+          buddENetwork.addFriendship(centralName, name);
+          break;
+        case 3:
+          buddENetwork.removeFriendship(centralName, name);
+          break;
+        case 4:
+          break;
+        default:
+      }
+      updateDropdownOfAllUsers();
+      centralU = buddENetwork.getCentralUser();
+      drawGraph();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   private static void createInputDialogAndLoadFile() {
@@ -415,6 +457,7 @@ public class Main extends Application {
   }
 
   private static void drawGraph() {
+    // centerVBox.getChildren().remove(0);
     Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     GraphicsContext gc = canvas.getGraphicsContext2D();
     // Set text attributes
@@ -463,9 +506,11 @@ public class Main extends Application {
     }
 
     centerVBox.getChildren().clear();
+    // centerVBox = new VBox();
     centerVBox.getChildren().add(canvas);
     // set background color of center pane
     centerVBox.setStyle("-fx-background-color: white");
+    // root.setTop(centerVBox);
   }
 
   private static double[][] getCoordinates(int numUsers) {
