@@ -214,11 +214,11 @@ public class Main extends Application {
     // Create button to save social network.
     navbar.add(createNavbarButton("images/Save.png", "Save file", 2));
 
-    navbar.add(new Separator());
+    // navbar.add(new Separator());
     // Create button to undo change to social network.
-    navbar.add(createNavbarButton("images/Undo.png", "Undo", 3));
+    // navbar.add(createNavbarButton("images/Undo.png", "Undo", 3));
     // Create button to redo change to social network.
-    navbar.add(createNavbarButton("images/Redo.png", "Redo", 4));
+    // navbar.add(createNavbarButton("images/Redo.png", "Redo", 4));
 
     navbar.add(new Separator());
     // Create button to search for user.
@@ -258,9 +258,13 @@ public class Main extends Application {
         iconButton.setOnAction(e -> createNewSocialNetwork());
         break;
       case 1:
-        iconButton.setOnAction(e -> createInputDialogAndLoadFile());
+        // iconButton.setOnAction(e -> createInputDialogAndLoadFile());
+        iconButton.setOnAction(e -> createInputDialog(
+            "Provide valid file to load your social network.", 0));
         break;
       case 2:
+        iconButton.setOnAction(e -> createInputDialog(
+            "Provide valid file to save your social network.", 1));
         break;
       case 3:
         break;
@@ -317,20 +321,37 @@ public class Main extends Application {
     drawGraph();
   }
 
-  private static void createInputDialogAndLoadFile() {
+  private static void createInputDialog(String header, int index) {
     TextInputDialog dialog = new TextInputDialog("Please enter filename:");
-    dialog.setHeaderText("Provide valid file to load your social network.");
+    dialog.setHeaderText(header);
     dialog.showAndWait();
     currentFilename = dialog.getEditor().getText();
-    loadSocialNetwork();
-    updateDropdownOfAllUsers();
-    drawGraph();
+    // Event handler for different buttons, differentiate by index.
+    switch (index) {
+      case 0:
+        loadSaveSocialNetwork(index);
+        updateDropdownOfAllUsers();
+        drawGraph();
+        break;
+      case 1:
+        loadSaveSocialNetwork(index);
+        break;
+      default:
+    }
   }
 
-  private static void loadSocialNetwork() {
+  private static void loadSaveSocialNetwork(int index) {
     try {
-      buddENetwork = new SocialNetwork();
-      buddENetwork.loadFromFile(currentFilename + ".txt");
+      // Event handler for different buttons, differentiate by index.
+      switch (index) {
+        case 0:
+          buddENetwork.loadFromFile(currentFilename);
+          break;
+        case 1:
+          buddENetwork.saveToFile(currentFilename);
+          break;
+        default:
+      }
     } catch (IOException e) {
       Alert alert = new Alert(AlertType.WARNING,
           currentFilename + " does not exist in the directory.");
@@ -443,7 +464,11 @@ public class Main extends Application {
   private static void socialNetworkAction(TextField inputField, int index) {
     String name = inputField.getText();
     inputField.setText("");
-    String centralName = buddENetwork.getCentralUser().getName();
+    User centralUser = buddENetwork.getCentralUser();
+    String centralName = null;
+    if (centralUser != null) {
+      centralName = centralUser.getName();
+    }
     // Event handler for different buttons, differentiate by index.
     try {
       switch (index) {
@@ -466,14 +491,14 @@ public class Main extends Application {
           if (node instanceof VBox) {
             VBox mutualSection = (VBox) node;
             Node list = mutualSection.getChildren().get(2);
-            
+
             if (list instanceof ListView) {
               @SuppressWarnings("unchecked")
               ListView<String> mutualList = (ListView<String>) list;
               mutualList.getItems().clear();
               mutualList.getItems().addAll(mutual);
             }
-            
+
           }
           break;
         default:
