@@ -579,7 +579,7 @@ class GraphTest {
 	}
 
 	/**
-	 * This method tests that all of the correct neighboring vertices are
+	 * This method tests that all of the correct neighboring User names are
 	 * returned for a specific vertex in the graph.
 	 */
 	@Test
@@ -602,17 +602,13 @@ class GraphTest {
 		} catch (IllegalNullArgumentException e) {
 			fail("IllegalNullArgumentExceptoin thrown.");
 		} finally {
-
-			if (graph.order() != 100) {
-				fail("Order is incorrect. Should have been 100, but was "
-						+ graph.order());
-			}
+			assertEquals(graph.order(), 100);
 		}
 	}
 
 	/**
 	 * This method tests that size continues to return correct number of edges
-	 * for a large amount of edge input.
+	 * for a large amount of edge inputs.
 	 */
 	@Test
 	void test024_check_Size_For_Large_Number_Edge_Inserts() {
@@ -633,27 +629,71 @@ class GraphTest {
 		} catch (DuplicateFriendshipException e) {
 			fail("DuplicateFriendshipException thrown, but this should not be a duplicate friendship.");
 		} finally {
-			
-			if(graph.size() != 100) {
-				fail("Size is incorrect. Should have been 100, but was " + graph.size());
-			}
+			assertEquals(graph.size(), 100);
 		}
 	}
 
 	/**
-	 * This method tests that all of the correct neighboring vertices are
-	 * returned for a specific vertex in the graph.
+	 * This method tests that the order of the graph is correct after removing an user from
+	 * the graph and adding the same user back to the graph.
 	 */
 	@Test
 	void test025_check_Order_after_removing_User_and_Inserting_again() {
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			if (graph.order() != 2) {
+				fail("Order of the graph should be 2, but it is " + graph.order());
+			}
+			graph.removeVertex(harry);
+			if (graph.order() !=1) {
+				fail("Order of the graph should be 1, but it is " + graph.order());
+			}
+			graph.addVertex(harry);
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown");
+		} catch (IllegalNullArgumentException e) {
+			fail("Cannot add a vertex for this user; the user is null.");
+		} catch (UserNotFoundException e) {
+			fail("The User harry is not already in the graph, so cannot remove vertex.");
+		} finally {
+			assertEquals(graph.order(), 2);
+		}
 	}
 
 	/**
-	 * This method tests that all of the correct neighboring vertices are
-	 * returned for a specific vertex in the graph.
+	 * This method tests that the size of the graph is correct after removing an edge from
+	 * the graph and adding the same edge back to the graph.
 	 */
 	@Test
 	void test026_check_Size_after_removing_Edge_and_Inserting_again() {
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			graph.addVertex(saniya);
+			graph.addEdge(harry, kenny);
+			graph.addEdge(harry, saniya);
+			if (graph.size() != 2) {
+				fail("Size is incorrect. Should have been 2, but was " + graph.size());
+			}
+			graph.removeEdge(harry, saniya);
+			if (graph.size() != 1) {
+				fail("Size is incorrect. Should have been 1, but was " + graph.size());
+			}
+			graph.addEdge(harry, saniya);
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown.");
+		} catch (FriendshipNotFoundException e) {
+			fail("FriendshipNotFoundException thrown.");
+		} catch (UserNotFoundException e) {
+			fail("UserNotFoundException thrown.");
+		} finally {
+			assertEquals(graph.size(), 2);
+		}
 	}
 
 }
