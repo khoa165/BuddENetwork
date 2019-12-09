@@ -542,4 +542,70 @@ class GraphTest {
       }
     }
   }
+  
+  /**
+   * This method tests that all of the correct neighboring vertices are returned
+   * for a specific vertex in the graph.
+   */
+  @Test
+  void test019_get_User_in_graph() {
+  }
+  
+  /**
+   * This method tests that all of the correct neighboring vertices are returned
+   * for a specific vertex in the graph.
+   */
+  @Test
+  void test020_get_User_Not_in_graph() {
+  }
+  
+  /**
+   * This method tests that all of the correct neighboring vertices are returned
+   * for a specific vertex in the graph.
+   */
+  @Test
+  void test021_get_Null_User_in_graph() {
+  }
+  
+  /**
+   * This method tests that all of the correct neighboring vertices are returned
+   * for a specific vertex in the graph.
+   */
+  @Test
+  void test022_get_All_UserNames_in_graph() {
+  }
+  
+  /**
+   * This method tests that all of the correct neighboring vertices are returned
+   * for a specific vertex in the graph.
+   */
+  @Test
+  void test023_check_Order_For_Large_Number_User_Inserts() {
+  }
+  
+  /**
+   * This method tests that all of the correct neighboring vertices are returned
+   * for a specific vertex in the graph.
+   */
+  @Test
+  void test024_check_Size_For_Large_Number_Edge_Inserts() {
+  }
+  
+  /**
+   * This method tests that all of the correct neighboring vertices are returned
+   * for a specific vertex in the graph.
+   */
+  @Test
+  void test025_check_Order_after_removingUser_and_Inserting_again() {
+  }
+  
+  /**
+   * This method tests that all of the correct neighboring vertices are returned
+   * for a specific vertex in the graph.
+   */
+  @Test
+  void test026_check_Size_after_removingUser_and_Inserting_again() {
+  }
+  
+  
 }
