@@ -555,35 +555,125 @@ class GraphTest {
 	}
 
 	/**
-	 * This method tests that all of the correct neighboring vertices are
-	 * returned for a specific vertex in the graph.
+	 * This method tests that the correct User is returned for a
+	 * a given username when the user is in the graph.
 	 */
 	@Test
 	void test019_get_User_in_graph() {
+		User correctUser = harry;
+		User user = null;
+		
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			graph.addVertex(saniya);
+			graph.addVertex(shannon);
+			user = graph.getUser("Harry");
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} finally {
+			assertEquals(graph.order(), 4);
+			assertEquals(graph.size(), 0);
+			assertEquals(user, correctUser);
+		}
 	}
 
 	/**
-	 * This method tests that all of the correct neighboring vertices are
-	 * returned for a specific vertex in the graph.
+	 * This method tests that null is returned for a
+	 * a given username when it does not correspond to a user in the graph.
 	 */
 	@Test
 	void test020_get_User_Not_in_graph() {
+		User correctUser = null;
+		User user = new User("");
+		
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			graph.addVertex(saniya);
+			user = graph.getUser("Shannon");
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} finally {
+			assertEquals(graph.order(), 3);
+			assertEquals(graph.size(), 0);
+			assertEquals(user, correctUser);
+		}
 	}
 
 	/**
-	 * This method tests that all of the correct neighboring vertices are
-	 * returned for a specific vertex in the graph.
+	 * This method tests that an IllegalArgumentException is thrown
+	 * when a null username is passed into getUser() method.
 	 */
 	@Test
 	void test021_get_Null_User_in_graph() {
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			graph.addVertex(saniya);
+			User user = graph.getUser(null);
+			fail("IllegalNullArgumentException should have been thrown.");
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			// IllegalNullArgumentException should be caught here
+		} finally {
+			assertEquals(graph.order(), 3);
+			assertEquals(graph.size(), 0);
+		}
 	}
 
 	/**
-	 * This method tests that all of the correct neighboring User names are
-	 * returned for a specific vertex in the graph.
+	 * This method tests that all of the Usernames/vertices are returned for the
+	 * graph.
 	 */
 	@Test
-	void test022_get_All_UserNames_in_graph() {
+	void test022_get_All_UserNames_in_graph_for_graph_with_neighbors() {
+		Set<String> usernames = new HashSet<String>();
+		Set<String> correctUsernames = new HashSet<String>();
+		correctUsernames.add("Harry");
+		correctUsernames.add("Kenny");
+		correctUsernames.add("Saniya");
+		correctUsernames.add("Shannon");
+		try {
+			graph.addVertex(harry);
+			graph.addVertex(kenny);
+			graph.addVertex(saniya);
+			graph.addVertex(shannon);
+			graph.addEdge(harry, kenny);
+			graph.addEdge(harry, saniya);
+			graph.addEdge(harry, shannon);
+			usernames = graph.getAllUsernames();
+		} catch (DuplicateUserException e) {
+			fail("DuplicateUserException thrown.");
+		} catch (IllegalNullArgumentException e) {
+			fail("IllegalNullArgumentException thrown.");
+		} catch (DuplicateFriendshipException e) {
+			fail("DuplicateFriendshipException thrown.");
+		} finally {
+			assertEquals(graph.order(), 4);
+			assertEquals(graph.size(), 3);
+			assertEquals(usernames, correctUsernames);
+
+		}
+	}
+
+	/**
+	 * This method tests that an empty set is returned for a graph with no users
+	 */
+	@Test
+	void test023_get_empty_usernames_list_for_graph__with_no_users() {
+		Set<String> usernames = new HashSet<String>();
+		Set<String> correctUsernames = new HashSet<String>();
+
+		usernames = graph.getAllUsernames();
+		assertEquals(graph.order(), 0);
+		assertEquals(graph.size(), 0);
+		assertEquals(usernames, correctUsernames);
 	}
 
 	/**
@@ -591,7 +681,7 @@ class GraphTest {
 	 * vertices for a large amount of vertex inputs.
 	 */
 	@Test
-	void test023_check_Order_For_Large_Number_User_Inserts() {
+	void test024_check_Order_For_Large_Number_User_Inserts() {
 		try {
 			for (int i = 0; i < 100; i++) {
 				User newUser = new User(Integer.toString(i));
@@ -611,11 +701,11 @@ class GraphTest {
 	 * for a large amount of edge inputs.
 	 */
 	@Test
-	void test024_check_Size_For_Large_Number_Edge_Inserts() {
+	void test025_check_Size_For_Large_Number_Edge_Inserts() {
 		try {
 			for (int i = 0; i < 100; i++) {
 				User user1 = new User(Integer.toString(i));
-				if(i == 0) {
+				if (i == 0) {
 					graph.addVertex(user1);
 				}
 				User user2 = new User(Integer.toString(i + 1));
@@ -634,20 +724,22 @@ class GraphTest {
 	}
 
 	/**
-	 * This method tests that the order of the graph is correct after removing an user from
-	 * the graph and adding the same user back to the graph.
+	 * This method tests that the order of the graph is correct after removing
+	 * an user from the graph and adding the same user back to the graph.
 	 */
 	@Test
-	void test025_check_Order_after_removing_User_and_Inserting_again() {
+	void test026_check_Order_after_removing_User_and_Inserting_again() {
 		try {
 			graph.addVertex(harry);
 			graph.addVertex(kenny);
 			if (graph.order() != 2) {
-				fail("Order of the graph should be 2, but it is " + graph.order());
+				fail("Order of the graph should be 2, but it is "
+						+ graph.order());
 			}
 			graph.removeVertex(harry);
-			if (graph.order() !=1) {
-				fail("Order of the graph should be 1, but it is " + graph.order());
+			if (graph.order() != 1) {
+				fail("Order of the graph should be 1, but it is "
+						+ graph.order());
 			}
 			graph.addVertex(harry);
 		} catch (DuplicateUserException e) {
@@ -662,11 +754,11 @@ class GraphTest {
 	}
 
 	/**
-	 * This method tests that the size of the graph is correct after removing an edge from
-	 * the graph and adding the same edge back to the graph.
+	 * This method tests that the size of the graph is correct after removing an
+	 * edge from the graph and adding the same edge back to the graph.
 	 */
 	@Test
-	void test026_check_Size_after_removing_Edge_and_Inserting_again() {
+	void test027_check_Size_after_removing_Edge_and_Inserting_again() {
 		try {
 			graph.addVertex(harry);
 			graph.addVertex(kenny);
@@ -674,11 +766,13 @@ class GraphTest {
 			graph.addEdge(harry, kenny);
 			graph.addEdge(harry, saniya);
 			if (graph.size() != 2) {
-				fail("Size is incorrect. Should have been 2, but was " + graph.size());
+				fail("Size is incorrect. Should have been 2, but was "
+						+ graph.size());
 			}
 			graph.removeEdge(harry, saniya);
 			if (graph.size() != 1) {
-				fail("Size is incorrect. Should have been 1, but was " + graph.size());
+				fail("Size is incorrect. Should have been 1, but was "
+						+ graph.size());
 			}
 			graph.addEdge(harry, saniya);
 		} catch (DuplicateUserException e) {
