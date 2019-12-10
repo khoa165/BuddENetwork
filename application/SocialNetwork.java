@@ -174,6 +174,15 @@ public class SocialNetwork implements SocialNetworkADT {
   }
 
   /**
+   * Get all the usernames of the social network.
+   *
+   * @return a set of all usernames of the social network.
+   */
+  public Set<String> getAllUsernames() {
+    return this.graph.getAllUsernames();
+  }
+
+  /**
    * Given a name, find corresponding user, return all the friends with the
    * given user.
    *
@@ -198,6 +207,7 @@ public class SocialNetwork implements SocialNetworkADT {
     if (user == null) { // User not found.
       throw new UserNotFoundException();
     }
+
     return user.getFriends(); // User found.
   }
 
@@ -219,7 +229,7 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  public Set<User> getMutualFriends(String user1, String user2)
+  public Set<String> getMutualFriends(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException {
     // Get user instances, IllegalNullArgumentException may be thrown.
     User userInstance1 = this.graph.getUser(user1);
@@ -234,10 +244,10 @@ public class SocialNetwork implements SocialNetworkADT {
     Set<User> friendsOfUser2 = userInstance2.getFriends();
 
     // Get mutual friends
-    Set<User> mutualFriends = new HashSet<User>();
+    Set<String> mutualFriends = new HashSet<String>();
     for (User friend : friendsOfUser1) {
       if (friendsOfUser2.contains(friend)) {
-        mutualFriends.add(friend);
+        mutualFriends.add(friend.getName());
       }
     }
     return mutualFriends;

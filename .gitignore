@@ -74,3 +74,10 @@ nb-configuration.xml
 ## OS X
 ##############################
 .DS_Store
+
+##############################
+## Others
+##############################
+*.bat
+manifest.txt
+Makefile

@@ -44,40 +44,42 @@
 
 package application;
 
-import java.util.HashSet;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * @author Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar.
@@ -85,57 +87,55 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
   private static SocialNetwork buddENetwork = new SocialNetwork();
+  private static String currentFilename = null;
+  private static VBox allUsersDropdownVBox = new VBox();
 
-  private static final int WINDOW_WIDTH = 1400;
-  private static final int WINDOW_HEIGHT = 750;
-  private static final int CANVAS_WIDTH = 1000;
-  private static final int CANVAS_HEIGHT = 550;
+  private static boolean socialNetworkChangedAndUnsaved = false;
+
+  private static HBox topSection = new HBox();
+  private static HBox bottomSection = new HBox();
+  private static VBox centerSection = new VBox();
+  private static VBox rightSection = new VBox();
+
+  private static final double WINDOW_WIDTH = 1400;
+  private static final double WINDOW_HEIGHT = 750;
+  private static final double CANVAS_WIDTH = 1000;
+  private static final double CANVAS_HEIGHT = 550;
+  private static final double RADIUS = 40;
+  private static final double DISTANCE = 200;
   private static final String APP_TITLE = "BuddE Network";
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-
-
     // Main layout is Border Pane example (top, left, center, right, bottom).
     BorderPane root = new BorderPane();
 
     // ---------------------- Top Pane ----------------------------------------
-    HBox topHBox = setupTopBox();
-    root.setTop(topHBox); // Set top pane.
+    setupTopView();
+    root.setTop(topSection);
+
+    // ---------------------- Bottom Pane -------------------------------------
+    setupBottomView();
+    root.setBottom(bottomSection);
 
     // ---------------------- Center pane -------------------------------------
-    VBox centerVBox = setupCenterBox();
-    root.setCenter(centerVBox); // Set center pane.
+    setupCenterView();
+    root.setCenter(centerSection);
 
     // ---------------------- Right pane --------------------------------------
-    VBox rightVBox = setupRightBox();
-    root.setRight(rightVBox); // Set right pane.
-
-    // TODO Do we want to add anything in the left pane?
-    // Add ComboBox to left pane
-    // ComboBox<String> comBox = new ComboBox<String>();
-    // comBox.getItems().addAll("Harry", "Kenny", "Saniya", "Shannon");
-    // root.setLeft(comBox);
+    setupRightView();
+    root.setRight(rightSection);
 
 
 
-    // Add done button to bottom pane
-    HBox statusHBox = new HBox();
-    Label status = new Label("STATUS: ");
-    status.setFont(Font.font("Calibri", FontWeight.BOLD, 24));
-    status.setTextFill(Color.BLUE);
-    TextField statusMessage = new TextField();
-    statusHBox.getChildren().addAll(status, statusMessage);
-    // statusHBox.setStyle("-fx-background-color: blue");
-
-    root.setBottom(statusHBox);
     Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Add the stuff and set the primary stage
     primaryStage.setTitle(APP_TITLE);
-    primaryStage.getIcons().add(new Image("buddENetworkIcon.png"));
+    primaryStage.getIcons().add(new Image("images/buddENetworkIcon.png"));
     primaryStage.setScene(mainScene);
     primaryStage.show();
+    primaryStage.setOnCloseRequest(e -> confirmWhenClose(primaryStage, e));
   }
 
   /**
@@ -157,183 +157,83 @@ public class Main extends Application {
     }
   }
 
-  private static HBox setupTopBox() {
-    // Add image to label to go in top pane
-    ImageView logoView = createLogo();
+  private static void setupTopView() {
+    // Create social network/application logo.
+    ImageView logoView = setupLogo();
 
-    // Create New, Open file, Undo, Redo, Save file buttons.
-    VBox newVBox = createNavbarButton("New.png", "New");
-    VBox openVBox = createNavbarButton("Load.png", "Load file");
-    VBox undoVBox = createNavbarButton("Undo.png", "Undo");
-    VBox redoVBox = createNavbarButton("Redo.png", "Redo");
-    VBox saveVBox = createNavbarButton("Save.png", "Save file");
-    // Create custom search field.
-    HBox searchVBox = createSearchField();
+    // Create tool bar of functions.
+    ToolBar toolBar = new ToolBar();
+    // Add navbar items to tool bar.
+    toolBar.getItems().addAll(setupNavbar());
+    toolBar.setStyle(
+        "-fx-background-color: linear-gradient(to right, #61045F, #AA076B)");
 
-    // Add vbox for setting central user
-    Set<User> users = buddENetwork.getAllUsers();
-    VBox setCentralUser = createDropdown(users, "Set central user");
-
-    // create tool bar of functions for top pane
-    ToolBar toolBar = new ToolBar(newVBox, openVBox, new Separator(), undoVBox,
-        redoVBox, new Separator(), saveVBox, new Separator(), searchVBox,
-        new Separator(), setCentralUser);
-
-    // Add hbox with vboxes in it to top pane
-    HBox topBox = new HBox();
-    topBox.getChildren().addAll(logoView, toolBar);
-    topBox.setSpacing(10);
-    // topHBox.setStyle("-fx-background-color: blue");
-
-    return topBox;
+    // Add logo and navbar to topSection.
+    topSection.getChildren().addAll(logoView, toolBar);
+    topSection.setSpacing(10);
+    topSection.setStyle("-fx-background-color: linear-gradient(to right, "
+        + "#61045F, #AA076B, #AA076B); -fx-border-color: black; "
+        + "-fx-border-width: 0 0 3 0;");
   }
 
-  private static VBox setupCenterBox() {
-    VBox centerBox = new VBox();
-    // Add interactive graph to center pane
-    // Creates a canvas that can draw shapes and text. Height: 550, width: 1000
-    Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-    GraphicsContext gc = canvas.getGraphicsContext2D();
-    // Set text attributes
-    gc.setFont(new Font(10));
+  private static void setupBottomView() {
+    // Create status label that indicates level of popularity.
+    Label status = new Label("STATUS: ");
+    status.setFont(Font.font("Calibri", FontWeight.BOLD, 24));
+    status.setTextFill(Color.BLUE);
 
-    // Set stroke attributes
-    gc.setStroke(Color.BLUE);
-    gc.setLineWidth(2);
+    // Add status label to bottom section.
+    bottomSection.getChildren().add(status);
+    bottomSection.setStyle("-fx-background-color: #adeaea; -fx-border-color: "
+        + "black; -fx-border-width: 3 0 0 0; -fx-padding: 5 0 5 10");
+  }
 
-    // Draw lines between central user and their friends before adding circles
-    // to prevent the lines from writing over the circles
-    // Edge connecting Shannon and Kenny
-    gc.strokeLine(500, 225, 500, 225 - 150);
-    // Edge connecting Shannon and Saniya
-    gc.strokeLine(500, 225, 500 - 150, 225 + 100);
-    // Edge connecting Shannon and Harry
-    gc.strokeLine(500, 225, 500 + 150, 225 + 100);
-
-    // Draw circles (vertices) to represent people and lines connecting the
-    // central user and their friends
-    // Shannon's node (central user)
-    gc.setFill(Color.RED);
-    // The circles draw from the top left, so to center them, subtract the
-    // radius from each coordinate
-    gc.fillOval(500 - 20, 225 - 20, 40, 40);
-    // Names are centered in the middle of the circle
-    gc.setFill(Color.GRAY);
-    gc.fillText("Shannon", 500 - 20, 225);
-
-    // Kenny's node
-    gc.fillOval(500 - 20, 225 - 150 - 20, 40, 40);
-    // Saniya's node
-    gc.fillOval(500 - 150 - 20, 225 + 100 - 20, 40, 40);
-    // Harry's node
-    gc.fillOval(500 + 150 - 20, 225 + 100 - 20, 40, 40);
-
-    // Add names other than the central user to circles (vertices)
-    gc.setFill(Color.RED);
-    gc.fillText("Kenny", 500 - 20, 225 - 150);
-    gc.fillText("Saniya", 500 - 150 - 20, 225 + 100);
-    gc.fillText("Harry", 500 + 150 - 20, 225 + 100);
-
-    centerBox.getChildren().add(canvas);
+  private static void setupCenterView() {
     // set background color of center pane
-    centerBox.setStyle("-fx-background-color: white");
-
-    return centerBox;
+    centerSection.setStyle(
+        "-fx-background-color: linear-gradient(to right, #61045F, #AA076B)");
   }
 
-  private static VBox setupRightBox() {
-    // create separator between user and buddE functions
-    Separator separator1 = new Separator();
-
-    // Title for BuddEs section
-    Label userSettingsTitle = new Label("User Settings");
-    userSettingsTitle.setFont(Font.font(16));
-    userSettingsTitle.setTextFill(Color.BLUE);
-
-    // Create input fields to add new user and remove user.
-    HBox addUserHBox = createInputField("Create New User", 10);
-    HBox removeUserHBox = createInputField("Remove User", 29);
-
-
-    // create vbox for user functions
-    VBox userVBox = new VBox();
-    userVBox.getChildren().addAll(userSettingsTitle, addUserHBox,
-        removeUserHBox);
-    userVBox.setSpacing(10);
-
-    // create separator between user and buddE functions
-    Separator separator2 = new Separator();
-    // separator1.setMaxWidth(150);
-
-    // Title for BuddEs section
-    Label buddESettingsTitle = new Label("BuddE Settings");
-    buddESettingsTitle.setFont(Font.font(16));
-    buddESettingsTitle.setTextFill(Color.BLUE);
-
-    // create hbox for adding BuddE connection between central user and
-    // other user
-    HBox addBuddEHBox = createInputField("Add BuddE", 39);
-
-    // create hbox for removing BuddE connection between central user and
-    // other user
-    HBox removeBuddEHBox = createInputField("Remove BuddE", 18);
-
-    // create vbox for BuddE functions
-    VBox buddEVBox = new VBox();
-    buddEVBox.getChildren().addAll(buddESettingsTitle, addBuddEHBox,
-        removeBuddEHBox);
-    buddEVBox.setSpacing(10);
-
-
-    // create separator between buddE functions and mutual BuddEs/friends
-    Separator separator3 = new Separator();
-
-    // Title for Mutual BuddEs section
-    Label mutualBuddEsTitle = new Label("Mutual BuddEs");
-    mutualBuddEsTitle.setFont(Font.font(16));
-    mutualBuddEsTitle.setTextFill(Color.BLUE);
-
-    // create hbox with button and text field for Mutual BuddEs section
-    HBox mutualBuddEsHBox = createInputField("Mutual BuddEs", 19);
-
-
-
-    // ---------------------- Mutual BuddEs code ------------------------------
-    ListView<String> list = new ListView<>();
-    ObservableList<String> mutualFriends =
-        FXCollections.observableList(List.of("Saniya", "Shannon"));
-
-    VBox mutualBuddEsVBox = new VBox();
-
-    Scene scene = new Scene(mutualBuddEsVBox, 100, 100);
-    // stage.setScene(scene);
-    // stage.setTitle("Mutual BuddEs");
-    mutualBuddEsVBox.getChildren().addAll(list);
-    VBox.setVgrow(list, Priority.ALWAYS);
-
-    list.setItems(mutualFriends);
-
-    list.setCellFactory((ListView<String> l) -> new addFriendToCell());
-
-    // stage.show();
-
-    // ------------------End Mutual BuddEs code -------------------------------
-
-    // create separator between user and buddE functions
-    Separator separator4 = new Separator();
-
-    // Add vbox with hboxes in it to right pane
-    VBox rightBox = new VBox();
-    rightBox.getChildren().addAll(separator1, userVBox, separator2, buddEVBox,
-        separator3, mutualBuddEsTitle, mutualBuddEsHBox, mutualBuddEsVBox,
-        separator4);
-    rightBox.setSpacing(10);
-
-    return rightBox;
+  private static void setupRightView() {
+    // Create side-bar.
+    rightSection.getChildren().addAll(setupSidebar());
+    rightSection.setSpacing(10);
+    rightSection
+        .setStyle("-fx-background-color: #AA076B; -fx-border-color: black; "
+            + "-fx-border-width: 0 0 0 3; -fx-padding: 0 10 0 10;");
   }
 
-  private static ImageView createLogo() {
-    Image logoPic = new Image("buddENetworkLogo.png");
+  private static List<Node> setupNavbar() {
+    List<Node> navbar = new ArrayList<Node>();
+    // Create button to create new social network.
+    navbar.add(createNavbarButton("images/New.png", "New", 0));
+
+    navbar.add(new Separator());
+    // Create button to load existing social network.
+    navbar.add(createNavbarButton("images/Load.png", "Load file", 1));
+    // Create button to save social network.
+    navbar.add(createNavbarButton("images/Save.png", "Save file", 2));
+
+    navbar.add(new Separator());
+    // Create button to undo change to social network.
+    navbar.add(createNavbarButton("images/Undo.png", "Undo", 3));
+    // Create button to redo change to social network.
+    navbar.add(createNavbarButton("images/Redo.png", "Redo", 4));
+
+    navbar.add(new Separator());
+    // Create button to search for user.
+    navbar.add(createSearchField());
+
+    navbar.add(new Separator());
+    // Create drop-down to set central user.
+    Set<String> users = buddENetwork.getAllUsernames();
+    allUsersDropdownVBox = createDropdown(users, "Set central user");
+    navbar.add(allUsersDropdownVBox);
+    return navbar;
+  }
+
+  private static ImageView setupLogo() {
+    Image logoPic = new Image("images/buddENetworkLogo.png");
     ImageView logoView = new ImageView();
     logoView.setImage(logoPic);
     logoView.setFitHeight(75); // Set image height.
@@ -341,7 +241,8 @@ public class Main extends Application {
     return logoView;
   }
 
-  private static VBox createNavbarButton(String iconFilename, String label) {
+  private static VBox createNavbarButton(String iconFilename, String label,
+      int index) {
     VBox vBox = new VBox(); // Create a VBox.
     Image icon = new Image(iconFilename); // Import image.
     ImageView iconView = new ImageView(); // Create image view.
@@ -350,45 +251,324 @@ public class Main extends Application {
     iconView.setPreserveRatio(true); // Keep original image ratio.
     Button iconButton = new Button(); // Create a button.
     iconButton.setGraphic(iconView); // Link button with image view.
+
+    // Event handler for different buttons, differentiate by index.
+    switch (index) {
+      case 0:
+        iconButton.setOnAction(e -> createNewSocialNetwork());
+        break;
+      case 1:
+        iconButton.setOnAction(e -> createInputDialogAndLoadFile());
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      case 4:
+        break;
+      default:
+    }
     Label buttonLabel = new Label(label); // Label for button.
+    buttonLabel.setTextFill(Color.YELLOW);
+    buttonLabel.setStyle("-fx-font-weight: bold");
     vBox.getChildren().addAll(iconButton, buttonLabel); // Add button and label.
     return vBox;
   }
 
-  private static HBox createSearchField() {
+  private static VBox createSearchField() {
     HBox hBox = new HBox(); // Create a VBox.
+    // Create a label for search field.
+    Label searchLabel = new Label("Search user");
+    searchLabel.setTextFill(Color.YELLOW);
+    searchLabel.setStyle("-fx-font-weight: bold");
     TextField searchField = new TextField(); // Create an input field.
     searchField.setPromptText("Search for User"); // Placeholder for text.
-    Image searchIcon = new Image("Search.png"); // Import image.
+    searchField.setPrefSize(150, 25);
+    Image searchIcon = new Image("images/Search.png"); // Import image.
     ImageView iconView = new ImageView(); // Create image view.
     iconView.setImage(searchIcon); // Link image view and image.
-    iconView.setFitWidth(20); // Set image width.
+    iconView.setFitHeight(17); // Set image width.
     iconView.setPreserveRatio(true); // Keep original image ratio.
     Button searchButton = new Button(); // Create a button to search.
     searchButton.setGraphic(iconView); // Link button with image view.
     // Add search button and input field.
     hBox.getChildren().addAll(searchField, searchButton);
-    return hBox;
+    VBox vBox = new VBox();
+    vBox.getChildren().addAll(searchLabel, hBox);
+    return vBox;
   }
 
-  private static VBox createDropdown(Set<User> users, String label) {
+  private static VBox createDropdown(Set<String> users, String label) {
     VBox vBox = new VBox(); // Create a VBox.
     Label dropdownLabel = new Label(label); // Create a label for drop-down.
-    ComboBox<User> dropdown = new ComboBox<User>(); // Create a drop-down.
+    dropdownLabel.setTextFill(Color.YELLOW);
+    dropdownLabel.setStyle("-fx-font-weight: bold");
+    ComboBox<String> dropdown = new ComboBox<String>(); // Create a drop-down.
     dropdown.getItems().addAll(users); // Add items to the drop-down.
+    dropdown.setPrefSize(150, 25);
     // Add label and drop-down.
     vBox.getChildren().addAll(dropdownLabel, dropdown);
     return vBox;
   }
 
-  private static HBox createInputField(String buttonLabel, int spacing) {
+  private static void createNewSocialNetwork() {
+    buddENetwork = new SocialNetwork();
+    updateDropdownOfAllUsers();
+    drawGraph();
+  }
+
+  private static void createInputDialogAndLoadFile() {
+    TextInputDialog dialog = new TextInputDialog("Please enter filename:");
+    dialog.setHeaderText("Provide valid file to load your social network.");
+    dialog.showAndWait();
+    currentFilename = dialog.getEditor().getText();
+    loadSocialNetwork();
+    updateDropdownOfAllUsers();
+    drawGraph();
+  }
+
+  private static void loadSocialNetwork() {
+    try {
+      buddENetwork = new SocialNetwork();
+      buddENetwork.loadFromFile(currentFilename + ".txt");
+    } catch (IOException e) {
+      Alert alert = new Alert(AlertType.WARNING,
+          currentFilename + " does not exist in the directory.");
+      alert.show();
+    } catch (IllegalNullArgumentException e) {
+      Alert alert =
+          new Alert(AlertType.WARNING, "Empty filename is not acceptable.");
+      alert.show();
+    } catch (Exception e) {
+      Alert alert =
+          new Alert(AlertType.WARNING, "Sorry, unexpected error occured.");
+      alert.show();
+    }
+  }
+
+  private static void updateDropdownOfAllUsers() {
+    Set<String> users = buddENetwork.getAllUsernames();
+    allUsersDropdownVBox.getChildren().clear();
+    // Create a label for drop-down.
+    Label dropdownLabel = new Label("Set central user");
+    dropdownLabel.setTextFill(Color.WHITE);
+    ComboBox<String> dropdown = new ComboBox<String>(); // Create a drop-down.
+    dropdown.getItems().addAll(users); // Add items to the drop-down.
+    dropdown.setPrefSize(150, 25);
+    allUsersDropdownVBox.getChildren().addAll(dropdownLabel, dropdown);
+
+    dropdown.setOnAction(e -> setCentralUserFromDropdown(dropdown));
+  }
+
+  private static void setCentralUserFromDropdown(ComboBox<String> dropdown) {
+    String chosenUser = dropdown.getValue();
+    try {
+      buddENetwork.setCentralUser(chosenUser);
+      socialNetworkChangedAndUnsaved = true;
+      drawGraph();
+    } catch (Exception e) {
+    }
+  }
+
+  private static List<Node> setupSidebar() {
+    List<Node> sidebar = new ArrayList<Node>();
+    // Add/remove user section.
+    sidebar.add(createSidebarSection("User Settings", "Create New User",
+        "Remove User", 10, 29, 0, 1));
+
+    sidebar.add(new Separator());
+    // Add/remove friendship section.
+    sidebar.add(createSidebarSection("BuddE Settings", "Add BuddE",
+        "Remove BuddE", 40, 18, 2, 3));
+
+    sidebar.add(new Separator());
+    // Add mutual friends section.
+    sidebar.add(createMutualFriendsSection());
+
+    return sidebar;
+
+  }
+
+  private static VBox createSidebarSection(String sectionLabel, String addLabel,
+      String removeLabel, int firstSpacing, int secondSpacing, int firstIndex,
+      int secondIndex) {
+    Label label = createSidebarLabel(sectionLabel);
+
+    // Create input fields to add and to remove.
+    HBox add = createInputField(addLabel, firstSpacing, firstIndex);
+    HBox remove = createInputField(removeLabel, secondSpacing, secondIndex);
+
+    VBox vBox = new VBox();
+    vBox.getChildren().addAll(label, add, remove);
+    vBox.setSpacing(10);
+    return vBox;
+  }
+
+  private static Label createSidebarLabel(String labelText) {
+    Label label = new Label(labelText);
+    label.setFont(Font.font(16));
+    label.setStyle("-fx-font-weight: bold");
+    label.setTextFill(Color.YELLOW);
+    return label;
+  }
+
+  private static VBox createMutualFriendsSection() {
+    VBox vBox = new VBox();
+    // Label for mutual buddies section.
+    Label label = createSidebarLabel("Mutual BuddEs");
+    // Create button and text field to retrieve second user.
+    HBox field = createInputField("Mutual BuddEs", 19, 4);
+
+    ListView<String> listView = new ListView<String>();
+    vBox.getChildren().addAll(label, field, listView);
+    vBox.setSpacing(10);
+    VBox.setVgrow(listView, Priority.ALWAYS);
+
+    return vBox;
+  }
+
+  private static HBox createInputField(String buttonLabel, int spacing,
+      int index) {
     HBox hBox = new HBox();
     Button button = new Button(buttonLabel);
     TextField inputField = new TextField();
-    inputField.setPromptText("Please Enter a Name");
+    inputField.setPromptText("Please enter a name");
     hBox.getChildren().addAll(button, inputField);
     hBox.setSpacing(spacing);
+
+    button.setOnAction(e -> socialNetworkAction(inputField, index));
     return hBox;
+  }
+
+  private static void socialNetworkAction(TextField inputField, int index) {
+    String name = inputField.getText();
+    inputField.setText("");
+    String centralName = buddENetwork.getCentralUser().getName();
+    // Event handler for different buttons, differentiate by index.
+    try {
+      switch (index) {
+        case 0:
+          buddENetwork.addUser(name);
+          break;
+        case 1:
+          buddENetwork.removeUser(name);
+          break;
+        case 2:
+          buddENetwork.addFriendship(centralName, name);
+          break;
+        case 3:
+          buddENetwork.removeFriendship(centralName, name);
+          break;
+        case 4:
+          Set<String> mutual = buddENetwork.getMutualFriends(centralName, name);
+          // Mutual friend section is 4th element of rightSection
+          Node node = rightSection.getChildren().get(4);
+          if (node instanceof VBox) {
+            VBox mutualSection = (VBox) node;
+            Node list = mutualSection.getChildren().get(2);
+            
+            if (list instanceof ListView) {
+              @SuppressWarnings("unchecked")
+              ListView<String> mutualList = (ListView<String>) list;
+              mutualList.getItems().clear();
+              mutualList.getItems().addAll(mutual);
+            }
+            
+          }
+          break;
+        default:
+          break;
+      }
+      updateDropdownOfAllUsers();
+      drawGraph();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static void drawGraph() {
+    // centerVBox.getChildren().remove(0);
+    Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    // Set text attributes
+    gc.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
+    // Set stroke attributes
+    gc.setStroke(Color.BLACK);
+    gc.setLineWidth(2);
+
+    // Draw circles (vertices) to represent people and lines connecting the
+    // central user and their friends
+    // The circles draw from the top left, so to center them, subtract the
+    // radius from each coordinate
+    double centerX = CANVAS_WIDTH / 2.0;
+    double centerY = CANVAS_HEIGHT / 2.0;
+    // Names are centered in the middle of the circle
+    gc.setFill(Color.YELLOW);
+    if (buddENetwork.getCentralUser() != null) {
+      String centralName = buddENetwork.getCentralUser().getName();
+      int numFriends = -1;
+      try {
+        Set<User> friends = buddENetwork.getFriends(centralName);
+        numFriends = friends.size();
+
+        double[][] coords = getCoordinates(numFriends);
+        int i = 0;
+        for (User friend : buddENetwork.getFriends(centralName)) {
+          double x = centerX + coords[i][0];
+          double y = centerY + coords[i][1];
+          gc.strokeLine(centerX, centerY, x, y);
+
+          gc.setFill(
+              Paint.valueOf("linear-gradient(to top left, #E5F230, #54DB63)"));
+          gc.fillOval(x - RADIUS, y - RADIUS, RADIUS * 2.0, RADIUS * 2.0);
+
+          gc.setFill(Paint.valueOf("#0100EC"));
+          gc.fillText(friend.getName(), x - RADIUS + 5, y + 5);
+          i++;
+        }
+
+        // gc.setFill(Paint.valueOf(
+        // "linear-gradient(to top left, #FFE031, #F04579)"));
+        gc.setFill(
+            Paint.valueOf("linear-gradient(to top left, #00FFED, #9D00C6)"));
+        gc.fillOval(centerX - RADIUS, centerY - RADIUS, RADIUS * 2.0,
+            RADIUS * 2.0);
+        gc.setFill(Paint.valueOf("#f6da63"));
+        gc.fillText(centralName, centerX - RADIUS + 5, centerY + 5);
+      } catch (Exception e) {
+      }
+    }
+
+    centerSection.getChildren().clear();
+    // centerVBox = new VBox();
+    centerSection.getChildren().add(canvas);
+  }
+
+  private static double[][] getCoordinates(int numUsers) {
+    double[][] coords = new double[numUsers][2];
+    double angle = Math.PI * 2.0 / numUsers;
+    for (int i = 0; i < numUsers; ++i) {
+      double anglePosition = angle * i;
+      coords[i][0] = Math.sin(anglePosition) * DISTANCE;
+      coords[i][1] = Math.cos(anglePosition) * DISTANCE;
+    }
+    return coords;
+  }
+
+  private static void confirmWhenClose(Stage stage, WindowEvent e) {
+    if (socialNetworkChangedAndUnsaved) {
+      Alert closeConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+      Button exitButton = (Button) closeConfirmation.getDialogPane()
+          .lookupButton(ButtonType.OK);
+      exitButton.setText("Exit");
+      closeConfirmation.setHeaderText(
+          "Are you sure you want to exit without saving? If so, all the changes"
+              + " that you have made to the social network would not be saved.");
+      Optional<ButtonType> closeResponse = closeConfirmation.showAndWait();
+      if (!ButtonType.OK.equals(closeResponse.get())) {
+        e.consume();
+      }
+    }
   }
 
   /**
