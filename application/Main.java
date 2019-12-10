@@ -138,25 +138,6 @@ public class Main extends Application {
     primaryStage.setOnCloseRequest(e -> confirmWhenClose(primaryStage, e));
   }
 
-  /**
-   * Please note that this class allows us to view the list of mutual BuddEs,
-   * between the central user and one of his/her buddEs.
-   * 
-   * @author
-   *
-   */
-  static class addFriendToCell extends ListCell<String> {
-    @Override
-    public void updateItem(String item, boolean empty) {
-      super.updateItem(item, empty);
-      Label friendNameLabel;
-      if (item != null) {
-        friendNameLabel = new Label(item);
-        setGraphic(friendNameLabel);
-      }
-    }
-  }
-
   private static void setupTopView() {
     // Create social network/application logo.
     ImageView logoView = setupLogo();
@@ -295,6 +276,9 @@ public class Main extends Application {
     iconView.setPreserveRatio(true); // Keep original image ratio.
     Button searchButton = new Button(); // Create a button to search.
     searchButton.setGraphic(iconView); // Link button with image view.
+
+    searchButton.setOnAction(e -> searchUserAndSetCentralUser(searchField));
+
     // Add search button and input field.
     hBox.getChildren().addAll(searchField, searchButton);
     VBox vBox = new VBox();
@@ -349,6 +333,7 @@ public class Main extends Application {
           break;
         case 1:
           buddENetwork.saveToFile(currentFilename);
+          socialNetworkChangedAndUnsaved = false;
           break;
         default:
       }
@@ -379,6 +364,17 @@ public class Main extends Application {
     allUsersDropdownVBox.getChildren().addAll(dropdownLabel, dropdown);
 
     dropdown.setOnAction(e -> setCentralUserFromDropdown(dropdown));
+  }
+
+  private static void searchUserAndSetCentralUser(TextField searchField) {
+    String name = searchField.getText();
+    searchField.setText("");
+    try {
+      buddENetwork.setCentralUser(name);
+      socialNetworkChangedAndUnsaved = true;
+      drawGraph();
+    } catch (Exception e) {
+    }
   }
 
   private static void setCentralUserFromDropdown(ComboBox<String> dropdown) {
@@ -504,6 +500,7 @@ public class Main extends Application {
         default:
           break;
       }
+      socialNetworkChangedAndUnsaved = true;
       updateDropdownOfAllUsers();
       drawGraph();
     } catch (Exception e) {
