@@ -89,6 +89,7 @@ public class Main extends Application {
   private static SocialNetwork buddENetwork = new SocialNetwork();
   private static String currentFilename = null;
   private static VBox allUsersDropdownVBox = new VBox();
+  private static Label socialNetworkStat = new Label();
 
   private static boolean socialNetworkChangedAndUnsaved = false;
 
@@ -159,12 +160,13 @@ public class Main extends Application {
 
   private static void setupBottomView() {
     // Create status label that indicates level of popularity.
-    Label status = new Label("STATUS: ");
-    status.setFont(Font.font("Calibri", FontWeight.BOLD, 24));
-    status.setTextFill(Color.BLUE);
+    socialNetworkStat = new Label("BuddE Network stats: 0 users --- 0 "
+        + "friendships --- 0 connected groups/components.");
+    socialNetworkStat.setFont(Font.font("Calibri", FontWeight.BOLD, 24));
+    socialNetworkStat.setTextFill(Color.BLUE);
 
     // Add status label to bottom section.
-    bottomSection.getChildren().add(status);
+    bottomSection.getChildren().add(socialNetworkStat);
     bottomSection.setStyle("-fx-background-color: #adeaea; -fx-border-color: "
         + "black; -fx-border-width: 3 0 0 0; -fx-padding: 5 0 5 10");
   }
@@ -330,6 +332,7 @@ public class Main extends Application {
       switch (index) {
         case 0:
           buddENetwork.loadFromFile(currentFilename);
+          updateSocialNetworkStat();
           break;
         case 1:
           buddENetwork.saveToFile(currentFilename);
@@ -503,6 +506,7 @@ public class Main extends Application {
       socialNetworkChangedAndUnsaved = true;
       updateDropdownOfAllUsers();
       drawGraph();
+      updateSocialNetworkStat();
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -575,6 +579,13 @@ public class Main extends Application {
       coords[i][1] = Math.cos(anglePosition) * DISTANCE;
     }
     return coords;
+  }
+
+  private static void updateSocialNetworkStat() {
+    String status = "BuddE Network stats: " + buddENetwork.numberUsers()
+        + " users --- " + buddENetwork.numberConnections()
+        + " friendships --- 0 connected groups/components.";
+    socialNetworkStat.setText(status);
   }
 
   private static void confirmWhenClose(Stage stage, WindowEvent e) {

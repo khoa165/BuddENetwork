@@ -337,35 +337,47 @@ public class SocialNetwork implements SocialNetworkADT {
     file = new FileInputStream(filename); // Read a file.
     // Assign variable to scanner reading from a file.
     scnr = new Scanner(file);
-    try {
-      while (scnr.hasNextLine()) {
-        String line = scnr.nextLine().trim();
-        String[] command = line.split(" ");
-        if (command.length > 1) {
-          // Add friendship command.
-          if (command.length == 3 && command[0].contentEquals("a")) {
+    while (scnr.hasNextLine()) {
+      String line = scnr.nextLine().trim();
+      String[] command = line.split(" ");
+      if (command.length > 1) {
+        // Add friendship command.
+        if (command.length == 3 && command[0].contentEquals("a")) {
+          try {
             this.addFriendship(command[1], command[2]);
+          } catch (Exception e) {
+
           }
-          // Add user command.
-          else if (command.length == 2 && command[0].contentEquals("a")) {
+        }
+        // Add user command.
+        else if (command.length == 2 && command[0].contentEquals("a")) {
+          try {
             this.addUser(command[1]);
+          } catch (Exception e) {
           }
-          // Remove friendship command.
-          else if (command.length == 3 && command[0].contentEquals("r")) {
+        }
+        // Remove friendship command.
+        else if (command.length == 3 && command[0].contentEquals("r")) {
+          try {
             this.removeFriendship(command[1], command[2]);
+          } catch (Exception e) {
           }
-          // Remove user command.
-          else if (command.length == 3 && command[0].contentEquals("r")) {
+        }
+        // Remove user command.
+        else if (command.length == 3 && command[0].contentEquals("r")) {
+          try {
             this.removeUser(command[1]);
+          } catch (Exception e) {
           }
-          // Set central user command.
-          else if (command.length == 2 && command[0].contentEquals("s")) {
+        }
+        // Set central user command.
+        else if (command.length == 2 && command[0].contentEquals("s")) {
+          try {
             this.setCentralUser(command[1]);
+          } catch (Exception e) {
           }
         }
       }
-    } catch (Exception e) {
-
     }
     scnr.close(); // Close scanner.
     file.close(); // Close file.
@@ -427,4 +439,11 @@ public class SocialNetwork implements SocialNetworkADT {
     this.commands.add("s " + username);
   }
 
+  public int numberUsers() {
+    return this.graph.order();
+  }
+
+  public int numberConnections() {
+    return this.graph.size();
+  }
 }
