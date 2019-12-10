@@ -20,25 +20,23 @@ class SocialNetworkTest {
   public static SocialNetwork christmasBuddENetwork;
   public static SocialNetwork lonelERedNosedRudolphNetwork;
   // 11 default users (9 are reindeer)
-  User santaClaus = new User("Santa Claus");
-  User grinch = new User("Grinch");
-  User comet = new User("Comet");
-  User rudolph = new User("Rudolph");
-  User prancer = new User("Prancer");
-  User blitzen = new User("Blitzen");
-  User donder = new User("Donder");
-  User vixen = new User("Vixen");
-  User dancer = new User("Dancer");
-  User cupid = new User("Cupid");
-  User dasher = new User("Dasher");
+  // User santaClaus = new User("Santa Claus");
+  // User grinch = new User("Grinch");
+  // User comet = new User("Comet");
+  // User rudolph = new User("Rudolph");
+  // User prancer = new User("Prancer");
+  // User blitzen = new User("Blitzen");
+  // User donder = new User("Donder");
+  // User vixen = new User("Vixen");
+  // User dancer = new User("Dancer");
+  // User cupid = new User("Cupid");
+  // User dasher = new User("Dasher");
 
   @BeforeEach
   void setUp() throws Exception {
     christmasBuddENetwork = new SocialNetwork();
     newBuddENetwork = new SocialNetwork();
     lonelERedNosedRudolphNetwork = new SocialNetwork();
-
-
   }
 
   @AfterEach
@@ -49,8 +47,9 @@ class SocialNetworkTest {
   }
 
   /**
-   * This method tests to see if a valid friendship between 2 BuddEs is added to the social network
-   * graph. Here, both buddEs are already in the social network.
+   * This method tests to see if a valid friendship between 2 BuddEs is added to
+   * the social network graph. Here, both buddEs are already in the social
+   * network.
    */
   @Test
   void test001_addValidFriendshipFor2BuddiesInNetwork() {
@@ -67,24 +66,28 @@ class SocialNetworkTest {
       lonelERedNosedRudolphNetwork.addFriendship("santa", "grinch");
       // adding another friendship to the different network
       lonelERedNosedRudolphNetwork.addFriendship("blitzen", "donder");
-      // the lonelERedNosedRudolphNetwork should have 4 buddEs: santa, grinch, blitzen, and donder
+      // the lonelERedNosedRudolphNetwork should have 4 buddEs: santa, grinch,
+      // blitzen, and donder
       Set<User> lonelERudolphSet = lonelERedNosedRudolphNetwork.getAllUsers();
       int numLonelERudolphBuddEs = lonelERudolphSet.size();
       if (numLonelERudolphBuddEs != 4) {
         fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Did "
-            + "NOT return 4 for the # of BuddEs in the lonelERedNosedRudolphNetwork "
-            + "but instead returned: " + numLonelERudolphBuddEs);
+            + "NOT return 4 for the # of BuddEs in the "
+            + "lonelERedNosedRudolphNetwork but instead returned: "
+            + numLonelERudolphBuddEs);
       }
-      // we should see that blitzen and donder each just have 1 buddE in the lonelERedNosedRudolphNetwork:
+      // we should see that blitzen and donder each just have 1 buddE in the
+      // lonelERedNosedRudolphNetwork:
       lonelERedNosedRudolphNetwork.setCentralUser("blitzen");
       User centralUserBlitzen = lonelERedNosedRudolphNetwork.getCentralUser();
       Set<User> blitzensFriends = centralUserBlitzen.getFriends();
-      int numFriendsOfBlitzen = blitzensFriends.size(); // please note this should be 1
+      int numFriendsOfBlitzen = blitzensFriends.size(); // please note this
+                                                        // should be 1
 
       if (numFriendsOfBlitzen != 1) {
         fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Did"
-            + " NOT return 1 for the # of buddEs Blitzen has (Donder) and instead returned: "
-            + numFriendsOfBlitzen);
+            + " NOT return 1 for the # of buddEs Blitzen has (Donder) and "
+            + "instead returned: " + numFriendsOfBlitzen);
       }
       for (User i : blitzensFriends)
 
@@ -97,16 +100,16 @@ class SocialNetworkTest {
       lonelERedNosedRudolphNetwork.setCentralUser("donder");
       User centralUserDonder = lonelERedNosedRudolphNetwork.getCentralUser();
       Set<User> dondersFriends = centralUserDonder.getFriends();
-      int numFriendsOfDonder = dondersFriends.size(); // please note this should be 1
+      int numFriendsOfDonder = dondersFriends.size(); // please note this should
+                                                      // be 1
 
       if (numFriendsOfDonder != 1) {
         fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Did"
-            + " NOT return 1 for the # of buddEs Donder has (Blitzen) and instead returned: "
-            + numFriendsOfDonder);
+            + " NOT return 1 for the # of buddEs Donder has (Blitzen) and "
+            + "instead returned: " + numFriendsOfDonder);
       }
 
       for (User i : dondersFriends) {
-        System.out.println("Donders friends:" + i.getName());
         if ((!i.getName().equals("blitzen"))) {
           fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :("
               + " Donders buddE list is NOT correct");
@@ -116,9 +119,11 @@ class SocialNetworkTest {
 
 
 
-      // ensuring we have added all 5 buddEs to the christmasBuddENetwork because addFriendship should do
+      // ensuring we have added all 5 buddEs to the christmasBuddENetwork
+      // because addFriendship should do
       // this :)
-      // we should have 5 buddEs: santa, grinch, rudolph, comet, and prancer in the network
+      // we should have 5 buddEs: santa, grinch, rudolph, comet, and prancer in
+      // the network
       Set<User> allChristmasBuddEsSet = christmasBuddENetwork.getAllUsers();
       int numOfBuddEs = allChristmasBuddEsSet.size();
       if (numOfBuddEs != 5) {
@@ -132,12 +137,13 @@ class SocialNetworkTest {
       christmasBuddENetwork.setCentralUser("santa");
       User centralUserSanta = christmasBuddENetwork.getCentralUser();
       Set<User> santasFriends = centralUserSanta.getFriends();
-      int numFriendsOfSanta = santasFriends.size(); // please note this should be 3
+      int numFriendsOfSanta = santasFriends.size(); // please note this should
+                                                    // be 3
 
       if (numFriendsOfSanta != 3) {
         fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Did"
-            + " NOT return 3 for the # of friends Santa has (Grinch, Rudolph, and "
-            + "Comet) and instead returned: " + numFriendsOfSanta);
+            + " NOT return 3 for the # of friends Santa has (Grinch, Rudolph, "
+            + "and Comet) and instead returned: " + numFriendsOfSanta);
       }
 
       ArrayList<String> santaBudsList = new ArrayList<String>();
@@ -158,12 +164,13 @@ class SocialNetworkTest {
       christmasBuddENetwork.setCentralUser("grinch");
       User centralUserGrinch = christmasBuddENetwork.getCentralUser();
       Set<User> grinchsFriends = centralUserGrinch.getFriends();
-      int numFriendsOfGrinch = grinchsFriends.size(); // please note this should be 2
+      int numFriendsOfGrinch = grinchsFriends.size(); // please note this should
+                                                      // be 2
 
       if (numFriendsOfGrinch != 2) {
         fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Did"
-            + " NOT return 2 for the # of friends Grinch has (Santa and Prancer) "
-            + "and instead returned: " + numFriendsOfGrinch);
+            + " NOT return 2 for the # of friends Grinch has (Santa and "
+            + "Prancer) and instead returned: " + numFriendsOfGrinch);
       }
 
       ArrayList<String> grinchBudsList = new ArrayList<String>();
@@ -184,12 +191,13 @@ class SocialNetworkTest {
       christmasBuddENetwork.setCentralUser("comet");
       User centralUserComet = christmasBuddENetwork.getCentralUser();
       Set<User> cometsFriends = centralUserComet.getFriends();
-      int numFriendsOfComet = cometsFriends.size(); // please note this should be 2
+      int numFriendsOfComet = cometsFriends.size(); // please note this should
+                                                    // be 2
 
       if (numFriendsOfComet != 2) {
         fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Did"
-            + " NOT return 2 for the # of buddEs reindeer Comet has (Santa and Prancer) "
-            + "and instead returned: " + numFriendsOfComet);
+            + " NOT return 2 for the # of buddEs reindeer Comet has (Santa and "
+            + "Prancer) and instead returned: " + numFriendsOfComet);
       }
 
       ArrayList<String> cometBudsList = new ArrayList<String>();
@@ -209,12 +217,13 @@ class SocialNetworkTest {
       christmasBuddENetwork.setCentralUser("prancer");
       User centralUserPrancer = christmasBuddENetwork.getCentralUser();
       Set<User> prancersFriends = centralUserPrancer.getFriends();
-      int numFriendsOfPrancer = cometsFriends.size(); // please note this should be 2
+      int numFriendsOfPrancer = cometsFriends.size(); // please note this should
+                                                      // be 2
 
       if (numFriendsOfPrancer != 2) {
         fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Did"
-            + " NOT return 2 for the # of buddEs reindeer Prancer has (Grinch and Comet) "
-            + "and instead returned: " + numFriendsOfPrancer);
+            + " NOT return 2 for the # of buddEs reindeer Prancer has (Grinch "
+            + "and Comet) and instead returned: " + numFriendsOfPrancer);
       }
 
       ArrayList<String> prancerBudsList = new ArrayList<String>();
@@ -226,7 +235,6 @@ class SocialNetworkTest {
           || (!prancerBudsList.contains("comet"))) {
         fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :("
             + " Prancers buddE list is NOT correct");
-
       }
 
       // checking Rudolph's friendships:
@@ -234,12 +242,13 @@ class SocialNetworkTest {
       christmasBuddENetwork.setCentralUser("rudolph");
       User centralUserRudolph = christmasBuddENetwork.getCentralUser();
       Set<User> rudolphsFriends = centralUserRudolph.getFriends();
-      int numFriendsOfRudolph = rudolphsFriends.size(); // please note this should be 1
+      int numFriendsOfRudolph = rudolphsFriends.size(); // please note this
+                                                        // should be 1
 
       if (numFriendsOfRudolph != 1) {
         fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Did"
-            + " NOT return 1 for the # of buddEs Red-Nose reindeer Rudolph has (Santa) "
-            + "and instead returned: " + numFriendsOfRudolph);
+            + " NOT return 1 for the # of buddEs Red-Nose reindeer Rudolph has "
+            + "(Santa) and instead returned: " + numFriendsOfRudolph);
       }
 
       ArrayList<String> rudolphBudsList = new ArrayList<String>();
@@ -251,23 +260,18 @@ class SocialNetworkTest {
       if ((!rudolphBudsList.contains("santa"))) {
         fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :("
             + " Rudolphs buddE list is NOT correct");
-
       }
 
     } catch (IllegalNullArgumentException e1) {
-
-      fail(
-          "test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Threw an IllegalNullArgumentException when trying to add a valid friendship!");
-
-
+      fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Threw "
+          + "an IllegalNullArgumentException when trying to add a valid "
+          + "friendship!");
     } catch (UserNotFoundException e2) {
-      fail(
-          "test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Threw a UserNotFoundException when trying to add a valid friendship!");
-
+      fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Threw "
+          + "a UserNotFoundException when trying to add a valid friendship!");
     } catch (Exception e3) {
-
-      fail(
-          "test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Threw an Exception when trying to add a valid friendship!");
+      fail("test001_addValidFriendshipFor2BuddiesInNetwork(): FAILED! :( Threw "
+          + "an Exception when trying to add a valid friendship!");
     }
 
 
@@ -278,35 +282,39 @@ class SocialNetworkTest {
   }
 
   /**
-   * This method tests to see if an IllegalNullArgumentException is properly thrown when the
-   * addFriendship method is called and at least 1 of the arguments is a null or empty string.
+   * This method tests to see if an IllegalNullArgumentException is properly
+   * thrown when the addFriendship method is called and at least 1 of the
+   * arguments is a null or empty string.
    */
   @Test
   void test002_addFriendshipIllegalNullArgumentException() {
     try {
-      // inserted a null argument for a buddE, so an IllegalNullArgumentException should be thrown
+      // inserted a null argument for a buddE, so an
+      // IllegalNullArgumentException should be thrown
       newBuddENetwork.addFriendship("Saniya", null);
-      // if we get here, we have failed this test because we did not throw an IllegalNullArgument
+      // if we get here, we have failed this test because we did not throw an
+      // IllegalNullArgument
       // Exception.
-      fail(
-          "test002_addFriendshipIllegalNullArgumentException(): FAILED! :( Did "
-              + "NOT throw an IllegalNullArgumentException when a null argument was "
-              + "given for a buddE!");
+      fail("test002_addFriendshipIllegalNullArgumentException(): FAILED! :( Did"
+          + " NOT throw an IllegalNullArgumentException when a null argument "
+          + "was given for a buddE!");
 
     } catch (DuplicateFriendshipException e1) {
-      fail(
-          "test002_addFriendshipIllegalNullArgumentException(): FAILED! :( Threw"
-              + " a DuplicateFriendshipException instead of a IllegalNullArgumentException()"
-              + " when a null argument was given for a buddE!");
+      fail("test002_addFriendshipIllegalNullArgumentException(): FAILED! :( "
+          + "Threw a DuplicateFriendshipException instead of a "
+          + "IllegalNullArgumentException() when a null argument was given for "
+          + "a buddE!");
 
     } catch (IllegalNullArgumentException e2) {
       // passed the test for the null key argument.
-      // next, we try to see if the test passes for an empty string and throws the correct
+      // next, we try to see if the test passes for an empty string and throws
+      // the correct
       // IllegalNullArgumentException
       // trying to insert an empty string for a buddE:
       try {
         newBuddENetwork.addFriendship("", "Shannon");
-        // if we get here, we have failed this test because we did not throw an IllegalNullArgument
+        // if we get here, we have failed this test because we did not throw an
+        // IllegalNullArgument
         // Exception.
         fail("test002_addFriendshipIllegalNullArgumentException(): FAILED! :( "
             + "Did NOT throw an IllegalNullArgumentException when an empty "
@@ -319,27 +327,27 @@ class SocialNetworkTest {
             + "was given for a buddE!");
 
       } catch (IllegalNullArgumentException e2b) {
-        System.out.println(
-            "test002_addFriendshipIllegalNullArgumentException(): PASSED :)!");
       } catch (Exception e2c) {
         fail("test002_addFriendshipIllegalNullArgumentException(): FAILED! :( "
-            + "Threw another Exception instead of a IllegalNullArgumentException() "
-            + "when an empty string argument was given for a buddE!");
+            + "Threw another Exception instead of a "
+            + "IllegalNullArgumentException() when an empty string argument was"
+            + " given for a buddE!");
 
       }
 
     } catch (Exception e3) {
-      fail(
-          "test002_addFriendshipIllegalNullArgumentException(): FAILED! :( Threw"
-              + " another Exception instead of a IllegalNullArgumentException() when"
-              + " a null argument was given for a buddE!");
+      fail("test002_addFriendshipIllegalNullArgumentException(): FAILED! :( "
+          + "Threw another Exception instead of a "
+          + "IllegalNullArgumentException() when a null argument was given for "
+          + "a buddE!");
 
     }
   }
 
   /**
-   * This method tests to see if a DuplicateFriendshipExcepton is properly thrown when the
-   * addFriendship method is called on a friendship that already exists
+   * This method tests to see if a DuplicateFriendshipExcepton is properly
+   * thrown when the addFriendship method is called on a friendship that already
+   * exists
    */
   @Test
   void test003_addFriendshipDuplicateFriendshipException() {
@@ -354,42 +362,43 @@ class SocialNetworkTest {
         // no exception should be thrown because this is a different network:
         // lonelERedNosedRudolphNetwork.addFriendship("santa", "grinch");
 
-        christmasBuddENetwork.addFriendship("santa", "rudolph"); // duplicate friendship
-        // if we get here, we did NOT throw any DuplicateFriendshipException() and fail this method :(
-        fail(
-            "test003_addFriendshipDuplicateFriendshipException(): FAILED! :( Did NOT"
-                + " throw a DuplicateFriendshipException() when trying to add a "
-                + "friendship between Santa and Rudolph again!");
+        christmasBuddENetwork.addFriendship("santa", "rudolph"); // duplicate
+                                                                 // friendship
+        // if we get here, we did NOT throw any DuplicateFriendshipException()
+        // and fail this method :(
+        fail("test003_addFriendshipDuplicateFriendshipException(): FAILED! :( "
+            + "Did NOT throw a DuplicateFriendshipException() when trying to "
+            + "add a friendship between Santa and Rudolph again!");
 
       } catch (IllegalNullArgumentException e1) {
-        fail(
-            "test003_addFriendshipDuplicateFriendshipException(): FAILED! :( Threw"
-                + " an IllegalNullKeyException instead of a DuplicateFriendshipException()!");
+        fail("test003_addFriendshipDuplicateFriendshipException(): FAILED! :( "
+            + "Threw an IllegalNullKeyException instead of a "
+            + "DuplicateFriendshipException()!");
 
       } catch (DuplicateFriendshipException e2) {
-        // test passes here :)
-        System.out.println(":)");
       }
 
     } catch (Exception e3) {
-      fail(
-          "test003_addFriendshipDuplicateFriendshipException(): FAILED! :( Threw"
-              + " another Exception instead of a DuplicateFriendshipException()!");
+      fail("test003_addFriendshipDuplicateFriendshipException(): FAILED! :( "
+          + "Threw another Exception instead of a "
+          + "DuplicateFriendshipException()!");
 
     }
   }
 
   /**
-   * This method tests to see if a valid friendship between 2 BuddEs is added to the social network
-   * graph when 1 or both buddEs are NOT in the social network. It checks that we add the buddEs to
-   * the social network and then add a friendship between them.
+   * This method tests to see if a valid friendship between 2 BuddEs is added to
+   * the social network graph when 1 or both buddEs are NOT in the social
+   * network. It checks that we add the buddEs to the social network and then
+   * add a friendship between them.
    * 
    */
   @Test
   void test004_addValidFriendshipWhereAtLeastOneBuddEIsNotInNetwork() {
     try {
       // Special case: if there is no existing user that correspond to any given
-      // * name, then add the user(s) first and then add friendship between them.
+      // * name, then add the user(s) first and then add friendship between
+      // them.
       christmasBuddENetwork.addUser("grinch");
       christmasBuddENetwork.addFriendship("grinch", "santa");
 
@@ -401,44 +410,48 @@ class SocialNetworkTest {
       // please make sure that the size of the network is 2
       if ((!allChristmasBuddEsList.contains("grinch"))
           || (!allChristmasBuddEsList.contains("santa"))) {
-        fail(
-            "test004_addValidFriendshipWhereAtLeastOneBuddEIsNotInNetwork(): FAILED! :(  Did NOT add Santa to the network when trying to add a friendship where Santa was not in the network.");
+        fail("test004_addValidFriendshipWhereAtLeastOneBuddEIsNotInNetwork(): "
+            + "FAILED! :(  Did NOT add Santa to the network when trying to add "
+            + "a friendship where Santa was not in the network.");
       }
 
       int numChristmasbuddEs = allChristmasBuddEs.size();
       if ((numChristmasbuddEs != 2)) {
-        fail(
-            "test004_addValidFriendshipWhereAtLeastOneBuddEIsNotInNetwork(): FAILED! :(  Did NOT have a size of 2 for the christmasBuddENetwork but instead had a size of "
-                + numChristmasbuddEs);
+        fail("test004_addValidFriendshipWhereAtLeastOneBuddEIsNotInNetwork(): "
+            + "FAILED! :(  Did NOT have a size of 2 for the "
+            + "christmasBuddENetwork but instead had a size of "
+            + numChristmasbuddEs);
       }
 
 
       // Set<User> getAllUsers();
 
     } catch (IllegalNullArgumentException e1) {
-      fail(
-          "test004_addValidFriendshipWhereAtLeastOneBuddEIsNotInNetwork(): FAILED! :(  Incorrectly threw an IllegalNullArgumentException.");
+      fail("test004_addValidFriendshipWhereAtLeastOneBuddEIsNotInNetwork(): "
+          + "FAILED! :(  Incorrectly threw an IllegalNullArgumentException.");
 
 
       // IllegalNullArgumentException, DuplicateUserException
       // DuplicateFriendshipException
     } catch (DuplicateUserException e2) {
-      fail(
-          "test004_addValidFriendshipWhereAtLeastOneBuddEIsNotInNetwork(): FAILED! :(  Incorrectly threw a DuplicateUserException.");
+      fail("test004_addValidFriendshipWhereAtLeastOneBuddEIsNotInNetwork(): "
+          + "FAILED! :(  Incorrectly threw a DuplicateUserException.");
 
     } catch (DuplicateFriendshipException e3) {
-      fail(
-          "test004_addValidFriendshipWhereAtLeastOneBuddEIsNotInNetwork(): FAILED! :(  Incorrectly threw a DuplicateFriendshipException.");
+      fail("test004_addValidFriendshipWhereAtLeastOneBuddEIsNotInNetwork(): "
+          + "FAILED! :(  Incorrectly threw a DuplicateFriendshipException.");
 
     }
 
   }
 
 
-  // remove friendship where a username is null or empty string --> IllegalNullArgumentException
+  // remove friendship where a username is null or empty string -->
+  // IllegalNullArgumentException
   /**
-   * This method tests to see if a we throw an IllegalNullArgumentException whenever we try to remove
-   * a friendship where one user is null or the empty string.
+   * This method tests to see if a we throw an IllegalNullArgumentException
+   * whenever we try to remove a friendship where one user is null or the empty
+   * string.
    * 
    */
   @Test
@@ -448,26 +461,28 @@ class SocialNetworkTest {
       christmasBuddENetwork.addFriendship("santa", "grinch");
       christmasBuddENetwork.addFriendship("prancer", "comet");
       christmasBuddENetwork.addFriendship("santa", "rudolph");
-      // please try to remove a friendship that doesn't exist in the network with a null
+      // please try to remove a friendship that doesn't exist in the network
+      // with a null
       christmasBuddENetwork.removeFriendship(null, "comet");
-      fail(
-          "test005_removeFriendshipThrowsIllegalNullArgumentException(): FAILED! :( Did NOT throw an IllegalNullArgumentException when trying to remove a null friendship.");
+      fail("test005_removeFriendshipThrowsIllegalNullArgumentException(): "
+          + "FAILED! :( Did NOT throw an IllegalNullArgumentException when "
+          + "trying to remove a null friendship.");
     } catch (IllegalNullArgumentException e) {
-      System.out.println(
-          "test005_removeFriendshipThrowsIllegalNullArgumentException(): PASSED :)");
     } catch (Exception e) {
-      fail(
-          "test005_removeFriendshipThrowsIllegalNullArgumentException(): FAILED! :( Threw the wrong exception.");
+      fail("test005_removeFriendshipThrowsIllegalNullArgumentException(): "
+          + "FAILED! :( Threw the wrong exception.");
     }
   }
 
 
 
-  // remove friendship where a username is one of the buddEs is NOT in the network -->
+  // remove friendship where a username is one of the buddEs is NOT in the
+  // network -->
   // UserNotFoundException
   /**
-   * This method tests to see if a we throw a UserNotFoundException whenever we try to remove the
-   * friendship where at least one buddE is NOT in the network.
+   * This method tests to see if a we throw a UserNotFoundException whenever we
+   * try to remove the friendship where at least one buddE is NOT in the
+   * network.
    * 
    */
   @Test
@@ -479,20 +494,21 @@ class SocialNetworkTest {
       christmasBuddENetwork.addFriendship("santa", "rudolph");
       // please try to remove a friendship that doesn't exist in the network
       christmasBuddENetwork.removeFriendship("santa", "comet");
-      fail(
-          "test006_removeFriendshipThrowsUserNotFoundException(): FAILED! :( Did NOT throw a UserNotFoundException when trying to remove a friendship that's not in the network.");
+      fail("test006_removeFriendshipThrowsUserNotFoundException(): FAILED! :( "
+          + "Did NOT throw a UserNotFoundException when trying to remove a "
+          + "friendship that's not in the network.");
     } catch (UserNotFoundException e) {
-      System.out.println(
-          "test006_removeFriendshipThrowsUserNotFoundException(): PASSED :)");
+    } catch (FriendshipNotFoundException e) {
     } catch (Exception e) {
-      fail(
-          "test006_removeFriendshipThrowsUserNotFoundException(): FAILED! :( Threw the wrong exception.");
+      fail("test006_removeFriendshipThrowsUserNotFoundException(): FAILED! :( "
+          + "Threw the wrong exception.");
     }
 
   }
 
 
-  // remove friendship where a username is one of the buddEs is NOT in the network -->
+  // remove friendship where a username is one of the buddEs is NOT in the
+  // network -->
   // UserNotFoundException
   /**
    * This method tests to see if removeFriendship works properly
@@ -514,12 +530,14 @@ class SocialNetworkTest {
       christmasBuddENetwork.setCentralUser("rudolph");
       User centralUserRudolph = christmasBuddENetwork.getCentralUser();
       Set<User> rudolphsFriends = centralUserRudolph.getFriends();
-      int numFriendsOfRudolph = rudolphsFriends.size(); // please note this should be 3
+      int numFriendsOfRudolph = rudolphsFriends.size(); // please note this
+                                                        // should be 3
 
       if (numFriendsOfRudolph != 3) {
         fail("test007_removeValidFriendship(): FAILED! :( Did"
-            + " NOT return 3 for the # of buddEs Red-Nose reindeer Rudolph has (Santa, Comet, Grinch) "
-            + "and instead returned: " + numFriendsOfRudolph);
+            + " NOT return 3 for the # of buddEs Red-Nose reindeer Rudolph has "
+            + "(Santa, Comet, Grinch) and instead returned: "
+            + numFriendsOfRudolph);
       }
 
       ArrayList<String> rudolphBudsList = new ArrayList<String>();
@@ -536,16 +554,18 @@ class SocialNetworkTest {
 
       }
 
-      // please remove friendship between Santa and Rudolph as the 2 unfortunately get into an argument :(
+      // please remove friendship between Santa and Rudolph as the 2
+      // unfortunately get into an argument :(
       christmasBuddENetwork.removeFriendship("santa", "rudolph");
       // Rudolph should just have 2 friends now: Comet and Grinch
       rudolphsFriends = centralUserRudolph.getFriends();
-      numFriendsOfRudolph = rudolphsFriends.size(); // please note this should be 2
+      numFriendsOfRudolph = rudolphsFriends.size(); // please note this should
+                                                    // be 2
 
       if (numFriendsOfRudolph != 2) {
-        fail("test007_removeValidFriendship(): FAILED! :( Did"
-            + " NOT return 2 for the # of buddEs Red-Nose reindeer Rudolph has after breaking off with Santa "
-            + "and instead returned: " + numFriendsOfRudolph);
+        fail("test007_removeValidFriendship(): FAILED! :( Did NOT return 2 for "
+            + "the # of buddEs Red-Nose reindeer Rudolph has after breaking off"
+            + " with Santa and instead returned: " + numFriendsOfRudolph);
       }
 
       ArrayList<String> rudolphBudsListNew = new ArrayList<String>();
@@ -556,16 +576,16 @@ class SocialNetworkTest {
 
       if ((!rudolphBudsListNew.contains("comet"))
           || (!rudolphBudsListNew.contains("grinch"))) {
-        fail("test007_removeValidFriendship(): FAILED! :("
-            + " Rudolphs buddE list is NOT correct after we removed friendship with Santa");
+        fail("test007_removeValidFriendship(): FAILED! :( Rudolphs buddE list "
+            + "is NOT correct after we removed friendship with Santa");
 
       }
 
 
 
     } catch (Exception e) {
-      fail(
-          "test007_removeValidFriendship(): FAILED! Threw incorrect exceptions when removing a valid friendship");
+      fail("test007_removeValidFriendship(): FAILED! Threw incorrect exceptions"
+          + " when removing a valid friendship");
     }
 
   }
@@ -576,14 +596,15 @@ class SocialNetworkTest {
 
 
   /**
-   * Please note that this test ensures that we can successfully add new users to the BuddE network
-   * and that the getAllUsers increases.
+   * Please note that this test ensures that we can successfully add new users
+   * to the BuddE network and that the getAllUsers increases.
    */
   @Test
   void test008_addValidUsers() {
     // adding new user (check that allUsers has increased).
 
-    // (Adding same user name but to different networks shouldnt throw any exception.
+    // (Adding same user name but to different networks shouldnt throw any
+    // exception.
 
     try {
       christmasBuddENetwork.addUser("Santa Claus");
@@ -600,9 +621,8 @@ class SocialNetworkTest {
       Set<User> allUsersChristmasSet = christmasBuddENetwork.getAllUsers();
       int numUsersChristmas = allUsersChristmasSet.size();
       if (numUsersChristmas != 10) {
-        fail(
-            "test008_addValidUsers(): FAILED!  Did NOT return 10 users for the network, but instead: "
-                + numUsersChristmas);
+        fail("test008_addValidUsers(): FAILED!  Did NOT return 10 users for "
+            + "the network, but instead: " + numUsersChristmas);
       }
 
 
@@ -616,8 +636,8 @@ class SocialNetworkTest {
 
 
   /**
-   * Please note that this test ensures that we throw an IllegalNullArgumentException if we add a null
-   * user or empty string user
+   * Please note that this test ensures that we throw an
+   * IllegalNullArgumentException if we add a null user or empty string user
    */
   @Test
   void test009_addUsersIllegalNullArgumentException() {
@@ -634,24 +654,24 @@ class SocialNetworkTest {
       christmasBuddENetwork.addUser("Dancer");
       christmasBuddENetwork.addUser("Cupid");
       christmasBuddENetwork.addUser(null);
-      // if we get here, then we did NOT throw an illegalNullArgumentException when we should have! :(
-      fail(
-          "test009_addUsersIllegalNullArgumentException(): FAILED! :( Did NOT throw an IllegalNullArgumentException when adding a null user");
+      // if we get here, then we did NOT throw an illegalNullArgumentException
+      // when we should have! :(
+      fail("test009_addUsersIllegalNullArgumentException(): FAILED! :( Did NOT"
+          + " throw an IllegalNullArgumentException when adding a null user");
     } catch (IllegalNullArgumentException e1) {
       try {
         christmasBuddENetwork.addUser("");
       } catch (IllegalNullArgumentException e1a) {
-        System.out.println(
-            "test009_addUsersIllegalNullArgumentException(): PASSED :)");
       } catch (Exception e2) {
-        fail(
-            "test009_addUsersIllegalNullArgumentException(): FAILED! :( Did NOT throw an IllegalNullArgumentException when adding an empty string user");
+        fail("test009_addUsersIllegalNullArgumentException(): FAILED! :( Did "
+            + "NOT throw an IllegalNullArgumentException when adding an empty "
+            + "string user");
       }
 
 
     } catch (Exception e2) {
-      fail(
-          "test009_addUsersIllegalNullArgumentException(): FAILED! :( Threw the wrong exception!");
+      fail("test009_addUsersIllegalNullArgumentException(): FAILED! :( Threw "
+          + "the wrong exception!");
     }
 
 
@@ -661,8 +681,8 @@ class SocialNetworkTest {
 
 
   /**
-   * Please note that this test ensures that we throw a DuplicateUserException if we try to add a
-   * duplicate user to a network
+   * Please note that this test ensures that we throw a DuplicateUserException
+   * if we try to add a duplicate user to a network
    */
   @Test
   void test010_addUsersDuplicateUserException() {
@@ -672,8 +692,8 @@ class SocialNetworkTest {
 
 
   /**
-   * This test checks to make sure we throw an IllegalNullArgumentException when trying to set the
-   * central user as an empty string or null argument.
+   * This test checks to make sure we throw an IllegalNullArgumentException when
+   * trying to set the central user as an empty string or null argument.
    */
   @Test
   void test011_setCentralUserIllegalNullArgumentException() {
@@ -689,76 +709,81 @@ class SocialNetworkTest {
       christmasBuddENetwork.addUser("Dancer");
       christmasBuddENetwork.addUser("Cupid");
       christmasBuddENetwork.addUser("Dasher");
-      christmasBuddENetwork.setCentralUser(""); // making empty string the central user
+      christmasBuddENetwork.setCentralUser(""); // making empty string the
+                                                // central user
 
-      // if we get here, then we did not properly throw an IllegalNullArgumentException on empty string,
+      // if we get here, then we did not properly throw an
+      // IllegalNullArgumentException on empty string,
       // so we failed tests.
       fail("test011_setCentralUserIllegalNullArgumentException(): FAILED :(.  "
           + "Did NOT throw an IllegalNullArgumentException when finding central"
           + " user of empty string.");
     } catch (UserNotFoundException e1) {
-      fail(
-          "test011_setCentralUserIllegalNullArgumentException(): FAILED :(.  Threw a UserNotFoundException instead of an IllegalNullArgumentException when making the central user an empty string!");
+      fail("test011_setCentralUserIllegalNullArgumentException(): FAILED :(. "
+          + "Threw a UserNotFoundException instead of an "
+          + "IllegalNullArgumentException when making the central user an empty"
+          + " string!");
     } catch (IllegalNullArgumentException e2) {
       // properly caught this Exception :) for empty string
       try {
-        christmasBuddENetwork.setCentralUser(null); // making a null buddE the central user
-        fail(
-            "test011_setCentralUserIllegalNullArgumentException(): FAILED :(.  Did NOT throw an IllegalNullArgumentException when calling setCentralUser(null)!");
+        christmasBuddENetwork.setCentralUser(null); // making a null buddE the
+                                                    // central user
+        fail("test011_setCentralUserIllegalNullArgumentException(): FAILED :(."
+            + " Did NOT throw an IllegalNullArgumentException when calling "
+            + "setCentralUser(null)!");
 
       } catch (UserNotFoundException e2a) {
-        fail(
-            "test011_setCentralUserIllegalNullArgumentException(): FAILED :(.  Threw a UserNotFoundException instead of an IllegalNullArgumentException when calling setCentralUser(null)!");
+        fail("test011_setCentralUserIllegalNullArgumentException(): FAILED :(."
+            + " Threw a UserNotFoundException instead of an "
+            + "IllegalNullArgumentException when calling "
+            + "setCentralUser(null)!");
       } catch (IllegalNullArgumentException e2b) {
-        System.out.println(
-            "test011_setCentralUserIllegalNullArgumentException(): PASSED :)");
       } catch (Exception e2c) {
-        fail(
-            "test011_setCentralUserIllegalNullArgumentException(): FAILED :(.  Threw another Exception instead of an IllegalNullArgumentException when calling setCentralUser(null)!");
-
+        fail("test011_setCentralUserIllegalNullArgumentException(): FAILED :(."
+            + " Threw another Exception instead of an "
+            + "IllegalNullArgumentException when calling "
+            + "setCentralUser(null)!");
       }
 
     } catch (Exception e3) {
-      fail(
-          "test011_setCentralUserIllegalNullArgumentException(): FAILED :(  Threw another Exception instead of an IllegalNullArgumentException when calling setCentralUser for an empty String!");
+      fail("test011_setCentralUserIllegalNullArgumentException(): FAILED :( "
+          + "Threw another Exception instead of an IllegalNullArgumentException"
+          + " when calling setCentralUser for an empty String!");
     }
-
   }
-
-
 
   @Test
   void test012_setCentralUserUserNotFoundException() {
-    // try adding to different networks and then ensure that the networks that have that person throw no
+    // try adding to different networks and then ensure that the networks that
+    // have that person throw no
     // exception.
     try {
       christmasBuddENetwork.addUser("Santa Claus");
       christmasBuddENetwork.addUser("Grinch");
       christmasBuddENetwork.addUser("Comet");
 
-      christmasBuddENetwork.setCentralUser("Rudolph"); // making Rudolph a central user, but he is NOT in the network :(
+      christmasBuddENetwork.setCentralUser("Rudolph"); // making Rudolph a
+                                                       // central user, but he
+                                                       // is NOT in the network
+                                                       // :(
 
-      // if we get here, then we did not properly throw a UserNotFoundException on a user not in the
+      // if we get here, then we did not properly throw a UserNotFoundException
+      // on a user not in the
       // network,
       // so we failed tests.
       fail("test012_setCentralUserUserNotFoundException(): FAILED :(.  "
           + "Did NOT throw an UserNotFoundException when setting central"
           + " user who is NOT in the christmasBuddENetwork network.");
     } catch (IllegalNullArgumentException e1) {
-      fail(
-          "test012_setCentralUserUserNotFoundException(): FAILED :(.  Threw a IllegalNullArgumentException instead of an UserNotFoundException when making the central user someone not in the network!");
+      fail("test012_setCentralUserUserNotFoundException(): FAILED :(. Threw a "
+          + "IllegalNullArgumentException instead of an UserNotFoundException "
+          + "when making the central user someone not in the network!");
     } catch (UserNotFoundException e2) {
-      // properly caught this Exception :)
-
-      System.out
-          .println("test012_setCentralUserUserNotFoundException(): PASSED :)");
-
     } catch (Exception e3) {
-      fail(
-          "test012_setCentralUserUserNotFoundException(): FAILED :(  Threw another Exception instead of a UserNotFoundException when calling setCentralUser for Rudolph who wasn't in the network!");
+      fail("test012_setCentralUserUserNotFoundException(): FAILED :( Threw "
+          + "another Exception instead of a UserNotFoundException when calling "
+          + "setCentralUser for Rudolph who wasn't in the network!");
     }
-
-
   }
 
 
@@ -779,26 +804,28 @@ class SocialNetworkTest {
       christmasBuddENetwork.addUser("Dancer");
       christmasBuddENetwork.addUser("Cupid");
       christmasBuddENetwork.addUser("Dasher");
-      christmasBuddENetwork.setCentralUser("Santa Claus"); // making Santa the Central User
-
+      christmasBuddENetwork.setCentralUser("Santa Claus"); // making Santa the
+                                                           // Central User
 
     } catch (UserNotFoundException e1) {
-      fail(
-          "test013_setValidCentralUser(): FAILED :(.  Threw a UserNotFoundException when making a valid buddE (Santa Claus) a central user!");
+      fail("test013_setValidCentralUser(): FAILED :(.  Threw a "
+          + "UserNotFoundException when making a valid buddE (Santa Claus) "
+          + "a central user!");
     } catch (IllegalNullArgumentException e2) {
-      fail(
-          "test013_setValidCentralUser(): FAILED :(.  Threw a IllegalNullArgumentException when making a valid buddE (Santa Claus) a central user!");
+      fail("test013_setValidCentralUser(): FAILED :(.  "
+          + "Threw a IllegalNullArgumentException when making a valid buddE "
+          + "(Santa Claus) a central user!");
 
     } catch (Exception e3) {
-      fail(
-          "test011_setCentralUserIllegalNullArgumentException(): FAILED :(  Threw another Exception instead of an IllegalNullArgumentException when calling setCentralUser for an empty String!");
+      fail("test011_setCentralUserIllegalNullArgumentException(): FAILED :(  "
+          + "Threw another Exception instead of an IllegalNullArgumentException"
+          + " when calling setCentralUser for an empty String!");
     }
-
   }
 
-
   /**
-   * This test checks the getConnectedComponents and ensures we have 2 connected components here.
+   * This test checks the getConnectedComponents and ensures we have 2 connected
+   * components here.
    * 
    * @return set of graphs of connected of components.
    */
@@ -831,8 +858,8 @@ class SocialNetworkTest {
         //
         if (christmasGraph.size() == 1) {
           if (firstCompFound == true) {
-            fail(
-                "test014_testGetConnectedComponents(): FAILED! Duplicate component (size 1) found! :(");
+            fail("test014_testGetConnectedComponents(): FAILED! Duplicate "
+                + "component (size 1) found! :(");
           }
           Set<User> oneConnectedComponentVertices =
               christmasGraph.getAllVertices();
@@ -842,8 +869,8 @@ class SocialNetworkTest {
           }
           if ((!componentUsersList.contains("Harry"))
               || (!componentUsersList.contains("Prancer"))) {
-            fail(
-                "test014_testGetConnectedComponents(): Failed! :( Did NOT have Harry and Prancer");
+            fail("test014_testGetConnectedComponents(): Failed! :( Did NOT "
+                + "have Harry and Prancer");
           } else {
             firstCompFound = true;
 
@@ -852,8 +879,8 @@ class SocialNetworkTest {
 
         if (christmasGraph.size() == 4) {
           if (secondCompFound == true) {
-            fail(
-                "test014_testGetConnectedComponents: FAILED! Duplicate component (size 4) found! :(");
+            fail("test014_testGetConnectedComponents: FAILED! Duplicate "
+                + "component (size 4) found! :(");
           }
           Set<User> secondConnectedComponentVertices =
               christmasGraph.getAllVertices();
@@ -865,35 +892,31 @@ class SocialNetworkTest {
               || (!componentUsersList2.contains("rudolph"))
               || (!componentUsersList2.contains("comet"))
               || (!componentUsersList2.contains("grinch"))) {
-            fail(
-                "test014_testGetConnectedComponents(): FAILED! Did NOT have Santa, Rudolph, Comet, and Grinch!");
+            fail("test014_testGetConnectedComponents(): FAILED! Did NOT have "
+                + "Santa, Rudolph, Comet, and Grinch!");
           } else {
             secondCompFound = true;
-
           }
-
         }
-
       }
-
 
       if (componentsFound != 2) {
-        fail(
-            "test014_testGetConnectedComponents(): Did NOT return 2 for the connected components but instead returned: "
-                + componentsFound);
+        fail("test014_testGetConnectedComponents(): Did NOT return 2 for the "
+            + "connected components but instead returned: " + componentsFound);
       }
     } catch (Exception e) {
-      fail(
-          "test014_testGetConnectedComponents(): Failed! :(.  Threw unexpected exception");
+      fail("test014_testGetConnectedComponents(): Failed! :(. Threw unexpected "
+          + "exception");
     }
 
   }
 
 
   /**
-   * Please note that this test checks to see if the shortest path method works: Here, we have the
-   * network where Santa --> Comet --> Grinch --> Donder We want to see the shortest path from Santa
-   * to Donder. It should be: [Comet, Grinch]
+   * Please note that this test checks to see if the shortest path method works:
+   * Here, we have the network where Santa --> Comet --> Grinch --> Donder We
+   * want to see the shortest path from Santa to Donder. It should be: [Comet,
+   * Grinch]
    */
   @Test
   void test015_testGetShortestPath() {
@@ -918,18 +941,18 @@ class SocialNetworkTest {
       }
       int numElementsShortestPath = shortestPathFromSantaToDonder.size();
       if (numElementsShortestPath != 2) {
-        fail(
-            "test015_testGetShortestPath: FAILED! :(. Did NOT return 2 elements for the shortest path, but instead: "
-                + numElementsShortestPath);
+        fail("test015_testGetShortestPath: FAILED! :(. Did NOT return 2 "
+            + "elements for the shortest path, but instead: "
+            + numElementsShortestPath);
       }
       if ((!shortestPathFromSantaToDonder.get(0).equals("Comet"))
           || (!shortestPathFromSantaToDonder.get(1).equals("Grinch"))) {
-        fail(
-            "test015_testGetShortestPath: FAILED! :( Did NOT return the proper BuddEs on the way!");
+        fail("test015_testGetShortestPath: FAILED! :( Did NOT return the proper"
+            + " BuddEs on the way!");
       }
     } catch (Exception e) {
-      fail(
-          "test015_testGetShortestPath:  FAILED! :( Threw an incorrect exception!");
+      fail("test015_testGetShortestPath:  FAILED! :( Threw an incorrect "
+          + "exception!");
     }
   }
 

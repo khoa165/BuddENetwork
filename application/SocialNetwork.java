@@ -284,30 +284,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @return set of graphs of connected of components.
    */
   public Set<Graph> getConnectedComponents() {
-    Set<Graph> graphs = new HashSet<Graph>();
-    Set<User> users = this.graph.getAllVertices();
-    for (User user : users) {
-      try {
-        Set<User> neighbors = this.graph.getNeighbors(user);
-        Graph graphForUser = new Graph();
-        for (User neighbor : neighbors) {
-          try {
-            graphForUser.addEdge(user, neighbor);
-          } catch (DuplicateFriendshipException e) {
-            // DuplicateFriendshipException should not be thrown
-            e.printStackTrace();
-          }
-          graphs.add(graphForUser);
-        }
-      } catch (IllegalNullArgumentException e) {
-        // IllegalNullArgumentException should not be thrown
-        e.printStackTrace();
-      } catch (UserNotFoundException e) {
-        // UserNotFoundException should not be thrown
-        e.printStackTrace();
-      }
-    }
-    return graphs;
+
+    return null;
   }
 
   /**
@@ -443,10 +421,19 @@ public class SocialNetwork implements SocialNetworkADT {
     this.commands.add("s " + username);
   }
 
+  /**
+   * Return the number of users in the social network.
+   * 
+   * @return number of users in the social network.
+   */
   public int numberUsers() {
     return this.graph.order();
   }
 
+  /**
+   * Return the number of connections/friendships in the social network.
+   * @return the number of connections/friendships in the social network.
+   */
   public int numberConnections() {
     return this.graph.size();
   }
