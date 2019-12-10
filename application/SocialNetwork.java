@@ -433,8 +433,12 @@ public class SocialNetwork implements SocialNetworkADT {
     if (username == null || username.length() == 0) {
       throw new IllegalNullArgumentException();
     }
-    // Sets the user while checking for UserNotFoundException
-    this.centralUser = this.graph.getUser(username);
+    // Get user from username.
+    User central = this.graph.getUser(username);
+    if (central == null) {
+      throw new UserNotFoundException();
+    }
+    this.centralUser = central;
     // Add command to list of commands
     this.commands.add("s " + username);
   }
