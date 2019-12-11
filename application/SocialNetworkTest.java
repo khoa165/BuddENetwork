@@ -16,12 +16,9 @@ package application;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.Set;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -954,13 +951,13 @@ class SocialNetworkTest {
         shortestPathFromSantaToGrinchList.add(userName);
       }
       int numElementsShortestPath = shortestPathFromSantaToDonder.size();
-      if (numElementsShortestPath != 2) {
+      if (numElementsShortestPath != 4) {
         fail("test015_testGetShortestPath: FAILED! :(. Did NOT return 2 "
             + "elements for the shortest path, but instead: "
             + numElementsShortestPath);
       }
-      if ((!shortestPathFromSantaToDonder.get(0).equals("Comet"))
-          || (!shortestPathFromSantaToDonder.get(1).equals("Grinch"))) {
+      if ((!shortestPathFromSantaToGrinchList.get(1).equals("Comet"))
+          || (!shortestPathFromSantaToGrinchList.get(2).equals("Grinch"))) {
         fail("test015_testGetShortestPath: FAILED! :( Did NOT return the proper"
             + " BuddEs on the way!");
       }

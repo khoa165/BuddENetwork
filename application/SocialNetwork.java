@@ -336,6 +336,7 @@ public class SocialNetwork implements SocialNetworkADT {
           if (currentWeight > newWeight) {
             weight.put(friend.getName(), newWeight);
             predecessor.put(friend.getName(), minUser);
+            pq.add(friend);
           }
         }
       }
@@ -345,11 +346,13 @@ public class SocialNetwork implements SocialNetworkADT {
     path.add(endUser);
     while (true) {
       User currentUser = predecessor.get(pointerUser);
-      path.add(0, currentUser);
-      pointerUser = currentUser.getName();
-      if(pointerUser != null && pointerUser.equals(user1)) {
+      if(currentUser != null && currentUser.getName().equals(user1)) {
+        path.add(0, startUser);
         break;
       }
+      path.add(0, currentUser);
+      pointerUser = currentUser.getName();
+      
     }
     return path;
   }
