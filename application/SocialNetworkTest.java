@@ -1,3 +1,16 @@
+/**
+ * Project:    BuddE Network
+ * Filename:   SocialNetworkTest.java
+ * Associated Files: Main.java, SocialNetworkADT, SocialNetwork.java, GraphADT.java,
+ * 				  	 Graph.java, GraphTest.java, User.java, 
+ * 					 DuplicateFriendshipException.java, DuplicateUserException.java,
+ * 					 FriendshipNotFoundException.java, UserNotFoundException.java,
+ * 					 IllegalNullArgumentException.java
+ *
+ * Authors:    Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar
+ * 
+ * Email: ktle4@wisc.edu, sstiles@wisc.edu, klmui@wisc.edu, skhullar2@wisc.edu
+ */
 package application;
 
 import static org.junit.jupiter.api.Assertions.*;
