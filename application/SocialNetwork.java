@@ -6,10 +6,13 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Stack;
 
 public class SocialNetwork implements SocialNetworkADT {
 
@@ -284,8 +287,52 @@ public class SocialNetwork implements SocialNetworkADT {
    * @return set of graphs of connected of components.
    */
   public Set<Graph> getConnectedComponents() {
+    Set<Graph> connectedComponents = new HashSet<Graph>();
+    // HashMap for visited users.
+    HashMap<String, Boolean> visited = new HashMap<String, Boolean>();
 
-    return null;
+    // Mark each user unvisited.
+    for (String username : graph.getAllUsernames()) {
+      visited.put(username, false);
+    }
+
+    for (String username : graph.getAllUsernames()) {
+      if (!visited.get(username)) {
+        Graph componentGraph = traverse(username, visited);
+        connectedComponents.add(componentGraph);
+      }
+    }
+    return connectedComponents;
+  }
+
+  private Graph traverse(String username, HashMap<String, Boolean> visited) {
+    User user = null;
+    Graph componentGraph = new Graph();
+    try {
+      user = this.graph.getUser(username);
+      Stack<User> path = new Stack<User>();
+      path.add(user);
+      componentGraph.addVertex(user);
+
+      while (!path.isEmpty()) {
+        User current = path.pop();
+        visited.put(current.getName(), true);
+        for (User friend : current.getFriends()) {
+          try {
+            if (!visited.get(friend.getName())) {
+              path.add(friend);
+              componentGraph.addVertex(friend);
+            }
+          } catch (Exception e) {
+          }
+        }
+      }
+    } catch (Exception e) {
+      System.out.println(
+          "Error happened. This line should have never been printed out!");
+    }
+
+    return componentGraph;
   }
 
   /**
@@ -432,6 +479,7 @@ public class SocialNetwork implements SocialNetworkADT {
 
   /**
    * Return the number of connections/friendships in the social network.
+   * 
    * @return the number of connections/friendships in the social network.
    */
   public int numberConnections() {

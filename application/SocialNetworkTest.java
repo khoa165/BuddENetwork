@@ -832,7 +832,7 @@ class SocialNetworkTest {
   @Test
   void test014_testGetConnectedComponents() {
     try {
-      christmasBuddENetwork.addFriendship("HarrE", "Prancer");
+      christmasBuddENetwork.addFriendship("Harry", "Prancer");
 
       christmasBuddENetwork.addFriendship("Santa", "Rudolph");
       christmasBuddENetwork.addFriendship("Comet", "Santa");
@@ -866,6 +866,7 @@ class SocialNetworkTest {
           ArrayList<String> componentUsersList = new ArrayList<String>();
           for (User userName : oneConnectedComponentVertices) {
             componentUsersList.add(userName.getName());
+            System.out.println(userName.getName());
           }
           if ((!componentUsersList.contains("Harry"))
               || (!componentUsersList.contains("Prancer"))) {

@@ -50,8 +50,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -64,7 +62,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
@@ -560,6 +557,7 @@ public class Main extends Application {
       updateDropdownOfAllUsers();
       drawGraph();
       updateSocialNetworkStat();
+      updateCentralUserStat();
     } catch (IllegalNullArgumentException e) {
       Alert alert =
           new Alert(AlertType.WARNING, "Field should not be left blank.");
@@ -658,8 +656,9 @@ public class Main extends Application {
 
   private static void updateSocialNetworkStat() {
     String status = "BuddE Network stats: " + buddENetwork.numberUsers()
-        + " users --- " + buddENetwork.numberConnections()
-        + " friendships --- 0 connected groups/components.";
+        + " users --- " + buddENetwork.numberConnections() + " friendships --- "
+        + buddENetwork.getConnectedComponents().size()
+        + " connected groups/components.";
     socialNetworkStat.setText(status);
   }
 
