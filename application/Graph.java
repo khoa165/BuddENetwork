@@ -1,3 +1,16 @@
+/**
+ * Project:    BuddE Network
+ * Filename:   Graph.java
+ * Associated Files: Main.java, SocialNetworkADT.java, SocialNetwork.java, GraphADT.java, 
+ * 					 GraphTest.java, User.java, SocialNetworkTest.java, 
+ * 					 DuplicateFriendshipException.java, DuplicateUserException.java,
+ * 					 FriendshipNotFoundException.java, UserNotFoundException.java,
+ * 					 IllegalNullArgumentException.java
+ *
+ * Authors:    Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar
+ * 
+ * 
+ */
 package application;
 
 import java.util.HashMap;
@@ -5,6 +18,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author
+ *
+ */
 public class Graph implements GraphADT {
   // Set of vertices/users in the graph.
   private Set<User> vertices;

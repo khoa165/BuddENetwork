@@ -1,3 +1,16 @@
+/**
+ * Project:    BuddE Network
+ * Filename:   SocialNetworkADT.java
+ * Associated Files: Main.java, SocialNetwork.java, GraphADT.java, Graph.java, 
+ * 					 GraphTest.java, User.java, SocialNetworkTest.java, 
+ * 					 DuplicateFriendshipException.java, DuplicateUserException.java,
+ * 					 FriendshipNotFoundException.java, UserNotFoundException.java,
+ * 					 IllegalNullArgumentException.java
+ *
+ * Authors:    Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar
+ * 
+ * 
+ */
 package application;
 
 import java.io.FileNotFoundException;
@@ -5,6 +18,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author 
+ *
+ */
 public interface SocialNetworkADT {
   /**
    * Given two names, find corresponding users and add friendship between them.
