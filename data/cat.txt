@@ -1,0 +1,13 @@
+a Cat
+s Cat
+a Cat Dog
+a Cat Bird
+a Cat Fish
+a Cat Human
+a Cat Mouse
+r Dog
+a Dog
+a Cat Dog
+a Cat Butterfly
+s Human
+a Human Dog

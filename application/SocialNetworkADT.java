@@ -235,4 +235,17 @@ public interface SocialNetworkADT {
    */
   public void setCentralUser(String username)
       throws IllegalNullArgumentException, UserNotFoundException;
+  
+  /**
+   * Return the number of users in the social network.
+   * 
+   * @return number of users in the social network.
+   */
+  public int numberUsers();
+  
+  /**
+   * Return the number of connections/friendships in the social network.
+   * @return the number of connections/friendships in the social network.
+   */
+  public int numberConnections();
 }

@@ -50,8 +50,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -64,7 +62,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
@@ -89,6 +86,8 @@ public class Main extends Application {
   private static SocialNetwork buddENetwork = new SocialNetwork();
   private static String currentFilename = null;
   private static VBox allUsersDropdownVBox = new VBox();
+  private static Label centralUserStat = new Label();
+  private static Label socialNetworkStat = new Label();
 
   private static boolean socialNetworkChangedAndUnsaved = false;
 
@@ -138,25 +137,6 @@ public class Main extends Application {
     primaryStage.setOnCloseRequest(e -> confirmWhenClose(primaryStage, e));
   }
 
-  /**
-   * Please note that this class allows us to view the list of mutual BuddEs,
-   * between the central user and one of his/her buddEs.
-   * 
-   * @author
-   *
-   */
-  static class addFriendToCell extends ListCell<String> {
-    @Override
-    public void updateItem(String item, boolean empty) {
-      super.updateItem(item, empty);
-      Label friendNameLabel;
-      if (item != null) {
-        friendNameLabel = new Label(item);
-        setGraphic(friendNameLabel);
-      }
-    }
-  }
-
   private static void setupTopView() {
     // Create social network/application logo.
     ImageView logoView = setupLogo();
@@ -177,13 +157,24 @@ public class Main extends Application {
   }
 
   private static void setupBottomView() {
-    // Create status label that indicates level of popularity.
-    Label status = new Label("STATUS: ");
-    status.setFont(Font.font("Calibri", FontWeight.BOLD, 24));
-    status.setTextFill(Color.BLUE);
+    // Status label that indicates statistics of social network.
+    socialNetworkStat = new Label("BuddE Network stats: 0 users --- 0 "
+        + "friendships --- 0 connected groups/components.");
+    socialNetworkStat.setFont(Font.font("Calibri", FontWeight.BOLD, 18));
+    socialNetworkStat.setTextFill(Color.RED);
 
-    // Add status label to bottom section.
-    bottomSection.getChildren().add(status);
+    // Status label that indicates statistics of central user.
+    centralUserStat =
+        new Label("Central user is not set yet. No stat available.");
+    centralUserStat.setFont(Font.font("Calibri", FontWeight.BOLD, 18));
+    centralUserStat.setTextFill(Color.BLUE);
+
+    // Add status labels to bottom section.
+    VBox stats = new VBox();
+    stats.getChildren().addAll(centralUserStat, socialNetworkStat);
+
+    // Add stats to bottom section.
+    bottomSection.getChildren().add(stats);
     bottomSection.setStyle("-fx-background-color: #adeaea; -fx-border-color: "
         + "black; -fx-border-width: 3 0 0 0; -fx-padding: 5 0 5 10");
   }
@@ -214,11 +205,11 @@ public class Main extends Application {
     // Create button to save social network.
     navbar.add(createNavbarButton("images/Save.png", "Save file", 2));
 
-    navbar.add(new Separator());
+    // navbar.add(new Separator());
     // Create button to undo change to social network.
-    navbar.add(createNavbarButton("images/Undo.png", "Undo", 3));
+    // navbar.add(createNavbarButton("images/Undo.png", "Undo", 3));
     // Create button to redo change to social network.
-    navbar.add(createNavbarButton("images/Redo.png", "Redo", 4));
+    // navbar.add(createNavbarButton("images/Redo.png", "Redo", 4));
 
     navbar.add(new Separator());
     // Create button to search for user.
@@ -258,9 +249,13 @@ public class Main extends Application {
         iconButton.setOnAction(e -> createNewSocialNetwork());
         break;
       case 1:
-        iconButton.setOnAction(e -> createInputDialogAndLoadFile());
+        // iconButton.setOnAction(e -> createInputDialogAndLoadFile());
+        iconButton.setOnAction(e -> createInputDialog(
+            "Provide valid file to load your social network.", 0));
         break;
       case 2:
+        iconButton.setOnAction(e -> createInputDialog(
+            "Provide valid file to save your social network.", 1));
         break;
       case 3:
         break;
@@ -291,6 +286,9 @@ public class Main extends Application {
     iconView.setPreserveRatio(true); // Keep original image ratio.
     Button searchButton = new Button(); // Create a button to search.
     searchButton.setGraphic(iconView); // Link button with image view.
+
+    searchButton.setOnAction(e -> searchUserAndSetCentralUser(searchField));
+
     // Add search button and input field.
     hBox.getChildren().addAll(searchField, searchButton);
     VBox vBox = new VBox();
@@ -317,23 +315,47 @@ public class Main extends Application {
     drawGraph();
   }
 
-  private static void createInputDialogAndLoadFile() {
+  private static void createInputDialog(String header, int index) {
     TextInputDialog dialog = new TextInputDialog("Please enter filename:");
-    dialog.setHeaderText("Provide valid file to load your social network.");
-    dialog.showAndWait();
-    currentFilename = dialog.getEditor().getText();
-    loadSocialNetwork();
-    updateDropdownOfAllUsers();
-    drawGraph();
+    dialog.setHeaderText(header);
+    // dialog.showAndWait();
+
+    Optional<String> result = dialog.showAndWait();
+    if (result.isPresent()) {
+      currentFilename = dialog.getEditor().getText();
+      // Event handler for different buttons, differentiate by index.
+      switch (index) {
+        case 0:
+          loadSaveSocialNetwork(index);
+          updateDropdownOfAllUsers();
+          drawGraph();
+          break;
+        case 1:
+          loadSaveSocialNetwork(index);
+          break;
+        default:
+      }
+    }
   }
 
-  private static void loadSocialNetwork() {
+  private static void loadSaveSocialNetwork(int index) {
     try {
-      buddENetwork = new SocialNetwork();
-      buddENetwork.loadFromFile(currentFilename + ".txt");
+      // Event handler for different buttons, differentiate by index.
+      switch (index) {
+        case 0:
+          buddENetwork.loadFromFile(currentFilename);
+          updateSocialNetworkStat();
+          updateCentralUserStat();
+          break;
+        case 1:
+          buddENetwork.saveToFile(currentFilename);
+          socialNetworkChangedAndUnsaved = false;
+          break;
+        default:
+      }
     } catch (IOException e) {
       Alert alert = new Alert(AlertType.WARNING,
-          currentFilename + " does not exist in the directory.");
+          "<" + currentFilename + "> does not exist in the directory.");
       alert.show();
     } catch (IllegalNullArgumentException e) {
       Alert alert =
@@ -360,10 +382,34 @@ public class Main extends Application {
     dropdown.setOnAction(e -> setCentralUserFromDropdown(dropdown));
   }
 
+  private static void searchUserAndSetCentralUser(TextField searchField) {
+    String name = searchField.getText();
+    searchField.setText("");
+    try {
+      buddENetwork.setCentralUser(name);
+      updateCentralUserStat();
+      socialNetworkChangedAndUnsaved = true;
+      drawGraph();
+    } catch (IllegalNullArgumentException e) {
+      Alert alert =
+          new Alert(AlertType.WARNING, "Field should not be left blank.");
+      alert.show();
+    } catch (UserNotFoundException e) {
+      Alert alert = new Alert(AlertType.WARNING,
+          "User <" + name + "> does not exist in the BuddE Network.");
+      alert.show();
+    } catch (Exception e) {
+      Alert alert =
+          new Alert(AlertType.WARNING, "Sorry, unexpected error occured.");
+      alert.show();
+    }
+  }
+
   private static void setCentralUserFromDropdown(ComboBox<String> dropdown) {
     String chosenUser = dropdown.getValue();
     try {
       buddENetwork.setCentralUser(chosenUser);
+      updateCentralUserStat();
       socialNetworkChangedAndUnsaved = true;
       drawGraph();
     } catch (Exception e) {
@@ -442,8 +488,25 @@ public class Main extends Application {
 
   private static void socialNetworkAction(TextField inputField, int index) {
     String name = inputField.getText();
-    inputField.setText("");
-    String centralName = buddENetwork.getCentralUser().getName();
+    if (index != 4) { // No need to clear input for mutual buddies section.
+      inputField.setText("");
+    }
+    User centralUser = buddENetwork.getCentralUser();
+    String centralName = null;
+    if (centralUser != null) {
+      centralName = centralUser.getName();
+    }
+
+    if ((index == 2 || index == 3 || index == 4) && centralName == null) {
+      Label label = new Label("Central user is not set. Please create a user "
+          + "and set central user first before attempting to add/remove "
+          + "friendship.");
+      label.setWrapText(true);
+      Alert alert = new Alert(AlertType.WARNING);
+      alert.getDialogPane().setContent(label);
+      alert.show();
+    }
+
     // Event handler for different buttons, differentiate by index.
     try {
       switch (index) {
@@ -454,35 +517,71 @@ public class Main extends Application {
           buddENetwork.removeUser(name);
           break;
         case 2:
-          buddENetwork.addFriendship(centralName, name);
+          if (centralName != null) {
+            buddENetwork.addFriendship(centralName, name);
+          }
           break;
         case 3:
-          buddENetwork.removeFriendship(centralName, name);
+          if (centralName != null) {
+            buddENetwork.removeFriendship(centralName, name);
+          }
           break;
         case 4:
-          Set<String> mutual = buddENetwork.getMutualFriends(centralName, name);
-          // Mutual friend section is 4th element of rightSection
-          Node node = rightSection.getChildren().get(4);
-          if (node instanceof VBox) {
-            VBox mutualSection = (VBox) node;
-            Node list = mutualSection.getChildren().get(2);
-            
-            if (list instanceof ListView) {
-              @SuppressWarnings("unchecked")
-              ListView<String> mutualList = (ListView<String>) list;
-              mutualList.getItems().clear();
-              mutualList.getItems().addAll(mutual);
+          if (centralName != null) {
+            Set<String> mutual =
+                buddENetwork.getMutualFriends(centralName, name);
+            // Mutual friend section is 4th element of rightSection
+            Node node = rightSection.getChildren().get(4);
+            if (node instanceof VBox) {
+              VBox mutualSection = (VBox) node;
+              Node list = mutualSection.getChildren().get(2);
+
+              if (list instanceof ListView) {
+                @SuppressWarnings("unchecked")
+                ListView<String> mutualList = (ListView<String>) list;
+                mutualList.getItems().clear();
+                if (mutual.size() <= 0) {
+                  mutualList.getItems()
+                      .add("No mutual friends between you and " + name + "!");
+                } else {
+                  mutualList.getItems().addAll(mutual);
+                }
+              }
             }
-            
           }
           break;
         default:
           break;
       }
+      socialNetworkChangedAndUnsaved = true;
       updateDropdownOfAllUsers();
       drawGraph();
+      updateSocialNetworkStat();
+      updateCentralUserStat();
+    } catch (IllegalNullArgumentException e) {
+      Alert alert =
+          new Alert(AlertType.WARNING, "Field should not be left blank.");
+      alert.show();
+    } catch (UserNotFoundException e) {
+      Alert alert = new Alert(AlertType.WARNING,
+          "User <" + name + "> does not exist in the BuddE Network.");
+      alert.show();
+    } catch (FriendshipNotFoundException e) {
+      Alert alert = new Alert(AlertType.WARNING, "Friendship between you and "
+          + name + " did not exist in the BuddE Network");
+      alert.show();
+    } catch (DuplicateUserException e) {
+      Alert alert = new Alert(AlertType.WARNING,
+          "User <" + name + "> already exists in the BuddE Network.");
+      alert.show();
+    } catch (DuplicateFriendshipException e) {
+      Alert alert = new Alert(AlertType.WARNING, "Friendship between you and "
+          + name + " already exists in the BuddE Network");
+      alert.show();
     } catch (Exception e) {
-      e.printStackTrace();
+      Alert alert =
+          new Alert(AlertType.WARNING, "Sorry, unexpected error occured.");
+      alert.show();
     }
   }
 
@@ -553,6 +652,23 @@ public class Main extends Application {
       coords[i][1] = Math.cos(anglePosition) * DISTANCE;
     }
     return coords;
+  }
+
+  private static void updateSocialNetworkStat() {
+    String status = "BuddE Network stats: " + buddENetwork.numberUsers()
+        + " users --- " + buddENetwork.numberConnections() + " friendships --- "
+        + buddENetwork.getConnectedComponents().size()
+        + " connected groups/components.";
+    socialNetworkStat.setText(status);
+  }
+
+  private static void updateCentralUserStat() {
+    User centralUser = buddENetwork.getCentralUser();
+    if (centralUser != null) {
+      String status = centralUser.getName() + " has "
+          + centralUser.getFriends().size() + " buddies.";
+      centralUserStat.setText(status);
+    }
   }
 
   private static void confirmWhenClose(Stage stage, WindowEvent e) {
