@@ -6,10 +6,12 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
@@ -120,8 +122,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws DuplicateUserException       if username already exists in social
    *                                      network.
    */
-  public void addUser(String username)
-      throws IllegalNullArgumentException, DuplicateUserException {
+  public void addUser(String username) throws IllegalNullArgumentException,
+      DuplicateUserException {
     if (username == null || username.length() == 0) {
       throw new IllegalNullArgumentException();
     }
@@ -152,8 +154,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  public void removeUser(String username)
-      throws IllegalNullArgumentException, UserNotFoundException {
+  public void removeUser(String username) throws IllegalNullArgumentException,
+      UserNotFoundException {
     // Get user instance, IllegalNullArgumentException may be thrown.
     User userToRemove = this.graph.getUser(username);
 
@@ -276,9 +278,80 @@ public class SocialNetwork implements SocialNetworkADT {
    */
   public List<User> getShortestPath(String user1, String user2)
       throws IllegalNullArgumentException, UserNotFoundException {
-    ArrayList<User> shortestPath = new ArrayList<User>();
+    List<User> path = new LinkedList<User>();
+    // Get user instances, IllegalNullArgumentException may be thrown.
+    User startUser = this.graph.getUser(user1);
+    User endUser = this.graph.getUser(user2);
 
-    return null;
+    if (startUser == null || endUser == null) { // User not found.
+      throw new UserNotFoundException();
+    }
+
+    // Keep track if each user is visited.
+    HashMap<String, Boolean> visited = new HashMap<String, Boolean>();
+    // Mark each user unvisited.
+    for (String username : graph.getAllUsernames()) {
+      visited.put(username, false);
+    }
+
+    // Keep track of weight relative to startUser.
+    HashMap<String, Integer> weight = new HashMap<String, Integer>();
+    // Mark each user's weight to be max value of integer.
+    for (String username : graph.getAllUsernames()) {
+      weight.put(username, Integer.MAX_VALUE);
+    }
+
+    // Keep track of predecessor.
+    HashMap<String, User> predecessor = new HashMap<String, User>();
+    // Mark each user's predecessor as null.
+    for (String username : graph.getAllUsernames()) {
+      predecessor.put(username, null);
+    }
+
+    weight.put(user1, 0); // Set start vertex weight to 0.
+
+
+    class UserWeightComparator implements Comparator<User> {
+      public int compare(User u1, User u2) {
+        if (weight.get(u1.getName()) < weight.get(u2.getName()))
+          return -1;
+        else if (weight.get(u1.getName()) > weight.get(u2.getName()))
+          return 1;
+        return 0;
+      }
+    }
+
+    PriorityQueue<User> pq = new PriorityQueue<User>(
+        new UserWeightComparator());
+    pq.add(startUser);
+    
+    while (!pq.isEmpty()) {
+      User minUser = pq.remove();
+      visited.put(minUser.getName(), true);
+      
+      for (User friend : minUser.getFriends()) {
+        if (!visited.get(friend.getName())) {
+          int currentWeight = weight.get(friend.getName());
+          int newWeight = weight.get(minUser.getName()) + 1;
+          if (currentWeight > newWeight) {
+            weight.put(friend.getName(), newWeight);
+            predecessor.put(friend.getName(), minUser);
+          }
+        }
+      }
+    }
+    
+    String pointerUser = user2;
+    path.add(endUser);
+    while (true) {
+      User currentUser = predecessor.get(pointerUser);
+      path.add(0, currentUser);
+      pointerUser = currentUser.getName();
+      if(pointerUser != null && pointerUser.equals(user1)) {
+        break;
+      }
+    }
+    return path;
   }
 
   /**
@@ -350,8 +423,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws IOException                  if there is error happening while
    *                                      reading file.
    */
-  public void loadFromFile(String filename)
-      throws IllegalNullArgumentException, IOException {
+  public void loadFromFile(String filename) throws IllegalNullArgumentException,
+      IOException {
     if (filename == null || filename.length() == 0) {
       throw new IllegalNullArgumentException();
     }
@@ -423,8 +496,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws IOException                  if there is an error in saving changes
    *                                      to a file.
    */
-  public void saveToFile(String filename)
-      throws IllegalNullArgumentException, IOException {
+  public void saveToFile(String filename) throws IllegalNullArgumentException,
+      IOException {
     if (filename == null || filename.length() == 0) {
       throw new IllegalNullArgumentException();
     }
