@@ -673,6 +673,10 @@ public class Main extends Application {
     return coords;
   }
 
+  /**
+   * GUI that shows the shortest path from central user to another user.
+   * @param enteredName username that user enters.
+   */
   private static void displayShortestPath(String enteredName) {
     Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -725,6 +729,10 @@ public class Main extends Application {
     centerSection.getChildren().add(canvas);
   }
 
+  /**
+   * Update number of users, connections, and connected components of social
+   * network.
+   */
   private static void updateSocialNetworkStat() {
     String status = "BuddE Network stats: " + buddENetwork.numberUsers()
         + " users --- " + buddENetwork.numberConnections() + " friendships --- "
@@ -733,6 +741,9 @@ public class Main extends Application {
     socialNetworkStat.setText(status);
   }
 
+  /**
+   * Update number of friends of central user.
+   */
   private static void updateCentralUserStat() {
     User centralUser = buddENetwork.getCentralUser();
     if (centralUser != null) {
@@ -742,15 +753,27 @@ public class Main extends Application {
     }
   }
 
+  /**
+   * Show up a confirmation dialog if user exits and does not save change to
+   * social network, otherwise no pop up shows up.
+   * 
+   * @param stage main stage of application.
+   * @param e     triggered when closing application.
+   */
   private static void confirmWhenClose(Stage stage, WindowEvent e) {
+    // Only show confirmation box if social network was changed.
     if (socialNetworkChangedAndUnsaved) {
+      // Create alert pop-up.
       Alert closeConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+      // Close button.
       Button exitButton = (Button) closeConfirmation.getDialogPane()
           .lookupButton(ButtonType.OK);
       exitButton.setText("Exit");
+      // Set confirmation text.
       closeConfirmation.setHeaderText(
           "Are you sure you want to exit without saving? If so, all the changes"
               + " that you have made to the social network would not be saved.");
+      // Trigger event and link everything together.
       Optional<ButtonType> closeResponse = closeConfirmation.showAndWait();
       if (!ButtonType.OK.equals(closeResponse.get())) {
         e.consume();
