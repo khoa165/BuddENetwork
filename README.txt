@@ -1,39 +1,31 @@
 # BuddE Network project
-#### Created by: Khoa Thien Le (Harry), Kenneth Mui, Shannon Stiles, Saniya Khullar.
-#### UW-Madison, CS 400, A-Team 12.
+Created by: Khoa Thien Le (Harry), Kenneth Mui, Shannon Stiles, Saniya Khullar.
+UW-Madison, CS 400, A-Team 12.
+- Khoa Thien Le (Harry), ktle4@wisc.edu, x-team 22, lecture 001.
+- Shannon Stiles, sstiles@wisc.edu, x-team 129, lecture 001.
+- Kenneth Mui, klmui@wisc.edu, x-team 73, lecture 002.
+- Saniya Khullar, skhullar2@wisc.edu, x-team 42, lecture 001.
 
-#### ***Timeline:***
-- November 18th:
-  + Shannon initialized empty repository.
-- November 25th:
-  + Harry set up the project with JavaFX, created [.gitignore file](.gitignore), updated [README.md file](README.md).
-  + Harry defined all exceptions required for Graph class (DuplicateUserException, DuplicateFrienshipException, IllegalNullArgumentException, UserNotFoundException, FriendshipNotFoundException).
-- November 26th:
-  + Harry defined all methods for Graph data structure in [GraphADT.java](application/GraphADT.java).
-- November 29th:
-  + Shannon cloned the repository to local workspace.
-  + Shannon updated [User.java](application/User.java) to include name, and friend list.
-  + Shannon created and set up [GraphTest.java](application/GraphTest.java).
-  + Harry implemented all required methods for Graph data structure in [Graph.java](application/Graph.java).
-  + Kenny cloned the repository to local workspace.
-- November 30th:
-  + Saniya cloned the repository to local workspace.
-  + Shannon finished implementing a substantial great amount of tests for [GraphTest.java](application/GraphTest.java).
-  + Harry defined all methods for SocialNetwork data structure in [SocialNetworkADT.java](application/SocialNetworkADT.java).
-- December 1st:
-  + Kenny implemented all required methods for Social Network in [SocialNetwork.java](application/SocialNetwork.java).
-  + Shannon implemented code to structure the graphical components of the application.
-  + Shannon implemented code to create static GUI to display navbar that show all the options for the user to interact with application, such as loading file and saving file, adding and removing users or friendships.
-  + Saniya implemented code to create static GUI to visualize Mutual BuddEs between two users.
-- December 2nd:
-  + Kenny implemented code to create static GUI of social network that displays connections from central user to their friends.
-  + Harry refactored Shannon's GUI code by breaking it down to methods.
-- December 3rd:
-  + Harry implemented code to load the social network from the file and generate graph dynamically.
-  + Harry implemented code to shift graph to show corresponding friends when user sets new central user of the social network.
-  + Saniya started implementing codes to test [SocialNetwork.java](application/SocialNetwork.java) in [SocialNetworkTest.java](application/SocialNetworkTest.java).
+NOTES FOR GRADER
+- If you build a social network from scratch, then you have to start by adding a user first, and use the drop down or search field to set that user as central user, from then, you can start adding/removing friends and even adding other users, checking for mutual friends. If you attempt to add/remove friends or check for mutual buddies before creating any user, you will receive a warning that you need to set central user first.
+- You can load file by placing it in the project directory and enter the file name, including the .txt extension. Multiple files can be loaded and data would be added to existing social network.
+- If you want to navigate from one user to another user, please use drop down as it contains the a link or search field to set central user, clicking on central user's friends would not work.
 
-#### ***Upcoming goals:***
+SCREENSHOTS EXPLANATION
+- 0: Start the application, no action performed yet.
+- 1:  Enter "CS400" and click "Create New User". Then either select "CS400" from the dropdown or enter "CS400" in Search User section and click Search icon.
+- 2:  Enter "Deb" and click "Add BuddE".
+- 3:  Click "Load file" and enter "data/friends.txt" (because we store data files in data folder for clean organization).
+- 4:  Click "OK". The graph shows up with Saniya as central user with her friends because of the commands from friends.txt
+- 5:  Enter "Kenny" and click "Mutual BuddEs".
+- 6:  Either select "Peter" from the dropdown or enter "Peter"" in Search User section and click Search icon.
+- 7:  Enter "Brian" in the Shortest path section and click Search icon.
+- 8:  Either select "Saniya" from the dropdown or enter "Saniya"" in Search User section and click Search icon. Then enter "Deb" and click "Add BuddE". Now Saniya should have 9 friends, and graph has been restructured.
+- 9:  Enter "Deb" and click "Add BuddE" again, error should pop up due to Duplicate Friendship.
+- 10: Enter "Cat" and click "Remove BuddE", error should pop up due to Friendship Not Found (Cat does exist in social network, otherwise error would have been User Not Found).
+- 11: Close the application, warning pops up due to file not saved.
+
+Finished goals:
 - [X] Set up the repository and project.
 - [X] Get all team members to clone the repository and set up local work directories.
 - [X] Define GraphADT.java interface.
@@ -41,5 +33,11 @@
 - [X] Implementation of Graph.java class.
 - [X] Implementation of GraphTest.java class.
 - [X] Implementation of SocialNetwork.java class.
-- [ ] Implementation of SocialNetworkTest.java class.
-- [ ] Link Back-end with GUI.
+- [X] Implementation of SocialNetworkTest.java class.
+- [X] Link Back-end with GUI.
+
+Upcoming goals: (personal goals for Winter break, not for the assignment)
+- [ ] Easy: File uploader instead of entering file name.
+- [ ] Easy: Extend the User class to have more info of users such as age, address, nationality.
+- [ ] Medium: Authentication.
+- [ ] Difficult: Store information in database instead of txt file.
