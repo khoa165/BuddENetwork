@@ -1,13 +1,15 @@
 /**
- * Project:    BuddE Network
- * Filename:   GraphADT.java
- * Associated Files: Main.java, SocialNetworkADT.java, SocialNetwork.java, Graph.java, 
- * 					 GraphTest.java, User.java, SocialNetworkTest.java, 
- * 					 DuplicateFriendshipException.java, DuplicateUserException.java,
- * 					 FriendshipNotFoundException.java, UserNotFoundException.java,
- * 					 IllegalNullArgumentException.java
+ * Project: BuddE Network
+ * 
+ * Filename: GraphADT.java
+ * 
+ * Associated Files: Main.java, SocialNetworkADT.java, SocialNetwork.java,
+ * Graph.java, GraphTest.java, User.java, SocialNetworkTest.java,
+ * DuplicateFriendshipException.java, DuplicateUserException.java,
+ * FriendshipNotFoundException.java, UserNotFoundException.java,
+ * IllegalNullArgumentException.java
  *
- * Authors:    Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar
+ * Authors: Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar
  * 
  * Email: ktle4@wisc.edu, sstiles@wisc.edu, klmui@wisc.edu, skhullar2@wisc.edu
  */
@@ -15,6 +17,11 @@ package application;
 
 import java.util.Set;
 
+/**
+ * GraphADT interface defines methods required in Graph data structure.
+ * 
+ * @author Khoa Thien Le (Harry).
+ */
 public interface GraphADT {
   /**
    * Add new vertex/user to the graph.
