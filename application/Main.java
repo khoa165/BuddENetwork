@@ -213,13 +213,18 @@ public class Main extends Application {
 
     navbar.add(new Separator());
     // Create button to search for user.
-    navbar.add(createSearchField());
+    navbar.add(createSearchField("Search user", 0));
 
     navbar.add(new Separator());
     // Create drop-down to set central user.
     Set<String> users = buddENetwork.getAllUsernames();
     allUsersDropdownVBox = createDropdown(users, "Set central user");
     navbar.add(allUsersDropdownVBox);
+
+    navbar.add(new Separator());
+    // Create button to search for user.
+    navbar.add(createSearchField("Shortest path", 1));
+
     return navbar;
   }
 
@@ -270,14 +275,14 @@ public class Main extends Application {
     return vBox;
   }
 
-  private static VBox createSearchField() {
+  private static VBox createSearchField(String label, int index) {
     HBox hBox = new HBox(); // Create a VBox.
     // Create a label for search field.
-    Label searchLabel = new Label("Search user");
+    Label searchLabel = new Label(label);
     searchLabel.setTextFill(Color.YELLOW);
     searchLabel.setStyle("-fx-font-weight: bold");
     TextField searchField = new TextField(); // Create an input field.
-    searchField.setPromptText("Search for User"); // Placeholder for text.
+    searchField.setPromptText("Please enter a name"); // Placeholder for text.
     searchField.setPrefSize(150, 25);
     Image searchIcon = new Image("images/Search.png"); // Import image.
     ImageView iconView = new ImageView(); // Create image view.
@@ -287,7 +292,7 @@ public class Main extends Application {
     Button searchButton = new Button(); // Create a button to search.
     searchButton.setGraphic(iconView); // Link button with image view.
 
-    searchButton.setOnAction(e -> searchUserAndSetCentralUser(searchField));
+    searchButton.setOnAction(e -> searchUser(searchField, index));
 
     // Add search button and input field.
     hBox.getChildren().addAll(searchField, searchButton);
@@ -312,7 +317,7 @@ public class Main extends Application {
   private static void createNewSocialNetwork() {
     buddENetwork = new SocialNetwork();
     updateDropdownOfAllUsers();
-    drawGraph();
+    drawGraphCentralUser();
   }
 
   private static void createInputDialog(String header, int index) {
@@ -328,12 +333,13 @@ public class Main extends Application {
         case 0:
           loadSaveSocialNetwork(index);
           updateDropdownOfAllUsers();
-          drawGraph();
+          drawGraphCentralUser();
           break;
         case 1:
           loadSaveSocialNetwork(index);
           break;
         default:
+          break;
       }
     }
   }
@@ -352,6 +358,7 @@ public class Main extends Application {
           socialNetworkChangedAndUnsaved = false;
           break;
         default:
+          break;
       }
     } catch (IOException e) {
       Alert alert = new Alert(AlertType.WARNING,
@@ -373,7 +380,7 @@ public class Main extends Application {
     allUsersDropdownVBox.getChildren().clear();
     // Create a label for drop-down.
     Label dropdownLabel = new Label("Set central user");
-    dropdownLabel.setTextFill(Color.WHITE);
+    dropdownLabel.setTextFill(Color.YELLOW);
     ComboBox<String> dropdown = new ComboBox<String>(); // Create a drop-down.
     dropdown.getItems().addAll(users); // Add items to the drop-down.
     dropdown.setPrefSize(150, 25);
@@ -382,14 +389,24 @@ public class Main extends Application {
     dropdown.setOnAction(e -> setCentralUserFromDropdown(dropdown));
   }
 
-  private static void searchUserAndSetCentralUser(TextField searchField) {
+  private static void searchUser(TextField searchField, int index) {
     String name = searchField.getText();
     searchField.setText("");
     try {
-      buddENetwork.setCentralUser(name);
-      updateCentralUserStat();
-      socialNetworkChangedAndUnsaved = true;
-      drawGraph();
+      // Event handler for different buttons, differentiate by index.
+      switch (index) {
+        case 0:
+          buddENetwork.setCentralUser(name);
+          updateCentralUserStat();
+          socialNetworkChangedAndUnsaved = true;
+          drawGraphCentralUser();
+          break;
+        case 1:
+          displayShortestPath(name);
+          break;
+        default:
+          break;
+      }
     } catch (IllegalNullArgumentException e) {
       Alert alert =
           new Alert(AlertType.WARNING, "Field should not be left blank.");
@@ -411,7 +428,7 @@ public class Main extends Application {
       buddENetwork.setCentralUser(chosenUser);
       updateCentralUserStat();
       socialNetworkChangedAndUnsaved = true;
-      drawGraph();
+      drawGraphCentralUser();
     } catch (Exception e) {
     }
   }
@@ -553,11 +570,17 @@ public class Main extends Application {
         default:
           break;
       }
-      socialNetworkChangedAndUnsaved = true;
-      updateDropdownOfAllUsers();
-      drawGraph();
-      updateSocialNetworkStat();
-      updateCentralUserStat();
+
+      // Except for finding mutual buddies, add/remove user/friendship will
+      // change the social network, update drop-down, update social network and
+      // central user statistics.
+      if (index != 4) {
+        socialNetworkChangedAndUnsaved = true;
+        updateDropdownOfAllUsers();
+        drawGraphCentralUser();
+        updateSocialNetworkStat();
+        updateCentralUserStat();
+      }
     } catch (IllegalNullArgumentException e) {
       Alert alert =
           new Alert(AlertType.WARNING, "Field should not be left blank.");
@@ -585,8 +608,7 @@ public class Main extends Application {
     }
   }
 
-  private static void drawGraph() {
-    // centerVBox.getChildren().remove(0);
+  private static void drawGraphCentralUser() {
     Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
     GraphicsContext gc = canvas.getGraphicsContext2D();
     // Set text attributes
@@ -612,7 +634,7 @@ public class Main extends Application {
 
         double[][] coords = getCoordinates(numFriends);
         int i = 0;
-        for (User friend : buddENetwork.getFriends(centralName)) {
+        for (User friend : friends) {
           double x = centerX + coords[i][0];
           double y = centerY + coords[i][1];
           gc.strokeLine(centerX, centerY, x, y);
@@ -626,8 +648,6 @@ public class Main extends Application {
           i++;
         }
 
-        // gc.setFill(Paint.valueOf(
-        // "linear-gradient(to top left, #FFE031, #F04579)"));
         gc.setFill(
             Paint.valueOf("linear-gradient(to top left, #00FFED, #9D00C6)"));
         gc.fillOval(centerX - RADIUS, centerY - RADIUS, RADIUS * 2.0,
@@ -639,7 +659,6 @@ public class Main extends Application {
     }
 
     centerSection.getChildren().clear();
-    // centerVBox = new VBox();
     centerSection.getChildren().add(canvas);
   }
 
@@ -652,6 +671,58 @@ public class Main extends Application {
       coords[i][1] = Math.cos(anglePosition) * DISTANCE;
     }
     return coords;
+  }
+
+  private static void displayShortestPath(String enteredName) {
+    Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    // Set text attributes
+    gc.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
+    // Set stroke attributes
+    gc.setStroke(Color.BLACK);
+    gc.setLineWidth(2);
+
+    // Draw circles (vertices) to represent people and lines connecting the
+    // central user and their friends
+    // The circles draw from the top left, so to center them, subtract the
+    // radius from each coordinate.
+    double centerY = CANVAS_HEIGHT / 2.0;
+    // Names are centered in the middle of the circle
+    gc.setFill(Color.YELLOW);
+    if (buddENetwork.getCentralUser() != null) {
+      String centralName = buddENetwork.getCentralUser().getName();
+      try {
+        double x = 100;
+        double distance = 3 * RADIUS;
+        List<User> users =
+            buddENetwork.getShortestPath(centralName, enteredName);
+        for (int i = 1; i < users.size(); ++i) {
+          gc.strokeLine(x, centerY, x + distance, centerY);
+          x = x + distance;
+        }
+        x = 100 + distance; // Center of first user, not including central user.
+        for (int i = 1; i < users.size(); ++i) {
+          gc.setFill(
+              Paint.valueOf("linear-gradient(to top left, #E5F230, #54DB63)"));
+          gc.fillOval(x - RADIUS, centerY - RADIUS, RADIUS * 2.0, RADIUS * 2.0);
+
+          gc.setFill(Paint.valueOf("#0100EC"));
+          gc.fillText(users.get(i).getName(), x - RADIUS + 5, centerY + 5);
+
+          x = x + distance;
+        }
+
+        gc.setFill(
+            Paint.valueOf("linear-gradient(to top left, #00FFED, #9D00C6)"));
+        gc.fillOval(100 - RADIUS, centerY - RADIUS, RADIUS * 2.0, RADIUS * 2.0);
+        gc.setFill(Paint.valueOf("#f6da63"));
+        gc.fillText(centralName, 100 - RADIUS + 5, centerY + 5);
+      } catch (Exception e) {
+      }
+    }
+
+    centerSection.getChildren().clear();
+    centerSection.getChildren().add(canvas);
   }
 
   private static void updateSocialNetworkStat() {
