@@ -1,13 +1,15 @@
 /**
- * Project:    BuddE Network
- * Filename:   SocialNetworkADT.java
- * Associated Files: Main.java, SocialNetwork.java, GraphADT.java, Graph.java, 
- * 					 GraphTest.java, User.java, SocialNetworkTest.java, 
- * 					 DuplicateFriendshipException.java, DuplicateUserException.java,
- * 					 FriendshipNotFoundException.java, UserNotFoundException.java,
- * 					 IllegalNullArgumentException.java
+ * Project: BuddE Network
+ * 
+ * Filename: SocialNetworkADT.java
+ * 
+ * Associated Files: Main.java, SocialNetwork.java, GraphADT.java, Graph.java,
+ * GraphTest.java, User.java, SocialNetworkTest.java,
+ * DuplicateFriendshipException.java, DuplicateUserException.java,
+ * FriendshipNotFoundException.java, UserNotFoundException.java,
+ * IllegalNullArgumentException.java
  *
- * Authors:    Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar
+ * Authors: Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar
  * 
  * Email: ktle4@wisc.edu, sstiles@wisc.edu, klmui@wisc.edu, skhullar2@wisc.edu
  */
@@ -19,8 +21,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author 
- *
+ * Interface that defines methods required in Social Network.
+ * 
+ * @author Khoa Thien Le (Harry).
  */
 public interface SocialNetworkADT {
   /**
@@ -252,16 +255,17 @@ public interface SocialNetworkADT {
    */
   public void setCentralUser(String username)
       throws IllegalNullArgumentException, UserNotFoundException;
-  
+
   /**
    * Return the number of users in the social network.
    * 
    * @return number of users in the social network.
    */
   public int numberUsers();
-  
+
   /**
    * Return the number of connections/friendships in the social network.
+   * 
    * @return the number of connections/friendships in the social network.
    */
   public int numberConnections();

@@ -1,13 +1,15 @@
 /**
- * Project:    BuddE Network
- * Filename:   SocialNetworkTest.java
- * Associated Files: Main.java, SocialNetworkADT, SocialNetwork.java, GraphADT.java,
- * 				  	 Graph.java, GraphTest.java, User.java, 
- * 					 DuplicateFriendshipException.java, DuplicateUserException.java,
- * 					 FriendshipNotFoundException.java, UserNotFoundException.java,
- * 					 IllegalNullArgumentException.java
+ * Project: BuddE Network
+ * 
+ * Filename: SocialNetworkTest.java
+ * 
+ * Associated Files: Main.java, SocialNetworkADT, SocialNetwork.java,
+ * GraphADT.java, Graph.java, GraphTest.java, User.java,
+ * DuplicateFriendshipException.java, DuplicateUserException.java,
+ * FriendshipNotFoundException.java, UserNotFoundException.java,
+ * IllegalNullArgumentException.java
  *
- * Authors:    Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar
+ * Authors: Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar
  * 
  * Email: ktle4@wisc.edu, sstiles@wisc.edu, klmui@wisc.edu, skhullar2@wisc.edu
  */
@@ -22,25 +24,16 @@ import org.junit.jupiter.api.Test;
 import java.util.Iterator;
 import java.util.List;
 
-
-
+/**
+ * Test the functionalities of Social Network.
+ * 
+ * @author Saniya Khullar.
+ */
 class SocialNetworkTest {
-
+  // Several social networks for testing.
   public static SocialNetwork newBuddENetwork;
   public static SocialNetwork christmasBuddENetwork;
   public static SocialNetwork lonelERedNosedRudolphNetwork;
-  // 11 default users (9 are reindeer)
-  // User santaClaus = new User("Santa Claus");
-  // User grinch = new User("Grinch");
-  // User comet = new User("Comet");
-  // User rudolph = new User("Rudolph");
-  // User prancer = new User("Prancer");
-  // User blitzen = new User("Blitzen");
-  // User donder = new User("Donder");
-  // User vixen = new User("Vixen");
-  // User dancer = new User("Dancer");
-  // User cupid = new User("Cupid");
-  // User dasher = new User("Dasher");
 
   @BeforeEach
   void setUp() throws Exception {

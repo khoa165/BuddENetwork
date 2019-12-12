@@ -1,3 +1,18 @@
+/**
+ * Project: BuddE Network
+ * 
+ * Filename: SocialNetwork.java
+ * 
+ * Associated Files: Main.java, SocialNetworkADT.java, GraphADT.java,
+ * Graph.java, GraphTest.java, User.java, SocialNetworkTest.java,
+ * DuplicateFriendshipException.java, DuplicateUserException.java,
+ * FriendshipNotFoundException.java, UserNotFoundException.java,
+ * IllegalNullArgumentException.java
+ *
+ * Authors: Khoa Thien Le (Harry), Shannon Stiles, Kenneth Mui, Saniya Khullar
+ * 
+ * Email: ktle4@wisc.edu, sstiles@wisc.edu, klmui@wisc.edu, skhullar2@wisc.edu
+ */
 package application;
 
 import java.io.BufferedWriter;
@@ -16,12 +31,22 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 
+/**
+ * SocialNetwork represents the buddE network that allows users to add/remove
+ * users, add/remove friendships, see mutual buddies, and find shortest path
+ * from one user to another.
+ * 
+ * @author Khoa Thien Le (Harry), Kenneth Mui.
+ */
 public class SocialNetwork implements SocialNetworkADT {
 
-  private Graph graph;
-  private ArrayList<String> commands;
-  private User centralUser;
+  private Graph graph; // Graph instance.
+  private ArrayList<String> commands; // Commands to save to file.
+  private User centralUser; // Central user.
 
+  /**
+   * Default constructor that initializes instance fields for social network.
+   */
   public SocialNetwork() {
     this.graph = new Graph();
     this.commands = new ArrayList<String>();
@@ -122,8 +147,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws DuplicateUserException       if username already exists in social
    *                                      network.
    */
-  public void addUser(String username) throws IllegalNullArgumentException,
-      DuplicateUserException {
+  public void addUser(String username)
+      throws IllegalNullArgumentException, DuplicateUserException {
     if (username == null || username.length() == 0) {
       throw new IllegalNullArgumentException();
     }
@@ -154,8 +179,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws UserNotFoundException        if username does not exist in the
    *                                      social network.
    */
-  public void removeUser(String username) throws IllegalNullArgumentException,
-      UserNotFoundException {
+  public void removeUser(String username)
+      throws IllegalNullArgumentException, UserNotFoundException {
     // Get user instance, IllegalNullArgumentException may be thrown.
     User userToRemove = this.graph.getUser(username);
 
@@ -321,14 +346,14 @@ public class SocialNetwork implements SocialNetworkADT {
       }
     }
 
-    PriorityQueue<User> pq = new PriorityQueue<User>(
-        new UserWeightComparator());
+    PriorityQueue<User> pq =
+        new PriorityQueue<User>(new UserWeightComparator());
     pq.add(startUser);
-    
+
     while (!pq.isEmpty()) {
       User minUser = pq.remove();
       visited.put(minUser.getName(), true);
-      
+
       for (User friend : minUser.getFriends()) {
         if (!visited.get(friend.getName())) {
           int currentWeight = weight.get(friend.getName());
@@ -341,18 +366,18 @@ public class SocialNetwork implements SocialNetworkADT {
         }
       }
     }
-    
+
     String pointerUser = user2;
     path.add(endUser);
     while (true) {
       User currentUser = predecessor.get(pointerUser);
-      if(currentUser != null && currentUser.getName().equals(user1)) {
+      if (currentUser != null && currentUser.getName().equals(user1)) {
         path.add(0, startUser);
         break;
       }
       path.add(0, currentUser);
       pointerUser = currentUser.getName();
-      
+
     }
     return path;
   }
@@ -426,8 +451,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws IOException                  if there is error happening while
    *                                      reading file.
    */
-  public void loadFromFile(String filename) throws IllegalNullArgumentException,
-      IOException {
+  public void loadFromFile(String filename)
+      throws IllegalNullArgumentException, IOException {
     if (filename == null || filename.length() == 0) {
       throw new IllegalNullArgumentException();
     }
@@ -499,8 +524,8 @@ public class SocialNetwork implements SocialNetworkADT {
    * @throws IOException                  if there is an error in saving changes
    *                                      to a file.
    */
-  public void saveToFile(String filename) throws IllegalNullArgumentException,
-      IOException {
+  public void saveToFile(String filename)
+      throws IllegalNullArgumentException, IOException {
     if (filename == null || filename.length() == 0) {
       throw new IllegalNullArgumentException();
     }
