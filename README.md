@@ -21,9 +21,3 @@
 - [X] Implementation of SocialNetwork.java class.
 - [X] Implementation of SocialNetworkTest.java class.
 - [X] Link Back-end with GUI.
-
-#### ***Upcoming goals: (personal goals for Winter break, not for the assignment) ***
-- [ ] Easy: File uploader instead of entering file name.
-- [ ] Easy: Extend the User class to have more info of users such as age, address, nationality.
-- [ ] Medium: Authentication.
-- [ ] Difficult: Store information in database instead of txt file.
